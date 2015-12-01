@@ -1,0 +1,7 @@
+{
+  "name": "bixie-devos",
+  "dependencies": {
+    "uikit": "master"
+  },
+  "private": true
+}

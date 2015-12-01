@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.1" method="upgrade">
+	<name>com_bix_devos</name>
+	<creationDate>2015-12-01</creationDate>
+	<copyright>Copyright (C) 2015. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<author>Matthijs Alles</author>
+	<authorEmail>info@bixie.nl</authorEmail>
+	<authorUrl>www.bixie.nl</authorUrl>
+	<version>0.0.1-dev</version>
+	<description>COM_BIX_DEVOS_XML_DESCRIPTION</description>
+	<!-- Site Main File Copy Section -->
+	<files folder="front">
+		<filename>bix_devos.php</filename>
+	</files>
+	<languages folder="language/front">
+		<language tag="nl-NL">nl-NL/nl-NL.com_bix_devos.ini</language>
+	</languages>
+	<administration>
+        <menu img="class:bix_devos">COM_BIX_DEVOS</menu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+            <filename>bix_devos-app.php</filename>
+            <filename>bix_devos.php</filename>
+			<folder>assets</folder>
+			<folder>src</folder>
+			<folder>vendor</folder>
+			<folder>views</folder>
+		</files>
+		<languages folder="language/administrator">
+			<language tag="nl-NL">nl-NL/nl-NL.com_bix_devos.ini</language>
+			<language tag="nl-NL">nl-NL/nl-NL.com_bix_devos.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
+
