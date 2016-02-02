@@ -1,0 +1,251 @@
+<?php
+
+namespace Bixie\Devos\Model\Sender;
+
+
+use Bixie\Framework\Traits\CreatedModifiedTrait;
+use Bixie\Framework\Traits\DataTrait;
+use Bixie\Framework\Utils\Arr;
+
+class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
+
+	use CreatedModifiedTrait, DataTrait;
+
+	/**
+	 * @var integer
+	 */
+	protected $id = 0;
+	/**
+	 * @var integer
+	 */
+	protected $user_id = 0;
+	/**
+	 * @var string
+	 */
+	protected $sender_name_1 = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_name_2 = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_street = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_country = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_zip = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_city = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_logo = '';
+	/**
+	 * @var int
+	 */
+	protected $state = 1;
+
+	/**
+	 * @return int
+	 */
+	public function getId () {
+		return $this->id;
+	}
+
+	/**
+	 * @param int $id
+	 * @return Sender
+	 */
+	public function setId ($id) {
+		$this->id = $id;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getUserId () {
+		return $this->user_id;
+	}
+
+	/**
+	 * @param int $user_id
+	 * @return Sender
+	 */
+	public function setUserId ($user_id) {
+		$this->user_id = $user_id;
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getSenderName1 () {
+		return $this->sender_name_1;
+	}
+
+	/**
+	 * @param string $sender_name_1
+	 * @return Sender
+	 */
+	public function setSenderName1 ($sender_name_1) {
+		$this->sender_name_1 = $sender_name_1;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderName2 () {
+		return $this->sender_name_2;
+	}
+
+	/**
+	 * @param string $sender_name_2
+	 * @return Sender
+	 */
+	public function setSenderName2 ($sender_name_2) {
+		$this->sender_name_2 = $sender_name_2;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderStreet () {
+		return $this->sender_street;
+	}
+
+	/**
+	 * @param string $sender_street
+	 * @return Sender
+	 */
+	public function setSenderStreet ($sender_street) {
+		$this->sender_street = $sender_street;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderCountry () {
+		return $this->sender_country;
+	}
+
+	/**
+	 * @param string $sender_country
+	 * @return Sender
+	 */
+	public function setSenderCountry ($sender_country) {
+		$this->sender_country = $sender_country;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderZip () {
+		return $this->sender_zip;
+	}
+
+	/**
+	 * @param string $sender_zip
+	 * @return Sender
+	 */
+	public function setSenderZip ($sender_zip) {
+		$this->sender_zip = $sender_zip;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderCity () {
+		return $this->sender_city;
+	}
+
+	/**
+	 * @param string $sender_city
+	 * @return Sender
+	 */
+	public function setSenderCity ($sender_city) {
+		$this->sender_city = $sender_city;
+		return $this;
+	}
+	/**
+	 * @return string
+	 */
+	public function getSenderLogo () {
+		return $this->sender_logo;
+	}
+
+	/**
+	 * @param string $sender_logo
+	 * @return Sender
+	 */
+	public function setSenderLogo ($sender_logo) {
+		$this->sender_logo = $sender_logo;
+		return $this;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getState () {
+		return $this->state;
+	}
+
+	/**
+	 * @param int $state
+	 * @return Sender
+	 */
+	public function setState ($state) {
+		$this->state = $state;
+		return $this;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function toArray () {
+		return [
+			'id' => $this->id,
+			'user_id' => $this->user_id,
+			'sender_name_1' => $this->sender_name_1,
+			'sender_name_2' => $this->sender_name_2,
+			'sender_street' => $this->sender_street,
+			'sender_city' => $this->sender_city,
+			'sender_zip' => $this->sender_zip,
+			'sender_country' => $this->sender_country,
+			'sender_logo' => $this->sender_logo,
+			'data' => $this->getData(),
+			'state' => $this->state,
+			'created' => $this->created,
+			'created_by' => $this->created_by,
+			'modified' => $this->modified,
+			'modified_by' => $this->modified_by
+		];
+	}
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	function jsonSerialize () {
+		$data = $this->toArray();
+		return $data;
+	}
+}

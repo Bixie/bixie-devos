@@ -2,67 +2,34 @@
 
 namespace Bixie\Devos\Controller;
 
+use Bixie\Gls\GlsException;
 use YOOtheme\Framework\Routing\Controller;
 use YOOtheme\Framework\Routing\Exception\HttpException;
 
-class DashboardController extends Controller
-{
-    public function indexAction()
-    {
-        return $this['view']->render('views/dashboard.php');
-    }
+class DashboardController extends Controller {
 
-    public function queryContentAction()
-    {
-        $contents = new \ArrayObject;
+	public function indexAction () {
 
-        foreach ($this['content']->findAll() as $id => $content) {
+		\JToolBarHelper::title('De Vos diensten beheer', 'bix-devos');
 
-            if (isset($this['types'][$content->getType()])) {
-                $contents[$id] = $content->toArray();
-            }
-        }
+		if ($this['user']->hasPermission('manage_devos')) {
+			\JToolBarHelper::preferences('com_bix_devos');
+		}
 
-        return $this['response']->json($contents);
-    }
+		$shipment = $this['shipmentgls']->find(3);
+		$label = new \Bixie\Gls\Data\Label($shipment);
 
-    public function getContentAction($id)
-    {
-        if ($content = $this['content']->find($id)) {
-            return $this['response']->json($content->toArray());
-        }
+		$data = [
+			'label' => $label->getTemplateContents()
+		];
+		$this['scripts']->add('devos-data', sprintf('var $data = %s;', json_encode($data)), '', 'string');
 
-        throw new HttpException(404);
-    }
+		return $this['view']->render('views/admin/dashboard.php', $data);
+	}
 
-    public function saveContentAction($content)
-    {
-        $status = !isset($content['id']) || !$content['id'] ? 201 : 200;
-
-        if ($content = $this['content']->save($content)) {
-            return $this['response']->json($content, $status);
-        }
-
-        throw new HttpException(400);
-    }
-
-    public function deleteContentAction($id)
-    {
-        if ($this['content']->delete($id)) {
-            return $this['response']->json(null, 204);
-        }
-
-        throw new HttpException(400);
-    }
-
-    public static function getRoutes()
-    {
-        return array(
-            array('index', 'indexAction', 'GET', array('access' => 'manage_devos')),
-            array('/content', 'queryContentAction', 'GET', array('access' => 'manage_widgetkit')),
-            array('/content/:id', 'getContentAction', 'GET', array('access' => 'manage_widgetkit')),
-            array('/content(/:id)', 'saveContentAction', 'POST', array('access' => 'manage_widgetkit')),
-            array('/content/:id', 'deleteContentAction', 'DELETE', array('access' => 'manage_widgetkit'))
-        );
-    }
+	public static function getRoutes () {
+		return array(
+			array('index', 'indexAction', 'GET', array('access' => 'manage_devos'))
+		);
+	}
 }

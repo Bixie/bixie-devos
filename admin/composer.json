@@ -28,11 +28,16 @@
   ],
   "require": {
     "yootheme/framework": "1.1.*",
-    "jublonet/codebird-php": "2.7.0"
+    "jublonet/codebird-php": "2.7.0",
+    "clue/socket-raw": "^1.2",
+    "dompdf/dompdf": "0.7.x@beta",
+    "tecnickcom/tcpdf": "^6.2.12"
   },
   "autoload": {
     "psr-4": {
-      "Bixie\\Devos\\": "src"
+      "Bixie\\Devos\\": "src",
+      "Bixie\\Gls\\": "vendor/bixie/gls/src",
+      "Bixie\\Framework\\": "vendor/bixie/framework/src"
     }
   }
 }

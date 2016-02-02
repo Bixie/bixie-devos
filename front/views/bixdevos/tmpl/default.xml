@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Bixie De Vos Hoofdscherm" option="De Vos Hoofdscherm">
+		<message>
+			<![CDATA[De Vos Hoofdscherm]]>
+		</message>
+	</layout>
+	<fields name="request">
+		<fieldset name="request">
+		    <field name="p" type="text"
+				label="Page"
+				description="Pagina"
+				required="true"
+				default=""	/>
+		</fieldset>
+	</fields>
+	<fields name="params">
+		<fieldset name="basic" label="Bixie De Vos Beheer">
+		</fieldset>
+	</fields>
+</metadata>

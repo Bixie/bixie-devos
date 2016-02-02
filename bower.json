@@ -1,7 +1,14 @@
 {
   "name": "bixie-devos",
   "dependencies": {
-    "uikit": "master"
+    "lodash": "~3.10.0",
+    "vue": "~1.0.15",
+    "vue-form": "pagekit/vue-form#master",
+    "uikit": "#master",
+    "vue-resource": "#develop"
+  },
+  "devDependencies": {
+    "js-md5": "~1.1.0"
   },
   "private": true
 }

@@ -2,6 +2,9 @@
 
 namespace Bixie\Devos;
 
+use Bixie\Devos\Model\Sender\SenderProvider;
+use Bixie\Devos\Model\Shipment\ShipmentGlsProvider;
+use Bixie\Gls\Gls;
 use YOOtheme\Framework\Application as BaseApplication;
 use YOOtheme\Framework\Event\EventSubscriberInterface;
 
@@ -17,7 +20,8 @@ class Application extends BaseApplication implements EventSubscriberInterface
     {
         parent::__construct($values);
 
-//        $this['content']   = new ContentProvider($this);
+        $this['shipmentgls']   = new ShipmentGlsProvider($this);
+        $this['sender']   = new SenderProvider($this);
 
         $this->extend('locator', function ($locator, $app) {
             return $locator->addPath('', $app['path']);
@@ -27,7 +31,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 
             $app['plugins']->addPath($app['path'].'/plugins/*/*/plugin.php');
 
-        });
+		});
 
         $this['events']->subscribe($this);
     }
@@ -36,6 +40,10 @@ class Application extends BaseApplication implements EventSubscriberInterface
     {
         // controller
         $this['controllers']->add('Bixie\Devos\Controller\DashboardController');
+        $this['controllers']->add('Bixie\Devos\Controller\ShipmentController');
+        $this['controllers']->add('Bixie\Devos\Controller\SiteController');
+        $this['controllers']->add('Bixie\Devos\Controller\SiteApiController');
+
 
         // combine assets
         if (!$this['debug']) {
@@ -43,7 +51,25 @@ class Application extends BaseApplication implements EventSubscriberInterface
 //            $this['scripts']->combine('wk-scripts', 'widgetkit-*')->combine('uikit', 'uikit*')->combine('angular', 'angular*')->combine('application', 'application{,-translator,-templates}');
         }
 
-        // site event
+		//gls
+		$this['gls'] = new Gls($this);
+
+		$config = [
+			'csrf' =>  $this['csrf']->generate(),
+			'locale' => 'nl-NL',
+			'current' => \JUri::current(),
+			'url' => 'index.php'
+		];
+		$this['scripts']->add('devos-config', sprintf('var $config = %s;', json_encode($config)), '', 'string');
+
+		//todo minify options
+		$this['scripts']->register('vue', 'assets/js/vue.js');
+		$this['scripts']->register('uikit', 'vendor/assets/uikit/js/uikit.js');
+		$this['scripts']->register('uikit-tooltip', 'vendor/assets/uikit/js/components/tooltip.js', ['uikit']);
+		$this['scripts']->register('uikit-notify', 'vendor/assets/uikit/js/components/notify.js', ['uikit']);
+		$this['scripts']->register('uikit-upload', 'vendor/assets/uikit/js/components/upload.js', ['uikit']);
+
+		// site event
         if (!$this['admin']) {
             $this->trigger('init.site', array($this));
         }
@@ -52,15 +78,15 @@ class Application extends BaseApplication implements EventSubscriberInterface
     public function initSite()
     {
         // scripts
-//        $this['scripts']->register('uikit', 'vendor/assets/uikit/js/uikit.min.js');
+		$this['joomla']->set('uikit', true);
+		$this['scripts']->add('vue', 'assets/js/vue.js', ['uikit-tooltip', 'uikit-notify']);
     }
 
     public function initAdmin()
     {
-        // widgetkit
-//        $this['styles']->add('widgetkit-admin', 'assets/css/admin.css');
-//        $this['scripts']->add('widgetkit-fields', 'assets/js/fields.js', array('angular'));
-//        $this['scripts']->add('widgetkit-application', 'assets/js/application.js', array('uikit', 'uikit-notify', 'uikit-nestable', 'uikit-sortable', 'application-translator', 'angular-resource', 'widgetkit-fields'));
+		$this['styles']->add('devos-admin', 'assets/css/admin.css');
+
+        $this['scripts']->add('devos-admin-dashboard', 'assets/js/admin-dashboard.js', array('vue'));
     }
 
     public static function getSubscribedEvents()
