@@ -1,43 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-    <fieldset name="component"
-              label="COM_BIX_DEVOS_MENU"
-              description="">
-        <field name="menuDashboard" type="menuitem" default="0" label="Menuitem dashboard site"/>
-        <field name="apiEndpoint" type="text" default="/devos-api" label="Endpoint Api (maak menu item)"/>
-        <field type="spacer" label="&lt;b&gt;GLS Unibox&lt;/b&gt;"/>
-        <field name="gls_customer_number" type="text" default="12345678" label="GLS Klantnummer" size="10"/>
-        <field name="sap_number" type="text" default="12345678" label="SAP nummer" size="10"/>
-        <field name="glsserver" type="text" default="unibox.gls-netherlands.com" label="GLS Server" size="10"/>
-        <field name="glsport_live" type="text" default="3033" label="GLS port live" description="" size="10"/>
-        <field name="glsport_test" type="text" default="3032" label="GLS port test" description="" size="10"/>
-        <field name="gls_test" type="radio" class="btn-group btn-group-yesno"
-               label="Testmodus" default="1">
-            <option value="1">Ja</option>
-            <option value="0">Nee</option>
-        </field>
-    </fieldset>
-    <fieldset name="sender_address"
-              description="Voer de gegevens voor de standaard afzender in."
-              label="Standaard afzender"
-    >
-        <fields name="sender_address">
-
-            <field name="sender_name_1" type="text" default="" required="true"
-                   label="Naamregel 1" size="30"/>
-            <field name="sender_name_2" type="text" default=""
-                   label="Naamregel 2" size="30"/>
-            <field name="sender_street" type="text" default="" required="true"
-                   label="Adres" size="30"/>
-            <field name="sender_zip" type="text" default="" required="true"
-                   label="Postcode" size="30"/>
-            <field name="sender_city" type="text" default="" required="true"
-                   label="Plaats" size="30"/>
-            <field name="sender_country" type="text" default="" required="true"
-                   label="Land" size="30"/>
-
-        </fields>
-    </fieldset>
     <fieldset name="permissions"
               description="JCONFIG_PERMISSIONS_DESC"
               label="JCONFIG_PERMISSIONS_LABEL"

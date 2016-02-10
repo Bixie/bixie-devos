@@ -17,6 +17,8 @@ class Gls extends ApplicationAware {
 	 */
 	protected $socket;
 
+	protected $glsTracking;
+
 	public function __construct (Application $app) {
 		$this->app = $app;
 		$this->socket = new Socket(
@@ -25,6 +27,12 @@ class Gls extends ApplicationAware {
 		);
 	}
 
+	public function getGlsTracking () {
+		if (!isset($this->glsTracking)) {
+			$this->glsTracking = new GlsTracking($this->app['config']['gls_tracking']);
+		}
+		return $this->glsTracking;
+	}
 
 	public function createShipment (ShipmentGls $shipment) {
 
@@ -32,13 +40,19 @@ class Gls extends ApplicationAware {
 			$broadcast = Broadcast::create(array_merge($shipment->toArray(), $shipment->getData()));
 			$broadcast['software_version'] = 'V ' . $this->app['version'];
 
-			$broadcast['gls_customer_number'] = $this->app['config']['gls_customer_number'];
+			$broadcast['gls_customer_number'] = $shipment->getGlsCustomerNumber();
 			$broadcast['sap_number'] = $this->app['config']['sap_number'];
 			$broadcast['mode'] = 'NOPRINT';
 //			$broadcast['printer_template'] = 'zebrazpl'; //Datamax,zebrazpl
+
 			//parcel nummer bepalen
-			$shipment->setParcelNumber(($this->app['shipmentgls']->lastParcelNumber() + 1));
-			$broadcast['domestic_parcel_number_nl'] = $broadcast->getGlsParcelNumber($shipment->getParcelNumber());
+			$shipment->setParcelNumber(($this->app['shipmentgls']->lastParcelNumber($shipment->getGlsCustomerNumber()) + 1));
+			$broadcast['domestic_parcel_number_nl'] = $broadcast->getDomesticParcelNumber($shipment->getParcelNumber());
+			$this->app['shipmentgls']->save([
+				'id' => $shipment->getId(),
+				'domestic_parcel_number_nl' => $broadcast['domestic_parcel_number_nl'],
+				'parcel_number' => $shipment->getParcelNumber()
+			]);
 
 			$broadcast->validate();
 
@@ -47,7 +61,6 @@ class Gls extends ApplicationAware {
 			$tagData = $broadcast->parseIncomingStream($result);
 
 			$shipment->setGlsStream(json_encode($tagData, true));
-
 			$shipment->mergeData($tagData);
 
 			return $broadcast;
@@ -68,5 +81,10 @@ class Gls extends ApplicationAware {
 
 	}
 
+	public function getTrackTrace (ShipmentGls $shipment) {
+
+		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getGlsParcelNumber());
+
+	}
 
 }

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build-css": "lessc admin/assets/less/admin.less > admin/assets/css/admin.css -x && lessc admin/assets/less/site.less > admin/assets/css/site.css -x"
+    "build-css": "lessc admin/assets/less/admin.less > admin/assets/css/admin.css -x"
   },
   "devDependencies": {
     "gulp-util": "~2.2.9",

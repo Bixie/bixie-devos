@@ -91,13 +91,18 @@ class SenderProvider extends ApplicationAware {
 	}
 
 	/**
-	 * @return int
+	 * @param int $id
+	 * @param int $user_id
+	 * @return bool
 	 */
-	public function lastParcelNumber () {
-		$query = Query::query('@dv_shipment_gls', 'parcel_number');
-		$query->order('parcel_number DESC');
-		$result = $this['db']->fetchAssoc((string) $query, $query->getParams());
-		return (int) $result['parcel_number'];
+	public function setDefault ($id, $user_id) {
+
+		$query = "UPDATE {$this->table} SET def = 0 WHERE user_id = :user_id";
+		if ($result = $this['db']->executeQuery($query, ['user_id' => $user_id])) {
+
+			return $this['db']->update($this->table, ['def' => 1], ['id' => $id]);
+		}
+		return false;
 	}
 
 	/**

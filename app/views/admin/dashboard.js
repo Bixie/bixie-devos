@@ -62,7 +62,7 @@ window.Dashboard = module.exports = {
 
     },
     components: {
-        //'gls-shipment': require('../../components/ui/gls-shipment.vue')
+        'dv-settings': require('../../components/ui/settings.vue')
     }
 
 };

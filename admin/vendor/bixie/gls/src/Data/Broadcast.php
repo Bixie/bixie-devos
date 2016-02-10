@@ -128,7 +128,7 @@ class Broadcast implements \ArrayAccess {
 	 * @param $parcel_number
 	 * @return int
 	 */
-	public function getGlsParcelNumber ($parcel_number) {
+	public function getDomesticParcelNumber ($parcel_number) {
 		$numberBase = $this['gls_customer_number'] . sprintf("%05d", ($parcel_number));
 		return (int) $this->addControlNumber($numberBase);
 	}
@@ -150,7 +150,7 @@ class Broadcast implements \ArrayAccess {
 		}
 		$diff = (int)(ceil($sum/10)*10)-($sum+1);
 		if($diff == 10){
-			return 0;
+			return $numberBase.'0';
 		}
 		return $numberBase.$diff;
 

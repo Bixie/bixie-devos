@@ -1,4 +1,5 @@
 <template>
+<div>
 
     <div v-if="error" class="uk-alert uk-alert-danger">{{ error }}</div>
 
@@ -9,7 +10,7 @@
             </div>
         </div>
         <div>
-            <button class="uk-button" @click="editSender(0)"><i v-spinner="editloading" icon="plus"></i>Nieuwe afzender</button>
+            <button class="uk-button" @click="editSender(0)"><i class="uk-icon-plus uk-margin-small-right"></i>Nieuwe afzender</button>
         </div>
     </div>
 
@@ -17,7 +18,7 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Status</th>
+            <th></th>
             <th>Naam</th>
             <th>Adres</th>
             <th>Postcode</th>
@@ -30,10 +31,14 @@
         <tr v-for="sender in senders | filterBy search | count">
             <td class="uk-text-center">{{ sender.id }}</td>
             <td class="uk-text-center">
-                <i class="uk-icon-circle" :class="{
+                <a :title="getStateName(sender.state)" class="uk-icon-circle uk-margin-small-right" :class="{
                     'uk-text-danger': sender.state == 0,
                     'uk-text-success': sender.state == 1
-                }"></i>
+                }" @click="toggleState(sender)" data-uk-tooltip="{delay: 200}"></a>
+                <a :title="sender.def == 1 ? 'Standaard afzender' : ''" v-spinner="settingdefault" icon="star" :class="{
+                    'uk-text-primary': sender.def == 1,
+                    'uk-text-muted': sender.def == 0
+                }" @click="setDefault(sender)" data-uk-tooltip="{delay: 200}"></a>
             </td>
             <td>
                 <strong>{{ sender.sender_name_1 }}</strong>
@@ -83,28 +88,28 @@
 
         </form>
     </v-modal>
-
+</div>
 </template>
 
 <script>
 
     module.exports = {
 
-        props: ['config'],
+        props: ['config', 'data'],
 
         data: function () {
             return {
                 error: false,
                 deleting: {},
                 saving: {},
+                settingdefault: false,
                 editloading: false,
                 sender: {
                     id: 0,
-                    data: {
-                        key: 'value'
-                    }
+                    data: {}
                 },
                 senders: false,
+                search: '',
                 count: 0
             }
         },
@@ -122,15 +127,15 @@
 
         methods: {
             load: function (page) {
-                this.$http.get('/api/sender').then(function (res) {
-                    if (res.data.senders !== undefined) {
-                        this.$set('senders', res.data.senders);
-                    }
+                this.$set('error', '');
+                this.$http.get('/api/sender', {inactive: 1}).then(function (res) {
+                    this.$set('senders', res.data.senders);
                 }, function (res) {
-                    console.warn(res.data);
+                    this.$set('error', res.data.message || res.data);
                 });
             },
             saveSender: function () {
+                this.$set('error', '');
                 Vue.set(this.saving, this.sender.id, true);
                 this.$http.post('/api/sender/save', {
                     data: this.sender
@@ -142,37 +147,65 @@
                     this.saving = {};
                 }, function (res) {
                     this.saving = {};
-                    console.warn(res.data);
+                    this.$set('error', res.data.message || res.data);
                 });
             },
             editSender: function (id) {
                 var sender = _.find(this.senders, 'id', id);
+                this.$set('error', '');
                 if (!sender) {
-                    this.editloading = true;
-                    this.$http.get('/api/sender/' + id).then(function (res) {
-                        if (res.data.id !== undefined) {
-                            this.$set('sender', res.data);
-                            this.$refs.editsendermodal.open();
-                        }
-                        this.editloading = false;
-                    }, function (res) {
-                        this.editloading = false;
-                        console.warn(res.data);
+                    this.$set('sender', {
+                        user_id: this.config.user.id,
+                        sender_country: 'NL',
+                        state: 1,
+                        def: 0,
+                        data: {}
                     });
                 } else {
                     this.$set('sender', sender);
-                    this.$refs.editsendermodal.open();
                 }
+                this.$refs.editsendermodal.open();
             },
             deleteSender: function (id) {
+                this.$set('error', '');
                 Vue.set(this.deleting, id, true);
                 this.$http.delete('/api/sender/' + id).then(function () {
                     Vue.delete(this.senders, id);
                     this.deleting = {};
                 }, function (res) {
                     this.deleting = {};
-                    console.warn(res.data);
+                    this.$set('error', res.data.message || res.data);
                 });
+            },
+            getStateName: function (state) {
+                return this.data.sender_states[state];
+            },
+            setDefault: function (sender) {
+                this.$set('error', '');
+                if (Number(sender.state) == 0) {
+                    this.$set('error', 'Standaard afzender moet gepubliceerd zijn');
+                    return;
+                }
+                this.settingdefault = true;
+                this.$http.post('/api/sender/setdefault', {
+                    id: sender.id
+                }).then(function (res) {
+                    this.$set('senders', res.data.senders);
+                    this.settingdefault = false;
+                }, function (res) {
+                    this.settingdefault = false;
+                    this.$set('error', res.data.message || res.data);
+                });
+            },
+            toggleState: function (sender) {
+                this.$set('error', '');
+                if (Number(sender.def) === 1 && Number(sender.state) === 1) {
+                    this.$set('error', 'Standaard afzender moet gepubliceerd zijn');
+                    return;
+                }
+                sender.state = Number(sender.state) === 1 ? 0 : 1;
+                this.sender = sender;
+                this.saveSender();
             }
 
         },

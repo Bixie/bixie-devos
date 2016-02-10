@@ -40,28 +40,52 @@ class ShipmentGlsProvider extends ApplicationAware {
 		return $this['db']->fetchObject("SELECT * FROM {$this->table} WHERE id = :id", compact('id'), $this->class);
 	}
 
+	/**
+	 * Gets the shipment object by domestic_parcel_number_nl.
+	 * @param  int $domestic_parcel_number_nl
+	 * @return bool|ShipmentGls
+	 */
+	public function findDomesticParcelNumberNl ($domestic_parcel_number_nl) {
+		return $this['db']->fetchObject(
+			"SELECT * FROM {$this->table} WHERE domestic_parcel_number_nl = :domestic_parcel_number_nl",
+			compact('domestic_parcel_number_nl'),
+			$this->class
+		);
+	}
 
 	/**
 	 * Gets all product objects.
-	 * @param string $statement
-	 * @param array  $params
+	 * @param Query $query
 	 * @param int    $start
 	 * @param int    $limit
 	 * @return array
 	 */
-	public function query ($statement, $params = [], $start = 0, $limit = 0) {
+	public function query (Query $query, $start = 0, $limit = 0) {
 		$objects = [];
 
 		if ($start || $limit) {
-			$statement .= sprintf(' LIMIT %d, %d', $start, $limit);
+			$query->setLimit($start, $limit);
 		}
 
 		/** @var ShipmentGls $object */
-		foreach ($this['db']->fetchAllObjects($statement, $params, $this->class) as $object) {
+		foreach ($this['db']->fetchAllObjects((string) $query, $query->getParams(), $this->class) as $object) {
 			$objects[$object->getId()] = $object;
 		}
 
 		return $objects;
+	}
+
+	/**
+	 * Gets all product objects.
+	 * @param Query $query
+	 * @return int
+	 */
+	public function count (Query $query) {
+		$q = clone $query;
+		$q->clear('order')->clear('select')->select('COUNT(*) AS cnt');
+		$res = $this['db']->fetchAssoc((string) $q, $q->getParams());
+
+		return (int) $res['cnt'];
 	}
 
 	/**
@@ -71,7 +95,13 @@ class ShipmentGlsProvider extends ApplicationAware {
 	 */
 	public function save ($data) {
 		$store = $data;
-		$store['data'] = isset($store['data']) ? json_encode($store['data'], true): '[]';
+		if (isset($store['data'])) {
+			$store['data'] = !empty($store['data']) ? json_encode($store['data'], true) : '[]';
+		}
+		if (!isset($store['pdf_path'])) {
+			$store['pdf_path'] = '';
+		}
+		unset($store['pdf_url']);
 		foreach (['date_of_shipping', 'created', 'modified'] as $dateField) {
 			if (isset($store[$dateField]) && $store[$dateField] instanceof \DateTime) {
 				$store[$dateField] = $store[$dateField]->format('Y-m-d H:i:s');
@@ -93,9 +123,11 @@ class ShipmentGlsProvider extends ApplicationAware {
 	/**
 	 * @return int
 	 */
-	public function lastParcelNumber () {
-		$query = Query::query('@dv_shipment_gls', 'parcel_number');
-		$query->order('parcel_number DESC');
+	public function lastParcelNumber ($gls_customer_number) {
+		$query = Query::query('@dv_shipment_gls', 'parcel_number')
+			->where('gls_customer_number = :gls_customer_number', compact('gls_customer_number'))
+			->orderBy('parcel_number', 'DESC')
+			->setLimit(0, 1);
 		$result = $this['db']->fetchAssoc((string) $query, $query->getParams());
 		return (int) $result['parcel_number'];
 	}

@@ -11,6 +11,8 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 
 	use CreatedModifiedTrait, DataTrait;
 
+	const SENDER_STATE_INACTIVE = 0;
+	const SENDER_STATE_ACTIVE = 1;
 	/**
 	 * @var integer
 	 */
@@ -51,6 +53,17 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 	 * @var int
 	 */
 	protected $state = 1;
+	/**
+	 * @var int
+	 */
+	protected $def = 0;
+
+	public static function getStates () {
+		return [
+			self::SENDER_STATE_INACTIVE => 'Inactief',
+			self::SENDER_STATE_ACTIVE => 'Actief'
+		];
+	}
 
 	/**
 	 * @return int
@@ -213,6 +226,22 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 		return $this;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getDef () {
+		return $this->def;
+	}
+
+	/**
+	 * @param int $def
+	 * @return Sender
+	 */
+	public function setDef ($def) {
+		$this->def = $def;
+		return $this;
+	}
+
 
 	/**
 	 * {@inheritdoc}
@@ -230,6 +259,7 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 			'sender_logo' => $this->sender_logo,
 			'data' => $this->getData(),
 			'state' => $this->state,
+			'def' => $this->def,
 			'created' => $this->created,
 			'created_by' => $this->created_by,
 			'modified' => $this->modified,

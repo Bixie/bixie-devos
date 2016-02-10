@@ -22,6 +22,18 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @var integer
 	 */
+	protected $sender_id = 0;
+	/**
+	 * @var string
+	 */
+	protected $klantnummer = '';
+	/**
+	 * @var string
+	 */
+	protected $gls_customer_number = '';
+	/**
+	 * @var integer
+	 */
 	protected $parcel_number = 0;
 	/**
 	 * @var string
@@ -32,7 +44,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 */
 	protected $receiver_zip_code = '';
 	/**
-	 * @var int
+	 * @var string
 	 */
 	protected $gls_parcel_number = 0;
 	/**
@@ -114,11 +126,11 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @var int
 	 */
-	protected $parcel_sequence = 0;
+	protected $parcel_sequence = 1;
 	/**
 	 * @var int
 	 */
-	protected $parcel_quantity = 0;
+	protected $parcel_quantity = 1;
 	/**
 	 * @var string
 	 */
@@ -161,9 +173,59 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 
 	/**
 	 * @param int $parcel_number
+	 * @return ShipmentGls
 	 */
 	public function setParcelNumber ($parcel_number) {
 		$this->parcel_number = $parcel_number;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getSenderId () {
+		return $this->sender_id;
+	}
+
+	/**
+	 * @param int $sender_id
+	 * @return ShipmentGls
+	 */
+	public function setSenderId ($sender_id) {
+		$this->sender_id = $sender_id;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getKlantnummer () {
+		return $this->klantnummer;
+	}
+
+	/**
+	 * @param string $klantnummer
+	 * @return ShipmentGls
+	 */
+	public function setKlantnummer ($klantnummer) {
+		$this->klantnummer = $klantnummer;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGlsCustomerNumber () {
+		return $this->gls_customer_number;
+	}
+
+	/**
+	 * @param string $gls_customer_number
+	 * @return ShipmentGls
+	 */
+	public function setGlsCustomerNumber ($gls_customer_number) {
+		$this->gls_customer_number = $gls_customer_number;
+		return $this;
 	}
 
 	/**
@@ -617,6 +679,13 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return $this;
 	}
 
+	public function getPdfUrl () {
+		if (!empty($this->pdf_path)) {
+			return \JUri::root() . ltrim(\JRoute::_('index.php?option=com_bix_devos&p=/api/shipment/pdf/' . $this->domestic_parcel_number_nl), '/');
+		}
+		return '';
+	}
+
 	/**
 	 * @param $pdfPath
 	 * @param $pdfString
@@ -641,6 +710,9 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	public function toArray () {
 		return [
 			'id' => $this->id,
+			'sender_id' => $this->sender_id,
+			'klantnummer' => $this->klantnummer,
+			'gls_customer_number' => $this->gls_customer_number,
 			'parcel_number' => $this->parcel_number,
 			'product_short_description' => $this->product_short_description,
 			'receiver_zip_code' => $this->receiver_zip_code,
@@ -706,6 +778,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	function jsonSerialize () {
 		$data = $this->toArray();
 		unset($data['gls_stream']);
+		$data['pdf_url'] = $this->getPdfUrl();
 		return $data;
 	}
 }

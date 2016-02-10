@@ -2,7 +2,7 @@
 
     <h1>Afzenders</h1>
 
-    <devos-senders :config="config"></devos-senders>
+    <devos-senders :config="config" :data="data"></devos-senders>
 
 </template>
 

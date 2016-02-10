@@ -27,9 +27,20 @@ class DashboardController extends Controller {
 		return $this['view']->render('views/admin/dashboard.php', $data);
 	}
 
+	public function getSettingsAction () {
+		return $this['response']->json($this['config.fetch']);
+	}
+
+	public function saveSettingsAction ($data) {
+		$this['config']->add($data);
+		return $this['response']->json($this['config.save']->toArray());
+	}
+
 	public static function getRoutes () {
 		return array(
-			array('index', 'indexAction', 'GET', array('access' => 'manage_devos'))
+			array('index', 'indexAction', 'GET', array('access' => 'manage_devos')),
+			array('/api/config', 'getSettingsAction', 'GET', array('access' => 'manage_devos')),
+			array('/api/config', 'saveSettingsAction', 'POST', array('access' => 'manage_devos')),
 		);
 	}
 }

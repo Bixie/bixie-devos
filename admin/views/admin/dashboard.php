@@ -13,7 +13,7 @@ $app['scripts']->add('devos-admin-dashboard', 'assets/js/admin-dashboard.js', ar
 
 		</div>
 		<div class="uk-width-medium-4-5">
-
+				<dv-settings :config="config" :data="data"></dv-settings>
 
 		</div>
 	</div>

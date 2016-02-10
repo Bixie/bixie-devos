@@ -39,7 +39,8 @@ trait DataTrait {
 	 * @return bool
 	 */
 	public function offsetExists ($key) {
-		return Arr::has($this->getData(), $key);
+		$this->getData();
+		return Arr::has($this->data, $key);
 	}
 
 	/**
@@ -48,7 +49,8 @@ trait DataTrait {
 	 * @return mixed
 	 */
 	public function offsetGet ($key) {
-		return Arr::get($this->getData(), $key);
+		$this->getData();
+		return Arr::get($this->data, $key);
 	}
 
 	/**
@@ -57,7 +59,8 @@ trait DataTrait {
 	 * @param string $value
 	 */
 	public function offsetSet ($key, $value) {
-		Arr::set($this->getData(), $key, $value);
+		$this->getData();
+		Arr::set($this->data, $key, $value);
 	}
 
 	/**
@@ -65,7 +68,8 @@ trait DataTrait {
 	 * @param string $key
 	 */
 	public function offsetUnset ($key) {
-		Arr::remove($this->getData(), $key);
+		$this->getData();
+		Arr::remove($this->data, $key);
 	}
 
 

@@ -1,7 +1,6 @@
 <?php
 
 use Bixie\Devos\Application;
-use YOOtheme\Framework\Joomla\Option;
 
 global $bix_devos;
 
@@ -21,15 +20,13 @@ $app['permissions'] = [
 	'devos.client' => 'client_devos',
 	'core.manage' => 'manage_devos'
 ];
-$app['option'] = function ($app) {
-    return new Option($app['db'], 'com_bix_devos');
-};
 $app['template']   = function () {
 	$db = JFactory::getDbo();
 	$db->setQuery( 'SELECT id,template FROM #__template_styles WHERE client_id=0 AND home=1');
 	$template = $db->loadObject()->template;
 	return file_exists($path = rtrim(JPATH_ROOT, '/')."/templates/".$template."/warp.php") ? $path : false;
 };
+
 $app->on('init', function ($event, $app) {
     
     $controller = JFactory::getApplication()->input->get('controller');
@@ -44,7 +41,8 @@ $app->on('init', function ($event, $app) {
     }
 
     if ($app['request']->get('option') != 'com_installer') {
-        $app['config']->add(JComponentHelper::getParams($app['component'])->toArray());
+
+        $app['config']->add($app['config.fetch']);
     }
 });
 

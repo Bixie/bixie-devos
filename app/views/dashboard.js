@@ -27,7 +27,7 @@ window.Dashboard = module.exports = {
     methods: {
         checkView: function () {
             var hash = location.hash.replace('#', '');
-            if (hash !== this.currentView) {
+            if (hash && hash !== this.currentView) {
                 this.setView(hash);
             }
         },
@@ -43,6 +43,7 @@ window.Dashboard = module.exports = {
 
     components: {
         'dashboard': require('../components/pages/dashboard.vue'),
+        'verzendingen': require('../components/pages/verzendingen.vue'),
         'afzenders': require('../components/pages/afzenders.vue')
     }
 

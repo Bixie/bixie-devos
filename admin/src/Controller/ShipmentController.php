@@ -124,13 +124,13 @@ class ShipmentController extends Controller {
 
 	public static function getRoutes () {
 		return array(
-			array('/shipments', 'shipmentsAction', 'GET', array('access' => 'manage_devos')),
-			array('/shipmentgls', 'indexGlsAction', 'GET', array('access' => 'manage_devos')),
-			array('/shipmentgls/:id', 'getShipmentGlsAction', 'GET', array('access' => 'manage_devos')),
-			array('/shipmentgls/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'manage_devos')),
-			array('/shipmentgls/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'manage_devos')),
-			array('/shipmentgls/save', 'saveShipmentGlsAction', 'POST', array('access' => 'manage_devos')),
-			array('/shipmentgls/:id', 'deleteContentAction', 'DELETE', array('access' => 'manage_devos'))
+			array('/shipments', 'shipmentsAction', 'GET', array('access' => 'client_devos')),
+			array('/shipmentgls', 'indexGlsAction', 'GET', array('access' => 'client_devos')),
+			array('/shipmentgls/:id', 'getShipmentGlsAction', 'GET', array('access' => 'client_devos')),
+			array('/shipmentgls/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/shipmentgls/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/shipmentgls/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/shipmentgls/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos'))
 		);
 	}
 }

@@ -6,7 +6,7 @@ namespace Bixie\Framework\Utils;
 
 class Query {
 	/**
-	 * @var \JDatabaseQuery
+	 * @var \JDatabaseQueryMysqli
 	 */
 	protected $query;
 	/**
@@ -25,6 +25,11 @@ class Query {
 	public function __construct ($query) {
 		$this->query = $query;
 	}
+
+	function __clone () {
+		$this->query = clone $this->query;
+	}
+
 
 	/**
 	 * @return string
@@ -45,6 +50,14 @@ class Query {
 		return (new Query(static::$db->getQuery(true)->from($table)->select($select)));
 	}
 
+	/**
+	 * @param null $clause
+	 * @return $this
+	 */
+	public function clear ($clause = null) {
+		$this->query->clear($clause);
+		return $this;
+	}
 	/**
 	 * @param string  $select
 	 * @param array  $params
@@ -93,11 +106,12 @@ class Query {
 	}
 
 	/**
-	 * @param $columns
+	 * @param        $column
+	 * @param string $dir
 	 * @return $this
 	 */
-	public function order ($columns) {
-		$this->query->order($columns);
+	public function orderBy ($column, $dir = 'ASC') {
+		$this->query->order($column . ' ' . $dir);
 		return $this;
 	}
 
@@ -110,6 +124,10 @@ class Query {
 		return $this;
 	}
 
+	public function setLimit ($offset = 0, $limit = 0) {
+		$this->query->setLimit($limit, $offset); //why Joomla, why
+		return $this;
+	}
 	/**
 	 * @param array $params
 	 * @return $this
