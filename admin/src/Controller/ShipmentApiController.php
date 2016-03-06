@@ -42,19 +42,20 @@ class ShipmentApiController extends Controller {
 			throw new HttpException(403, 'Geen klantnummer bekend');
 		}
 
+		$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']]);
+
 		$order_col = in_array($order, [
 				'gls_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'
 			]) ? $order : 'created';
 		$dir = $dir ?: 'DESC';
+
+		$query->orderBy($order_col, $dir);
 
 		$limit = (int)$limit ?: 10;
 		$return['total'] = $this['shipmentgls']->count($query);
 		$return['pages'] = ceil($return['total'] / $limit);
 		$return['page'] = max(0, min($return['pages'] - 1, $page));
 		$start = $return['page'] * $limit;
-
-		$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']])
-			->orderBy($order_col, $dir);
 
 		$return['shipments'] = $this['shipmentgls']->query($query, $start, $limit);
 
