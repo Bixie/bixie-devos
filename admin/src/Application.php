@@ -8,7 +8,7 @@ use Bixie\Devos\Config\Settings;
 use Bixie\Framework\Routing\ResponseListener;
 use Bixie\Framework\Routing\ResponseProvider;
 use Bixie\Framework\User\User;
-use Bixie\Framework\User\UserProvider;
+use Bixie\Devos\User\UserProvider;
 use Bixie\Gls\Gls;
 use YOOtheme\Framework\Application as BaseApplication;
 use YOOtheme\Framework\Event\EventSubscriberInterface;
@@ -56,7 +56,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 
 		});
 
-        $this['events']->subscribe($this);
+		$this['events']->subscribe($this);
         $this['events']->subscribe(new ResponseListener);
     }
 
@@ -80,7 +80,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		$this['gls'] = new Gls($this);
 		//override userprovider
 		$this['users'] = function ($app) {
-			return new UserProvider($app['component'], isset($app['permissions']) ? $app['permissions'] : array());
+			return new UserProvider($app, $app['component'], isset($app['permissions']) ? $app['permissions'] : array());
 		};
 
 		/** @var User $user */
