@@ -81,6 +81,14 @@ class Gls extends ApplicationAware {
 
 	}
 
+	public function htmlLabel (ShipmentGls $shipment) {
+
+		$label = new Label($shipment);
+
+		return $label->getTemplateContents();
+
+	}
+
 	public function getTrackTrace (ShipmentGls $shipment) {
 
 		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getGlsParcelNumber());
