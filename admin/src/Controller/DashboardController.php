@@ -16,12 +16,11 @@ class DashboardController extends Controller {
 			\JToolBarHelper::preferences('com_bix_devos');
 		}
 
-		$shipment = $this['shipmentgls']->find(3);
-		$label = new \Bixie\Gls\Data\Label($shipment);
-
 		$data = [
-			'label' => $label->getTemplateContents()
+			'label' => ''
 		];
+
+
 		$this['scripts']->add('devos-data', sprintf('var $data = %s;', json_encode($data)), '', 'string');
 
 		return $this['view']->render('views/admin/dashboard.php', $data);
