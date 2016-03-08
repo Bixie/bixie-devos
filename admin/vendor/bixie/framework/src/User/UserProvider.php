@@ -2,6 +2,8 @@
 
 namespace Bixie\Framework\User;
 
+use YOOtheme\Framework\Application;
+use Bixie\Framework\Utils\Query;
 use YOOtheme\Framework\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
@@ -17,16 +19,23 @@ class UserProvider implements UserProviderInterface
     protected $permissions;
 
     /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
      * Constructor.
      *
+     * @param Application $app
      * @param string   $asset
      * @param string[] $permissions
      */
-    public function __construct($asset, $permissions = array())
+    public function __construct(Application $app, $asset, $permissions = array())
     {
         $this->asset       = $asset;
         $this->permissions = $permissions;
-    }
+		$this->app = $app;
+	}
 
     /**
      * {@inheritdoc}
@@ -55,22 +64,63 @@ class UserProvider implements UserProviderInterface
     {
         if (in_array($field, array('id', 'username')) && $user = \JFactory::getUser($value)) {
 
-            $permissions = array();
+			return $this->loadUser($user);
 
-            foreach($this->permissions as $jpermission => $permission) {
-                if ($user->authorise($jpermission, $this->asset)) {
-                    $permissions[] = $permission;
-                }
-            }
-
-			return new User([
-				'id' => $user->id,
-				'username' => $user->username,
-				'name' => $user->name,
-				'email' => $user->email,
-				'data' => $user->id ? \JUserHelper::getProfile($user->id)->profile : [],
-				'permissions' => $permissions
-			]);
         }
+		return false;
     }
+
+    /**
+     * Loads a user.
+     *
+     * @param  string $field
+     * @param  string $value
+     * @return \YOOtheme\Framework\User\UserInterface
+     */
+    protected function loadUserByProfile($field, $value)
+    {
+
+		$query = Query::query('@users AS u', 'id')->where('u.block = :block', ['block' => 0]);
+
+		$query->join('@user_profiles AS upf ON upf.user_id = u.id AND upf.profile_key = :field', ['field' => 'profile.' . $field])
+			->where('upf.profile_value = :value', ['value' => json_encode($value)]);
+
+		$result = $this->app['db']->fetchAssoc((string) $query, $query->getParams());
+
+		if (!empty($result['id']) && $user = \JFactory::getUser($result['id'])) {
+
+			return $this->loadUser($user);
+
+        }
+		return false;
+    }
+
+	/**
+	 * Loads a user.
+	 *
+	 * @param \JUser $user
+	 * @return \YOOtheme\Framework\User\UserInterface
+	 */
+	protected function loadUser(\JUser $user)
+	{
+
+		$permissions = array();
+
+		foreach($this->permissions as $jpermission => $permission) {
+			if ($user->authorise($jpermission, $this->asset)) {
+				$permissions[] = $permission;
+			}
+		}
+
+		return new User([
+			'id' => $user->id,
+			'username' => $user->username,
+			'name' => $user->name,
+			'email' => $user->email,
+			'data' => $user->id ? \JUserHelper::getProfile($user->id)->profile : [],
+			'permissions' => $permissions
+		]);
+
+	}
+
 }
