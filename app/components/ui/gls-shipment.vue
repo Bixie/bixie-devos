@@ -202,7 +202,7 @@
                             <label class="uk-form-label" for="form-parcel_weight">Gewicht pakket *</label>
                             <div class="uk-form-controls">
                                 <input v-model="shipment.parcel_weight" id="form-parcel_weight" type="number"
-                                       class="uk-form-width-medium uk-text-right" min="0" step="0.1" required="" number>
+                                       class="uk-form-width-medium uk-text-right" min="0.01" step="0.01" required="" number>
                             </div>
                         </div>
                         <div class="uk-text-center">
@@ -504,9 +504,13 @@
                     Vue.set(this.editloading, id, true);
                     this.$http.get('/api/sender').then(function (res) {
                         var def = _.find(res.data.senders, 'def', 1) || _.find(res.data.senders, 'state', 1);
-                        this.$set('senders', res.data.senders);
-                        this.$set('shipment.sender_id', def.id);
-                        this.$refs.editshipmentmodal.open();
+                        if (def.id) {
+                            this.$set('senders', res.data.senders);
+                            this.$set('shipment.sender_id', def.id);
+                            this.$refs.editshipmentmodal.open();
+                        } else {
+                            this.$set('error', 'Geen afzender gevonden');
+                        }
                         this.editloading = {};
                     }, function (res) {
                         this.editloading = {};
@@ -600,7 +604,7 @@
             'customer_reference': {
                 type: 'text',
                 label: 'Klantreferentie *',
-                attrs: {'name': 'referentie', 'class': 'uk-width-1-1', 'required': true}
+                attrs: {'name': 'referentie', 'class': 'uk-width-1-1', maxLength: 10, 'required': true}
             },
             'receiver_name_2': {
                 type: 'text',
