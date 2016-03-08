@@ -185,7 +185,28 @@ class ShipmentApiController extends Controller {
 
 	}
 
-	public function pdfShipmentGlsAction ($domestic_parcel_number_nl) {
+	public function labelHtmlShipmentGlsAction ($domestic_parcel_number_nl) {
+
+		/** @var ShipmentGls $shipment */
+		if (!$shipment = $this['shipmentgls']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
+			throw new HttpException(404, sprintf('Verzending nr %d niet gevonden.', $domestic_parcel_number_nl));
+		}
+
+		/** @var User $user */
+		$user = $this['users']->get();
+		if (!$user->hasPermission('manage_devos') && $shipment->getKlantnummer() != $user['klantnummer']) {
+			throw new HttpException(403, 'Geen rechten om deze verzending te bekijken');
+		}
+
+		if (!$html = $this['gls']->htmlLabel($shipment)) {
+			throw new HttpException(400, sprintf('Fout in HTML verzending %d.', $domestic_parcel_number_nl));
+		}
+
+		return $html;
+
+	}
+
+	public function pdfShipmentGlsAction ($domestic_parcel_number_nl, $string = false) {
 
 		/** @var ShipmentGls $shipment */
 		if (!$shipment = $this['shipmentgls']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
@@ -202,7 +223,7 @@ class ShipmentApiController extends Controller {
 			throw new HttpException(400, sprintf('Verzending nr %d heeft geen gekoppeld PDF bestand.', $domestic_parcel_number_nl));
 		}
 
-		return $this['response']->file($file, 200, [], false, 'attachment');
+		return $this['response']->file($file, 200, [], false, $string ? 'inline' :'attachment');
 
 	}
 
@@ -213,6 +234,7 @@ class ShipmentApiController extends Controller {
 			array('/api/shipment/:id', 'getShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/api/shipment/html/:domestic_parcel_number_nl', 'labelHtmlShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/pdf/:domestic_parcel_number_nl', 'pdfShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos'))
