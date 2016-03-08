@@ -40,9 +40,8 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -109,7 +108,7 @@
 
 	    },
 	    components: {
-	        'dv-settings': __webpack_require__(26)
+	        'dv-settings': __webpack_require__(1)
 	    }
 
 	};
@@ -122,8 +121,7 @@
 
 
 /***/ },
-
-/***/ 26:
+/* 1 */
 /***/ function(module, exports) {
 
 	var __vue_template__ = "<div>\n\n    <div v-if=\"error\" class=\"uk-alert uk-alert-danger\">{{ error }}</div>\n\n    <div v-if=\"message\" class=\"uk-alert uk-alert-success\">{{ message }}</div>\n\n    <button class=\"uk-button\" @click=\"editSettings\"><i v-spinner=\"loading\" icon=\"cogs\"></i>Instellingen</button>\n\n\n    <v-modal v-ref:editsettingsmodal=\"\" :large=\"true\">\n        <div class=\"uk-modal-header\"><h3>Instellingen</h3></div>\n\n        <form class=\"uk-form\" @submit.prevent=\"saveSettings\">\n\n            <div class=\"uk-grid\">\n                <div class=\"uk-width-medium-1-2 uk-form-horizontal\">\n                    <fields :config=\"$options.fields1\" :model.sync=\"settings\" template=\"formrow\"></fields>\n                </div>\n                <div class=\"uk-width-medium-1-2 uk-form-horizontal\">\n                    <fields :config=\"$options.fields2\" :model.sync=\"settings\" template=\"formrow\"></fields>\n                </div>\n            </div>\n\n            <div class=\"uk-modal-footer uk-text-right\">\n                <button type=\"button\" class=\"uk-button uk-margin-small-right uk-modal-close\">Sluiten</button>\n                <button type=\"submit\" class=\"uk-button uk-button-primary\"><i v-spinner=\"saving\" icon=\"save\"></i>Opslaan</button>\n            </div>\n\n\n        </form>\n    </v-modal>\n</div>";
@@ -254,5 +252,4 @@
 
 
 /***/ }
-
-/******/ });
+/******/ ]);
