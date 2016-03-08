@@ -93,20 +93,7 @@ class ShipmentApiController extends Controller {
 		$status = !isset($data['id']) || !$data['id'] ? 201 : 200;
 		$return = new \ArrayObject;
 
-		/** @var User $user */
-		$user = $this['users']->get();
-		if (!$user['klantnummer']) {
-			throw new HttpException(403, 'Geen klantnummer bekend');
-		}
-
-		$data['klantnummer'] = $user['klantnummer'];
-		$data['gls_customer_number'] = $user['gls_customer_number'] ? : $this['config']['gls_customer_number'];
-
-		if (empty($data['date_of_shipping'])) {
-			$data['date_of_shipping'] = (new \DateTime())->format('Y-m-d H:i:s');
-		}
-
-		if ($data = $this['shipmentgls']->save($data)) {
+		if ($data = $this->saveShipment($data)) {
 			$return['shipment'] = $data;
 
 			return $this['response']->json($return, $status);
@@ -129,18 +116,7 @@ class ShipmentApiController extends Controller {
 				throw new \Exception('Geen rechten om deze verzending te bekijken', 403);
 			}
 
-			$existingGls = $shipment->getGlsParcelNumber();
-			if (!empty($existingGls)) {
-				throw new \Exception(sprintf('Verzending heeft al een GLS nummer: %s.', $existingGls));
-			}
-
-			$this['gls']->createShipment($shipment);
-
-			$shipment['track_trace'] = $this['gls']->getTrackTrace($shipment);
-
-			$this->app['shipmentgls']->save($shipment->toArray());
-
-			$return['shipment'] = $shipment;
+			$return['shipment'] = $this->sendShipment($shipment);
 
 
 		} catch (\Exception $e) {
@@ -152,7 +128,6 @@ class ShipmentApiController extends Controller {
 		return $this['response']->json($return, 200);
 
 	}
-
 
 	public function labelShipmentGlsAction ($id) {
 		$return = new \ArrayObject;
@@ -184,6 +159,53 @@ class ShipmentApiController extends Controller {
 		return $this['response']->json($return, 200);
 
 	}
+
+
+	public function createShipmentGlsAction ($data) {
+
+		$return = new \ArrayObject;
+		try {
+
+			if ($data = $this->saveShipment($data)) {
+
+				$return['shipment'] = $this->createShipment($data);
+
+				return $this['response']->json($return, 201);
+			}
+
+		} catch (\Exception $e) {
+			$return['error'] = $e->getMessage();
+
+		}
+		return $this['response']->json($return, 200);
+
+	}
+
+	public function createBulkShipmentGlsAction ($shipments) {
+
+		$return = new \ArrayObject;
+		$created = [];
+		try {
+
+			foreach ($shipments as $data) {
+				if ($data = $this->saveShipment($data)) {
+
+					$created[] = $this->createShipment($data);
+
+				}
+
+			}
+			$return['shipments'] = $created;
+			return $this['response']->json($return, 201);
+
+		} catch (\Exception $e) {
+			$return['error'] = $e->getMessage();
+
+		}
+
+		return $this['response']->json($return, 200);
+	}
+
 
 	public function labelHtmlShipmentGlsAction ($domestic_parcel_number_nl) {
 
@@ -227,16 +249,89 @@ class ShipmentApiController extends Controller {
 
 	}
 
+	/**
+	 * @param array $data
+	 * @return array|bool
+	 */
+	protected function saveShipment ($data) {
+		/** @var User $user */
+		$user = $this['users']->get();
+		if (!$user['klantnummer']) {
+			throw new HttpException(403, 'Geen klantnummer bekend');
+		}
 
+		$data['klantnummer'] = $user['klantnummer'];
+		$data['gls_customer_number'] = $user['gls_customer_number'] ? : $this['config']['gls_customer_number'];
+
+		if (empty($data['date_of_shipping'])) {
+			$data['date_of_shipping'] = (new \DateTime())->format('Y-m-d H:i:s');
+		}
+
+		if ($data = $this['shipmentgls']->save($data)) {
+			return $data;
+		}
+		return false;
+	}
+
+	/**
+	 * @param ShipmentGls $shipment
+	 * @return ShipmentGls
+	 * @throws \Exception
+	 */
+	protected function sendShipment (ShipmentGls $shipment) {
+
+		$existingGls = $shipment->getGlsParcelNumber();
+		if (!empty($existingGls)) {
+			throw new \Exception(sprintf('Verzending heeft al een GLS nummer: %s.', $existingGls));
+		}
+
+		$this['gls']->createShipment($shipment);
+
+		$shipment['track_trace'] = $this['gls']->getTrackTrace($shipment);
+
+		$this->app['shipmentgls']->save($shipment->toArray());
+
+		return $shipment;
+	}
+
+	/**
+	 * @param array $data
+	 * @return ShipmentGls|bool
+	 * @throws \Exception
+	 */
+	protected function createShipment ($data) {
+		if ($data = $this->saveShipment($data)) {
+
+			/** @var ShipmentGls $shipment */
+			if (!$shipment = $this['shipmentgls']->find($data['id'])) {
+				throw new \Exception(sprintf('Verzending id %d niet gevonden.', $data['id']));
+			}
+
+			$shipment = $this->sendShipment($shipment);
+
+			$this['gls']->createLabel($shipment);
+
+			$this->app['shipmentgls']->save($shipment->toArray());
+
+			return $shipment;
+		}
+		return false;
+	}
+
+	/**
+	 * @return array
+	 */
 	public static function getRoutes () {
 		return array(
 			array('/api/shipment', 'indexGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/:id', 'getShipmentGlsAction', 'GET', array('access' => 'client_devos')),
+			array('/api/shipment/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/api/shipment/create', 'createShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/api/shipment/createbulk', 'createBulkShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/html/:domestic_parcel_number_nl', 'labelHtmlShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/pdf/:domestic_parcel_number_nl', 'pdfShipmentGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos'))
 		);
 	}
