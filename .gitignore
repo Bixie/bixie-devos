@@ -1,6 +1,7 @@
 /cache
 /assets/css/*
 /node_modules
+/admin/assets/js
 /admin/vendor/*
 !/admin/vendor/bixie
 /composer.lock
