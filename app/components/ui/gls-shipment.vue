@@ -14,8 +14,12 @@
             <small>{{ total }} verzending<span v-show="total != 1">en</span></small>
         </div>
         <div>
-            <button class="uk-button" @click="editShipment(0)">
-                <i v-spinner="editloading[0]" icon="plus"></i>Nieuwe verzending</button>
+            <button class="uk-button" @click="newDefault">
+                <i v-spinner="editloading[-1]" icon="plus"></i>Standaard</button>
+            <button class="uk-button" @click="newExpress('T9')">
+                <i v-spinner="editloading[-2]" icon="plus"></i>Express 9 uur</button>
+            <button class="uk-button" @click="newExpress('T12')">
+                <i v-spinner="editloading[-3]" icon="plus"></i>Express 12 uur</button>
         </div>
     </div>
 
@@ -183,145 +187,8 @@
             </div>
         </div>
 
-        <form class="uk-form" @submit.prevent="submitForm">
+        <partial name="gls-form"></partial>
 
-            <ul class="uk-tab">
-                <li :class="{'uk-active': currentTab == 'pakket'}"><a href="#" @click.prevent="currentTab = 'pakket'">
-                    <i class="uk-icon-cubes uk-margin-small-right"></i>Pakket</a></li>
-                <li :class="{'uk-active': currentTab == 'versturen'}"><a href="#" @click.prevent="currentTab = 'versturen'">
-                    <i class="uk-icon-paper-plane-o uk-margin-small-right"></i>Versturen</a></li>
-                <li :class="{'uk-active': currentTab == 'instellingen'}"><a href="#" @click.prevent="currentTab = 'instellingen'">
-                    <i class="uk-icon-cogs uk-margin-small-right"></i>Instellingen</a></li>
-            </ul>
-
-            <div id="shipment-tabs" class="uk-margin">
-                <div v-show="currentTab == 'pakket'">
-
-                    <div class="uk-grid uk-grid-width-medium-1-3 uk-grid-small uk-form-stacked uk-flex-center">
-                        <div class="uk-text-center">
-                            <label class="uk-form-label" for="form-parcel_weight">Gewicht pakket *</label>
-                            <div class="uk-form-controls">
-                                <input v-model="shipment.parcel_weight" id="form-parcel_weight" type="number"
-                                       class="uk-form-width-medium uk-text-right" min="0.01" step="0.01" required="" number>
-                            </div>
-                        </div>
-                        <div class="uk-text-center">
-                            <label class="uk-form-label" for="form-parcel_sequence">Pakket reeks</label>
-                            <div class="uk-form-controls">
-                                <input v-model="shipment.parcel_sequence" id="form-parcel_sequence" type="number"
-                                       class="uk-form-width-medium uk-text-right" min="0" required="" number>
-                            </div>
-                        </div>
-                        <div class="uk-text-center">
-                            <label class="uk-form-label" for="form-parcel_quantity">Pakket aantal</label>
-                            <div class="uk-form-controls">
-                                <input v-model="shipment.parcel_quantity" id="form-parcel_quantity" type="number"
-                                       class="uk-form-width-medium uk-text-right" min="0" required="" number>
-                            </div>
-                        </div>
-                    </div>
-                    <hr/>
-                    <div class="uk-grid uk-form-horizontal">
-                        <div class="uk-width-medium-1-2">
-                            <fields :config="$options.fields1" :model.sync="shipment" template="formrow"></fields>
-                        </div>
-                        <div class="uk-width-medium-1-2">
-                            <fields :config="$options.fields2" :model.sync="shipment" template="formrow"></fields>
-
-                            <div v-show="shipment.gls_parcel_number == 0" class="uk-margin-large uk-text-center">
-                                <button class="uk-button uk-button-success uk-button-large"
-                                        @click="task = 'sendAndSave'">
-                                    <i v-spinner="sending" icon="paper-plane-o"></i>
-                                    Opslaan en aanmelden
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-                <div v-show="currentTab == 'versturen'">
-
-                    <div class="uk-grid uk-grid-small uk-form-stacked">
-                        <div class="uk-width-medium-1-2">
-                            <dl class="uk-description-list-horizontal">
-                                <fields :config="$options.fields3" :model.sync="shipment" template="descriptionlist"></fields>
-                            </dl>
-                        </div>
-                        <div class="uk-width-medium-1-2 uk-flex uk-flex-column uk-flex-wrap-space-between">
-
-                            <div>
-                                <div v-show="shipment.gls_parcel_number == 0" class="uk-text-center">
-                                    <button class="uk-button uk-button-success uk-button-large"
-                                            @click="task = 'sendAndSave'">
-                                        <i v-spinner="sending" icon="paper-plane-o"></i>
-                                        Opslaan en aanmelden
-                                    </button>
-                                </div>
-                                <div v-else>
-                                    <dl>
-                                        <dt>Track & Trace</dt>
-                                        <dd>
-                                            <a v-show="shipment.data.track_trace" :href="shipment.data.track_trace"
-                                               target="_blank" class="uk-display-block uk-text-truncate">
-                                                <i class="uk-icon-external-link uk-margin-small-right"></i>
-                                                {{ shipment.data.track_trace }}</a>
-                                        </dd>
-                                        <dt v-show="shipment.pdf_url">Etiket</dt>
-                                        <dd v-show="shipment.pdf_url">
-                                            <a :href="shipment.pdf_url" class="uk-display-block uk-text-truncate">
-                                                <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
-                                                {{ shipment.pdf_url }}</a>
-                                        </dd>
-                                    </dl>
-                                </div>
-
-                                <div v-if="progresserror" class="uk-alert uk-alert-danger">{{ progresserror }}</div>
-
-                                <div v-if="progressmessage" class="uk-alert"
-                                     :class="{'uk-alert-success': progress == 100}">{{ progressmessage }}</div>
-
-                                <div v-if="sending" class="uk-progress uk-progress-striped uk-active">
-                                    <div class="uk-progress-bar" :style="{'width': progress +'%'}"></div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-                <div v-show="currentTab == 'instellingen'">
-
-                    <div class="uk-grid uk-grid-width-medium-1-2 uk-grid-small uk-form-horizontal">
-                        <div>
-
-                            <div class="uk-form-row">
-                                <label class="uk-form-label" for="form-sender_id">Afzender</label>
-                                <div class="uk-form-controls">
-                                    <select v-model="shipment.sender_id" id="form-sender_id" class="uk-form-width-medium">
-                                        <option v-for="sender in senders" :value="sender.id">{{ sender.sender_name_1 }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <fields :config="$options.fields4" :model.sync="shipment" template="formrow"></fields>
-                        </div>
-                        <div>
-                            <fields :config="$options.fields5" :model.sync="shipment" template="formrow"></fields>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="uk-modal-footer uk-text-right">
-                <button type="button" class="uk-button uk-margin-small-right uk-modal-close">Sluiten</button>
-                <button type="submit" class="uk-button uk-button-primary" @click="task = 'saveShipment'">
-                    <i v-spinner="saving[shipment.id]" icon="save"></i>Opslaan</button>
-            </div>
-
-
-        </form>
     </v-modal>
 </div>
 </template>
@@ -381,6 +248,26 @@
         },
 
         methods: {
+            newDefault: function () {
+                this.editShipment(-1, {
+                    product_short_description: 'BP',
+                    data: {
+                        express_flag: '',
+                        express_service_flag: false,
+                        inbound_country_code: 'NL'
+                    }
+                });
+            },
+            newExpress: function (flag) {
+                this.editShipment((flag === 'T9' ? -2 : -1), {
+                    product_short_description: 'EP',
+                    data: {
+                        express_flag: flag,
+                        express_service_flag: false,
+                        inbound_country_code: 'NL'
+                    }
+                });
+            },
             load: function (page) {
                 this.$set('shipments', false);
                 this.$http.get('/api/shipment', {filter: this.filter, page: this.page}).then(function (res) {
@@ -475,11 +362,11 @@
                     this.setError(res.data.message || res.data);
                 });
             },
-            editShipment: function (id) {
+            editShipment: function (id, data) {
                 var shipment = _.find(this.shipments, 'id', id),
                         def = _.size(this.senders) ? _.find(this.senders, 'def', 1) || _.find(this.senders, 'state', 1) : {id: 0};
                 if (!shipment) {
-                    this.$set('shipment', {
+                    this.$set('shipment', _.assign({
                         klantnummer: this.config.user.klantnummer,
                         gls_customer_number: this.config.user.gls_customer_number,
                         sender_id: 0,
@@ -496,7 +383,7 @@
                             inbound_country_code: 'NL'
                         },
                         pdf_url: ''
-                    });
+                    }, (data || {})));
                 } else {
                     this.$set('shipment', shipment);
                 }
@@ -577,7 +464,16 @@
             },
             'page': function (page) {
                 this.load(page);
+            },
+            'shipment.data.inbound_country_code': function (value) {
+                if (value !== 'NL') {
+                    this.shipment.product_short_description = 'EBP';
+                }
             }
+        },
+
+        partials: {
+            'gls-form': require('../../templates/gls-form.html')
         },
 
         fields1: {
@@ -585,6 +481,17 @@
                 type: 'text',
                 label: 'Ontvanger naam 1 *',
                 attrs: {'name': 'name', 'class': 'uk-width-1-1', 'required': true}
+            },
+            'data.inbound_country_code': {
+                type: 'select',
+                label: 'Land verzending *',
+                options: {
+                    'Nederland': 'NL',
+                    'Duitsland': 'DE',
+                    'Groot Brittanië': 'GB',
+                    'België': 'BE'
+                },
+                attrs: {'class': 'uk-width-1-1', 'required': true}
             },
             'receiver_zip_code': {
                 type: 'text',
@@ -679,14 +586,6 @@
                     'Business parcel': 'BP',
                     'Express parcel': 'EP',
                     'Euro business parcel': 'EBP'
-                },
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
-            },
-            'data.inbound_country_code': {
-                type: 'select',
-                label: 'Land verzending *',
-                options: {
-                    'Nederland': 'NL'
                 },
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },

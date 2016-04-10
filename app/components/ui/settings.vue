@@ -69,6 +69,9 @@
                     data: this.settings
                 }).then(function (res) {
                     if (res.data) {
+                        if (!_.isArray(res.data.gls_customer_numbers)) {
+                            res.data.gls_customer_numbers = _.toArray(res.data.gls_customer_numbers);
+                        }
                         this.$set('settings', res.data);
                         this.$set('message', 'Instellingen opgeslagen');
                         this.$refs.editsettingsmodal.close();
@@ -83,7 +86,9 @@
                 this.loading = true;
                 this.$http.get('/api/config').then(function (res) {
                     if (res.data) {
-                        console.log(_.defaults(res.data, defaultSettings));
+                        if (!_.isArray(res.data.gls_customer_numbers)) {
+                            res.data.gls_customer_numbers = _.toArray(res.data.gls_customer_numbers);
+                        }
                         this.$set('settings', _.defaults(res.data, defaultSettings));
                         this.$refs.editsettingsmodal.open();
                     }
