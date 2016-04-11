@@ -97,7 +97,8 @@ class Application extends BaseApplication implements EventSubscriberInterface
 				'klantnummer' => $user['klantnummer']
 			],
 			'current' => \JUri::current(),
-			'url' => 'index.php'
+			'url' => 'index.php',
+			'countries' => $this['countries']
 		];
 		$this['scripts']->add('devos-config', sprintf('var $config = %s;', json_encode($config)), '', 'string');
 

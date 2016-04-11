@@ -8,6 +8,10 @@ return array(
     'path'        => __DIR__,
     'path.cache'  => __DIR__.'/cache',
     'path.vendor' => __DIR__.'/vendor',
-    'debug'       => '0'
+    'debug'       => '0',
+	'countries'	  => [
+		'NL' => 'Nederland',
+		'DE' => 'Duitsland'
+	]
 
 );
