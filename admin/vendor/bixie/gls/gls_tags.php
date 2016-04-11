@@ -20,7 +20,7 @@ return [
 		20
 	),
 	'software_version' => new Tag(
-		'0514',
+		'051',
 		'software_version',
 		'Version Of The Shipping Software',
 		'V1.14',

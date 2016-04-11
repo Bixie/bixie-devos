@@ -25,4 +25,15 @@ class Settings extends Config
             }
         });
     }
+
+	/**
+	 * Gets the values as a JSON string.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->values ? json_encode($this->values, JSON_OBJECT_AS_ARRAY|JSON_NUMERIC_CHECK) : '{}';
+	}
+
 }

@@ -66,6 +66,13 @@ class Tag {
 	}
 
 	/**
+	 * @return mixed
+	 */
+	public function hasValue () {
+		return !empty($this->value);
+	}
+
+	/**
 	 * @param mixed $value
 	 * @return Tag
 	 */
@@ -121,7 +128,7 @@ class Tag {
 			break;
 			default:
 				if (!$this->value) {
-					$stream = '';
+					$stream = false;
 				}
 				break;
 		}

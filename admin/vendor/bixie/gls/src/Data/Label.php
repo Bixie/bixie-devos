@@ -15,6 +15,7 @@ namespace Bixie\Gls\Data;
 
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Framework\Utils\Arr;
+use Bixie\Gls\Zpl\ZplTemplate;
 use Dompdf\Dompdf;
 
 class Label implements \ArrayAccess {
@@ -38,6 +39,13 @@ class Label implements \ArrayAccess {
 			$shipment->toArray(),
 			$shipment->getData()
 		);
+	}
+
+	public function createZplLabel () {
+		if (empty($this->data['zpl_raw'])) {
+			throw new \InvalidArgumentException(sprintf('Geen ZPL template gevonden %s.', $this->data['domestic_parcel_number_nl']));
+		}
+		return (new ZplTemplate($this->data['zpl_raw']))->render();
 	}
 
 	public function createPdfLabel () {

@@ -129,7 +129,7 @@ class ShipmentApiController extends Controller {
 
 	}
 
-	public function labelShipmentGlsAction ($id) {
+	public function labelShipmentGlsAction ($id, $type = 'zpl') {
 		$return = new \ArrayObject;
 
 		try {
@@ -143,7 +143,7 @@ class ShipmentApiController extends Controller {
 				throw new \Exception('Geen rechten om deze verzending te bekijken', 403);
 			}
 
-			$this['gls']->createLabel($shipment);
+			$this['gls']->createLabel($shipment, $type);
 
 			$this->app['shipmentgls']->save($shipment->toArray());
 

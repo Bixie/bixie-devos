@@ -42,8 +42,8 @@ class Gls extends ApplicationAware {
 
 			$broadcast['gls_customer_number'] = $shipment->getGlsCustomerNumber();
 			$broadcast['sap_number'] = $this->app['config']['sap_number'];
-			$broadcast['mode'] = 'NOPRINT';
-//			$broadcast['printer_template'] = 'zebrazpl'; //Datamax,zebrazpl
+//			$broadcast['mode'] = 'NOPRINT';
+			$broadcast['printer_template'] = 'zebrazpl'; //Datamax,zebrazpl
 
 			//parcel nummer bepalen
 			$shipment->setParcelNumber(($this->app['shipmentgls']->lastParcelNumber($shipment->getGlsCustomerNumber()) + 1));
@@ -59,8 +59,9 @@ class Gls extends ApplicationAware {
 			$result = $this->socket->send($broadcast);
 
 			$tagData = $broadcast->parseIncomingStream($result);
-
+			$tagData['zpl_raw'] = $broadcast->getTemplate($result);
 			$shipment->setGlsStream(json_encode($tagData, true));
+
 			$shipment->mergeData($tagData);
 
 			return $broadcast;
@@ -75,9 +76,8 @@ class Gls extends ApplicationAware {
 
 		$label = new Label($shipment);
 
-		$pdfString = $label->createPdfLabel();
-
-		$shipment->savePdfString($this->app['path.pdf'], $pdfString);
+		$shipment->savePdfString($this->app['path.pdf'], $label->createPdfLabel());
+		$shipment->setZplTemplate($label->createZplLabel());
 
 	}
 

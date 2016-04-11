@@ -13,8 +13,9 @@ $config = require __DIR__ . '/config.php';
 
 $app = new Application($config);
 $app['autoloader']  = $loader;
-$app['path.cache']  = rtrim(JPATH_SITE, '/').'/media/bix_devos';
+$app['path.cache']  = rtrim(JPATH_SITE, '/').'/media/bix_devos/cache';
 $app['path.pdf']  = dirname(JPATH_ROOT) . '/pdf';
+$app['path.image']  = rtrim(JPATH_SITE, '/').'/media/bix_devos/images';
 $app['component']   = 'com_'.$app['name'];
 $app['permissions'] = [
 	'devos.client' => 'client_devos',

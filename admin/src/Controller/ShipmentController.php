@@ -95,7 +95,7 @@ class ShipmentController extends Controller {
 	}
 
 
-	public function labelShipmentGlsAction ($id) {
+	public function labelShipmentGlsAction ($id, $type = 'zpl') {
 		$return = new \ArrayObject;
 
 		try {
@@ -104,7 +104,7 @@ class ShipmentController extends Controller {
 				throw new \Exception(sprintf('Verzending id %d niet gevonden.', $id));
 			}
 
-			$this['gls']->createLabel($shipment);
+			$this['gls']->createLabel($shipment, $type);
 
 			$this->app['shipmentgls']->save($shipment->toArray());
 
