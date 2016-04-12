@@ -16,10 +16,14 @@
         <div>
             <button class="uk-button" @click="newDefault">
                 <i v-spinner="editloading[-1]" icon="plus"></i>Standaard</button>
-            <button class="uk-button" @click="newExpress('T9')">
-                <i v-spinner="editloading[-2]" icon="plus"></i>Express 9 uur</button>
-            <button class="uk-button" @click="newExpress('T12')">
-                <i v-spinner="editloading[-3]" icon="plus"></i>Express 12 uur</button>
+            <div class="uk-button-group">
+                <button class="uk-button" @click="newExpress('')">
+                    <i v-spinner="editloading[-2]" icon="bolt"></i>Express 17 uur</button>
+                <button class="uk-button" @click="newExpress('T12')">
+                    <i v-spinner="editloading['T12']" icon="bolt"></i>12 uur</button>
+                <button class="uk-button" @click="newExpress('T9')">
+                    <i v-spinner="editloading['T9']" icon="bolt"></i>9 uur</button>
+            </div>
         </div>
     </div>
 
@@ -48,7 +52,7 @@
                         <i class="uk-icon-cubes uk-icon-justify uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
                     </dd>
-                    <dd>
+                    <dd v-if="shipment.data.express_flag">
                         <i class="uk-icon-bolt uk-icon-justify uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
                         <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
@@ -162,7 +166,7 @@
         </tr>
         </tbody>
     </table>
-    <div v-else class="uk-text-center"><i class="uk-icon-circle-o-notch uk-icon-spin"></i></div>
+    <div v-else class="uk-margin uk-text-center"><i class="uk-icon-circle-o-notch uk-icon-spin"></i></div>
 
 
     <v-modal v-ref:editshipmentmodal :large="true" :closed="cancelEdit">
@@ -178,10 +182,13 @@
                         <i class="uk-icon-cubes uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
                     </div>
-                    <div class="uk-margin-left">
+                    <div class="uk-margin-left" v-show="shipment.data.express_service_flag">
                         <i class="uk-icon-bolt uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
-                        <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
+                        <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="{delay: 200}"></i>
+                        <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
+                           @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
+                           class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="{delay: 200}"></a>
                     </div>
                 </div>
             </div>
@@ -253,17 +260,17 @@
                     product_short_description: 'BP',
                     data: {
                         express_flag: '',
-                        express_service_flag: '',
+                        express_service_flag: false,
                         inbound_country_code: 'NL'
                     }
                 });
             },
             newExpress: function (flag) {
-                this.editShipment((flag === 'T9' ? -2 : -1), {
+                this.editShipment((flag === '' ? -2 : flag), {
                     product_short_description: 'EP',
                     data: {
                         express_flag: flag,
-                        express_service_flag: '',
+                        express_service_flag: true,
                         inbound_country_code: 'NL'
                     }
                 });
@@ -362,31 +369,32 @@
                     this.setError(res.data.message || res.data);
                 });
             },
+            createShipment: function (data) {
+                return _.merge({
+                    klantnummer: this.config.user.klantnummer,
+                    gls_customer_number: this.config.user.gls_customer_number,
+                    sender_id: 0,
+                    product_short_description: 'BP',
+                    parcel_weight: 0,
+                    parcel_sequence: 1,
+                    parcel_quantity: 1,
+                    gls_parcel_number: 0,
+                    state: 1,
+                    data: {
+                        track_trace: '',
+                        label_template: 'gls_default',
+                        express_flag: '',
+                        express_service_flag: false,
+                        express_service_flag_sat: false,
+                        inbound_country_code: 'NL'
+                    },
+                    pdf_url: ''
+                }, (data || {}));
+            },
             editShipment: function (id, data) {
-                var shipment = _.find(this.shipments, 'id', id),
+                var shipment = _.find(this.shipments, 'id', id) || this.createShipment(data),
                         def = _.size(this.senders) ? _.find(this.senders, 'def', 1) || _.find(this.senders, 'state', 1) : {id: 0};
-                if (!shipment) {
-                    this.$set('shipment', _.merge({
-                        klantnummer: this.config.user.klantnummer,
-                        gls_customer_number: this.config.user.gls_customer_number,
-                        sender_id: 0,
-                        product_short_description: 'BP',
-                        parcel_weight: 0,
-                        parcel_sequence: 1,
-                        parcel_quantity: 1,
-                        gls_parcel_number: 0,
-                        state: 1,
-                        data: {
-                            track_trace: '',
-                            label_template: 'gls_default',
-                            express_flag: '',
-                            inbound_country_code: 'NL'
-                        },
-                        pdf_url: ''
-                    }, (data || {})));
-                } else {
-                    this.$set('shipment', shipment);
-                }
+                this.shipment = shipment;
                 if (_.size(this.senders) === 0) {
                     Vue.set(this.editloading, id, true);
                     this.$http.get('/api/sender').then(function (res) {
@@ -429,16 +437,22 @@
                 var options = {}, label;
                 switch (key) {
                 case 'express_flag':
-                        options = this.$options.fields4['data.express_flag'].options;
+                        options = {
+                            '': 'Volgende dag 17.00 uur',
+                            'T9': 'Volgende dag 9.00 uur',
+                            'T12': 'Volgende dag 12.00 uur'
+                        };
                     break;
                 case 'product_short_description':
-                        options = this.$options.fields4.product_short_description.options;
+                        options = {
+                            'BP': 'Business parcel',
+                            'EBP': 'Euro business parcel',
+                            'EP': 'Express parcel'
+                        };
                     break;
                 }
-                if (label = _.findKey(options, function (val) {
-                    return val === value;
-                })) {
-                    return label;
+                if (options[value]) {
+                    return options[value];
                 }
                 return value;
             }
@@ -467,7 +481,16 @@
             },
             'shipment.data.inbound_country_code': function (value) {
                 if (value !== 'NL') {
-                    this.shipment.product_short_description = 'EBP';
+                    this.shipment.product_short_description =  'EBP';
+                } else if (this.shipment.product_short_description === 'EBP') {
+                    this.shipment.product_short_description =  'BP';
+                }
+            },
+            'shipment.product_short_description': function (value) {
+                this.shipment.data.express_service_flag = value === 'EP';
+                if (value !== 'EP') {
+                    this.shipment.data.express_service_flag_sat = false;
+                    this.shipment.data.express_flag = false;
                 }
             }
         },
@@ -578,32 +601,6 @@
                     'GLS standaard': 'gls_default'
                 },
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
-            },
-            'product_short_description': {
-                type: 'select',
-                label: 'Product type *',
-                options: {
-                    'Business parcel': 'BP',
-                    'Express parcel': 'EP',
-                    'Euro business parcel': 'EBP'
-                },
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
-            },
-            'data.express_flag': {
-                type: 'radio',
-                label: 'Express pakket',
-                options: {
-                    'Geen express': '',
-                    'Volgende dag 9.00 uur': 'T9',
-                    'Volgende dag 12.00 uur': 'T12'
-                },
-                attrs: {'class': 'uk-width-1-1'}
-            },
-            'data.express_service_flag': {
-                type: 'checkbox',
-                label: 'Express service',
-                optionlabel: 'Geef express service aan',
-                attrs: {}
             },
             'state': {
                 type: 'select',
