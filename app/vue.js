@@ -23,7 +23,6 @@ function install (Vue) {
     Vue.directive('confirm', require('./directives/confirm'));
     Vue.directive('spinner', require('./directives/spinner'));
 
-    Vue.http.options.emulateJSON = true;
     Vue.http.options.emulateHTTP = true;
     Vue.http.headers.custom = {'X-XSRF-TOKEN': config.csrf};
     Vue.http.options.beforeSend = function (request) {
