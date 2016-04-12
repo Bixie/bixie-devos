@@ -253,7 +253,7 @@
                     product_short_description: 'BP',
                     data: {
                         express_flag: '',
-                        express_service_flag: false,
+                        express_service_flag: '',
                         inbound_country_code: 'NL'
                     }
                 });
@@ -263,7 +263,7 @@
                     product_short_description: 'EP',
                     data: {
                         express_flag: flag,
-                        express_service_flag: false,
+                        express_service_flag: '',
                         inbound_country_code: 'NL'
                     }
                 });
@@ -366,7 +366,7 @@
                 var shipment = _.find(this.shipments, 'id', id),
                         def = _.size(this.senders) ? _.find(this.senders, 'def', 1) || _.find(this.senders, 'state', 1) : {id: 0};
                 if (!shipment) {
-                    this.$set('shipment', _.assign({
+                    this.$set('shipment', _.merge({
                         klantnummer: this.config.user.klantnummer,
                         gls_customer_number: this.config.user.gls_customer_number,
                         sender_id: 0,

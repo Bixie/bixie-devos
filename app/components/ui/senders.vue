@@ -47,7 +47,8 @@
             <td>{{ sender.sender_street }}</td>
             <td>{{ sender.sender_zip }}</td>
             <td>{{ sender.sender_city }} ({{ sender.sender_country }})</td>
-            <td> logo</td>
+            <td class="uk-table-middle"><img v-if="sender.data.image" :src="sender.data.image" alt="logo" />
+                <a @click="editSender(sender.id)" v-else>Upload logo</a></td>
             <td>
                 <a @click="editSender(sender.id)" v-spinner="saving[sender.id]" icon="edit" class="uk-icon-hover uk-margin-small-right"></a>
                 <a v-spinner="deleting[sender.id]" icon="trash-o" class="uk-icon-hover"
@@ -73,10 +74,18 @@
             <div class="uk-grid">
                 <div class="uk-width-medium-2-3 uk-form-horizontal">
                     <fields :config="$options.fields1" :model.sync="sender" template="formrow"></fields>
+
+                    <div class="uk-form-row">
+                        <label class="uk-form-label">Bedrijfslogo</label>
+                        <form-upload class="uk-form-controls" :model.sync="sender.data.image" :config="config"></form-upload>
+                    </div>
                 </div>
                 <div class="uk-width-medium-1-3 uk-form-stacked">
-                    image
+
                     <fields :config="$options.fields2" :model.sync="sender" template="formrow"></fields>
+                    <div class="uk-margin-top uk-panel uk-panel-box uk-text-center"><img v-if="sender.data.image" :src="sender.data.image" alt="logo" />
+                        <span v-else>Upload uw bedrijfslogo</span>
+                    </div>
                 </div>
             </div>
 
@@ -106,7 +115,7 @@
                 editloading: false,
                 sender: {
                     id: 0,
-                    data: {}
+                    data: {image:''}
                 },
                 senders: false,
                 search: '',
@@ -159,7 +168,9 @@
                         sender_country: 'NL',
                         state: 1,
                         def: 0,
-                        data: {}
+                        data: {
+                            image: ''
+                        }
                     });
                 } else {
                     this.$set('sender', sender);
@@ -258,7 +269,12 @@
                 },
                 attrs: {}
             }
+        },
+
+        components: {
+            'form-upload': require('./upload.vue')
         }
+
 
     };
 
