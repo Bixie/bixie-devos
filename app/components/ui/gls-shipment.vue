@@ -187,7 +187,6 @@
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
                         <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="{delay: 200}"></i>
                         <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
-                           @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
                            class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="{delay: 200}"></a>
                     </div>
                 </div>
