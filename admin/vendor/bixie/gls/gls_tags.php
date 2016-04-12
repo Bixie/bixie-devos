@@ -46,7 +46,7 @@ return [
 		true,
 		3
 	),
-	'express_service_flag' => new Tag(
+	'express_flag' => new Tag(
 		'200',
 		'express_service_flag',
 		'Express Service Flag (see table express)',
@@ -73,7 +73,7 @@ return [
 		false,
 		1
 	),
-	'express_flag' => new Tag(
+	'express_service_flag' => new Tag(
 		'204',
 		'express_flag',
 		'Always Fixed As : “T” For Express',

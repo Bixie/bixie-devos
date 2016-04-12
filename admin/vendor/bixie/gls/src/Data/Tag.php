@@ -90,10 +90,17 @@ class Tag {
 			case 'product_short_description':
 				$value = strtoupper($value);
 				break;
+			case 'express_service_flag_sat':
+				$value = $value ? 'SCB' : '';
+				break;
+			case 'express_service_flag':
+				$value = $value ? 'T' : '';
+				break;
 			case 'secondary_code':
 				$value = str_replace("¬", "|",iconv("ISO-8859-1" ,"UTF-8//IGNORE", $value));
 				break;
 			default:
+
 				break;
 		}
 		$this->value = $value;
