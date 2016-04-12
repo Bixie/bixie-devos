@@ -53,8 +53,11 @@ class Broadcast implements \ArrayAccess {
 		$out .= implode('|', array_map(function ($tag) {
 			/** @var Tag $tag */
 			return $tag->toStream();
-		}, $this->tags));
-		return $out . '/////GLS/////';
+		}, array_filter($this->tags, function ($tag) {
+			/** @var Tag $tag */
+			return $tag->hasValue();
+		})));
+		return $out . '|/////GLS/////';
 	}
 
 	/**
@@ -163,11 +166,10 @@ class Broadcast implements \ArrayAccess {
 	 */
 	public function parseIncomingStream($returnStream) {
 		//strip head and tail
-		if( stripos($returnStream ,'\\\\\\\\\\GLS\\\\\\\\\\' ) !== false && stripos($returnStream ,'/////GLS/////' ) !== false ){
-			$returnStream = str_ireplace ( array('\\\\\\\\\\GLS\\\\\\\\\\','/////GLS/////') ,'', $returnStream);
-		} else {
+		if( stripos($returnStream ,'\\\\\\\\\\GLS\\\\\\\\\\' ) === false || stripos($returnStream ,'/////GLS/////' ) === false ){
 			throw new GlsException('Invalid incoming GLS stream');
 		}
+		$returnStream = str_ireplace ( array('\\\\\\\\\\GLS\\\\\\\\\\','/////GLS/////') ,'', $returnStream);
 		$tagData = array();
 		foreach (explode('|',$returnStream) as $item) {
 
@@ -193,6 +195,12 @@ class Broadcast implements \ArrayAccess {
 		return $tagData;
 	}
 
+	public function getTemplate ($returnStream) {
+		if(false === ($pos = stripos($returnStream ,'\\\\\\\\\\GLS\\\\\\\\\\')) or stripos($returnStream ,'/////GLS/////' ) === false ){
+			throw new GlsException('Invalid incoming GLS stream');
+		}
+		return substr($returnStream, 0, ($pos - 1));
+	}
 	/**
 	 * @param $errorString
 	 * @return string

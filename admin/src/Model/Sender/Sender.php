@@ -5,7 +5,6 @@ namespace Bixie\Devos\Model\Sender;
 
 use Bixie\Framework\Traits\CreatedModifiedTrait;
 use Bixie\Framework\Traits\DataTrait;
-use Bixie\Framework\Utils\Arr;
 
 class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 

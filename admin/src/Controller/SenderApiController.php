@@ -2,8 +2,12 @@
 
 namespace Bixie\Devos\Controller;
 
+use Bixie\Devos\Apihost\Apitoken\Exception\ApitokenException;
 use Bixie\Devos\Model\Sender\Sender;
+use Bixie\Framework\Utils\Image;
 use Bixie\Framework\Utils\Query;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\FileBag;
 use YOOtheme\Framework\Routing\Controller;
 use YOOtheme\Framework\Routing\Exception\HttpException;
 
@@ -20,6 +24,66 @@ class SenderApiController extends Controller {
 
 		return $this['response']->json($return);
 
+	}
+
+	public function uploadSenderAction () {
+		$return = new \ArrayObject([
+			'error' => false,
+			'file_name' => '',
+			'path' => ''
+		]);
+
+		$path = $this['path.image'] . '/senders/';
+		$fileInfo = [];
+		try {
+
+			if ($files = (new FileBag($_FILES))->get('files')) {
+
+				/** @var UploadedFile $file */
+				foreach ($files as $file) {
+
+					if (!$file->isValid()) {
+						throw new \InvalidArgumentException(sprintf('Bestand niet geldig. (%s)', $file->getErrorMessage()));
+					}
+
+					if (!$ext = $file->guessExtension() or !in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+						throw new \InvalidArgumentException('Bestnadsextensie niet toegestaan.');
+					}
+
+					if (!$size = $file->getClientSize() or $size > (3 * 1024 * 1024)) {
+						throw new \InvalidArgumentException('Bestand is te groot.');
+					}
+					//give file unique name
+					$localFile = $file->move($path, sprintf('%d%d-%s',
+						(microtime(true) * 10000), rand(), preg_replace("/[^a-zA-Z0-9\.]/", "-", $file->getClientOriginalName())));
+
+					Image::thumbImage($localFile->getPathname(), 200, 200);
+
+					$fileInfo[] = [
+						'name' => $file->getClientOriginalName(),
+						'size' => $localFile->getSize(),
+						'path' => str_replace(JPATH_ROOT, '', $localFile->getPathname()),
+					];
+				}
+
+				$uploaded = reset($fileInfo);
+
+				$return['file_name'] = $uploaded['name'];
+				$return['file_size'] = $uploaded['size'];
+				$return['path'] = $uploaded['path'];
+			} else {
+
+				$return['error'] = 'Geen bestanden verzonden.';
+
+			}
+
+		} catch (\Exception $e) {
+
+			$return['error'] = $e->getMessage();
+
+		}
+
+		return $this['response']->json($return);
 	}
 
 	public function saveSenderAction ($data) {
@@ -69,6 +133,7 @@ class SenderApiController extends Controller {
 		return array(
 			array('/api/sender', 'sendersAction', 'GET', array('access' => 'client_devos')),
 			array('/api/sender/:id', 'getSenderAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sender/upload', 'uploadSenderAction', 'POST', array('access' => 'client_devos')),
 			array('/api/sender/save', 'saveSenderAction', 'POST', array('access' => 'client_devos')),
 			array('/api/sender/setdefault', 'setdefaultSenderAction', 'POST', array('access' => 'client_devos')),
 			array('/api/sender/:id', 'deleteSenderAction', 'DELETE', array('access' => 'client_devos'))

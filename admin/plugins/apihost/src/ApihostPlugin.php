@@ -68,6 +68,9 @@ class ApihostPlugin extends Plugin
 
 			//if api request, find user
 			if ($this['apitoken']->getToken()) {
+
+				//todo refuse routes !$/api
+
 				$api_username = $request->get(self::REQUEST_KEY_USERNAME, $request->headers->get(self::HEADER_KEY_USERNAME));
 
 				if (!$user = $this->app['users']->getByApiUsername($api_username)) {

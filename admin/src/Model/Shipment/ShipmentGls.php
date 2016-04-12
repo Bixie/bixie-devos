@@ -146,6 +146,10 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @var string
 	 */
+	protected $zpl_template = '';
+	/**
+	 * @var string
+	 */
 	protected $gls_stream = '';
 
 	/**
@@ -666,6 +670,22 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @return string
 	 */
+	public function getZplTemplate () {
+		return $this->zpl_template;
+	}
+
+	/**
+	 * @param string $zpl_template
+	 * @return ShipmentGls
+	 */
+	public function setZplTemplate ($zpl_template) {
+		$this->zpl_template = $zpl_template;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getGlsStream () {
 		return $this->gls_stream;
 	}
@@ -743,6 +763,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'state' => $this->state,
 			'gls_stream' => $this->gls_stream,
 			'pdf_path' => $this->pdf_path,
+			'zpl_template' => $this->zpl_template,
 			'created' => $this->created,
 			'created_by' => $this->created_by,
 			'modified' => $this->modified,

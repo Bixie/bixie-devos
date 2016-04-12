@@ -101,6 +101,9 @@ class ShipmentGlsProvider extends ApplicationAware {
 		if (!isset($store['pdf_path'])) {
 			$store['pdf_path'] = '';
 		}
+		if (!isset($store['zpl_template'])) {
+			$store['zpl_template'] = '';
+		}
 		unset($store['pdf_url']);
 		foreach (['date_of_shipping', 'created', 'modified'] as $dateField) {
 			if (isset($store[$dateField]) && $store[$dateField] instanceof \DateTime) {
