@@ -4,6 +4,7 @@
 namespace Bixie\Gls;
 
 
+use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Gls\Data\Broadcast;
 use Bixie\Gls\Data\Label;
@@ -72,9 +73,9 @@ class Gls extends ApplicationAware {
 		}
 	}
 
-	public function createLabel (ShipmentGls $shipment) {
+	public function createLabel (ShipmentGls $shipment, Sender $sender) {
 
-		$label = new Label($shipment);
+		$label = new Label($shipment, $sender);
 
 		$shipment->savePdfString($this->app['path.pdf'], $label->createPdfLabel());
 		$shipment->setZplTemplate($label->createZplLabel());

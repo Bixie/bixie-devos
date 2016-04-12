@@ -2,6 +2,7 @@
 
 namespace Bixie\Devos\Controller;
 
+use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Framework\User\User;
 use Bixie\Framework\Utils\Query;
@@ -142,8 +143,12 @@ class ShipmentApiController extends Controller {
 			if (!$user->hasPermission('manage_devos') && $shipment->getKlantnummer() != $user['klantnummer']) {
 				throw new \Exception('Geen rechten om deze verzending te bekijken', 403);
 			}
+			/** @var Sender $sender */
+			if (!$sender = $this['sender']->find($shipment->getSenderId())) {
+				throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
+			}
 
-			$this['gls']->createLabel($shipment, $type);
+			$this['gls']->createLabel($shipment, $sender);
 
 			$this->app['shipmentgls']->save($shipment->toArray());
 
@@ -309,7 +314,11 @@ class ShipmentApiController extends Controller {
 
 			$shipment = $this->sendShipment($shipment);
 
-			$this['gls']->createLabel($shipment);
+			/** @var Sender $sender */
+			if (!$sender = $this['sender']->find($shipment->getSenderId())) {
+				throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
+			}
+			$this['gls']->createLabel($shipment, $sender);
 
 			$this->app['shipmentgls']->save($shipment->toArray());
 

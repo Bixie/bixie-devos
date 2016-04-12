@@ -13,6 +13,7 @@
 namespace Bixie\Gls\Data;
 
 
+use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Framework\Utils\Arr;
 use Bixie\Gls\Zpl\ZplTemplate;
@@ -31,13 +32,15 @@ class Label implements \ArrayAccess {
 	/**
 	 * Label constructor.
 	 * @param ShipmentGls $shipment
+	 * @param Sender      $sender
 	 */
-	public function __construct (ShipmentGls $shipment) {
+	public function __construct (ShipmentGls $shipment, Sender $sender) {
 		$this->template = $shipment['label_template'] ?: 'gls_default';
 		$this->data = array_merge(
 			json_decode($shipment->getGlsStream(), 1),
 			$shipment->toArray(),
-			$shipment->getData()
+			$shipment->getData(),
+			['sender_image' => $sender['image']]
 		);
 	}
 
@@ -45,7 +48,7 @@ class Label implements \ArrayAccess {
 		if (empty($this->data['zpl_raw'])) {
 			throw new \InvalidArgumentException(sprintf('Geen ZPL template gevonden %s.', $this->data['domestic_parcel_number_nl']));
 		}
-		return (new ZplTemplate($this->data['zpl_raw']))->render();
+		return (new ZplTemplate($this->data['zpl_raw']))->addSenderLogo(JPATH_ROOT . $this->data['sender_image'])->render();
 	}
 
 	public function createPdfLabel () {
