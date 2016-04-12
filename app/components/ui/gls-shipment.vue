@@ -52,7 +52,7 @@
                         <i class="uk-icon-cubes uk-icon-justify uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
                     </dd>
-                    <dd v-if="shipment.data.express_flag">
+                    <dd v-if="shipment.data.express_service_flag">
                         <i class="uk-icon-bolt uk-icon-justify uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
                         <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
