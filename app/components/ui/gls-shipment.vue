@@ -56,6 +56,7 @@
                         <i class="uk-icon-bolt uk-icon-justify uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
                         <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
+                        <i v-show="shipment.data.express_service_flag_sat" class="uk-icon-calendar-plus-o uk-text-danger uk-margin-small-left" title="Saturday Service aan" data-uk-tooltip="{delay: 200}"></i>
                     </dd>
                     <dd>
                         <i class="uk-icon-ticket uk-icon-justify uk-margin-small-right" title="NL pakket nummer" data-uk-tooltip="{delay: 200}"></i>
@@ -153,6 +154,11 @@
                             <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
                             Etiket</a>
                     </li>
+                    <li v-show="shipment.domestic_parcel_number_nl" class="uk-text-truncate">
+                        <a @click="printZpl(shipment.domestic_parcel_number_nl)">
+                            <i class="uk-icon-print uk-margin-small-right"></i>
+                            Print etiket</a>
+                    </li>
                 </ul>
 
                 <button class="uk-button uk-button-small" @click="editShipment(shipment.id)">
@@ -187,6 +193,7 @@
                         <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
                         <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="{delay: 200}"></i>
                         <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
+                           @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
                            class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="{delay: 200}"></a>
                     </div>
                 </div>
@@ -414,6 +421,13 @@
                     this.$set('shipment.sender_id', def.id);
                     this.$refs.editshipmentmodal.open();
                 }
+            },
+            printZpl: function (domestic_parcel_number_nl) {
+                this.$http.get('/api/shipment/zpl/' + domestic_parcel_number_nl, {ip: '', port: ''}).then(function () {
+                    UIkit.notify('Label naar printer verzonden', 'success');
+                }, function (res) {
+                    UIkit.notify(res.data.message || res.data, 'danger');
+                });
             },
             setError: function (message) {
                 this.$set('progressmessage', '');

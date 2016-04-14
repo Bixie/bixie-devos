@@ -3,7 +3,6 @@
 namespace Bixie\Gls\Zpl;
 
 use Zebra\Client;
-use Zebra\Zpl\Builder;
 use Zebra\Zpl\Image;
 
 class ZplTemplate {
@@ -15,7 +14,13 @@ class ZplTemplate {
 	 * @var string
 	 */
 	protected $output = '';
-
+	/**
+	 * @var Image
+	 */
+	protected $image = '';
+	/**
+	 * @var Builder
+	 */
 	protected $zpl;
 	/**
 	 * ZplTemplate constructor.
@@ -31,28 +36,36 @@ class ZplTemplate {
 	 * @return string
 	 */
 	public function render () {
-		$this->output = $this->raw_string;
+		if ($this->output) {
+			return $this->output;
+		}
 
-		$addition = $this->zpl->toZpl();
+		if ($this->image) {
+			$this->raw_string = preg_replace('/DG001\.(.*)\^XA/', $this->zpl->imageString('DG001', $this->image), $this->raw_string);
+		}
+		$this->raw_string = preg_replace('/(\t|\r|\n)/', '', $this->raw_string);
 
-		return sprintf("%s\r\n[SENDER LOGO]\r\n%s", $this->raw_string, $addition);
+		return $this->output = $this->raw_string;
 	}
 
+	/**
+	 * @param $path
+	 * @return $this
+	 */
 	public function addSenderLogo ($path) {
 		if ($path && file_exists($path)) {
-			$image = new Image(file_get_contents($path));
-
-			$this->zpl->fo(50, 50);
-			$this->zpl->gf($image);
-			$this->zpl->fs();
+			$this->image = new Image(file_get_contents($path));
 		}
 		return $this;
 	}
 
-	public function toPrinter ($ip = '10.0.0.50') {
-		$client = new Client($ip);
-		$client->send($this->zpl);
-
+	/**
+	 * @param string $ip
+	 * @param int    $port
+	 */
+	public function toPrinter ($ip = '10.0.0.50', $port = 9100) {
+		$client = new Client($ip, $port);
+		$client->send($this->render());
 	}
 
 }

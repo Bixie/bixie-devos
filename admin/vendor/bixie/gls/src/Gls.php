@@ -82,11 +82,19 @@ class Gls extends ApplicationAware {
 
 	}
 
-	public function htmlLabel (ShipmentGls $shipment) {
+	public function htmlLabel (ShipmentGls $shipment, Sender $sender) {
 
-		$label = new Label($shipment);
+		$label = new Label($shipment, $sender);
 
 		return $label->getTemplateContents();
+
+	}
+
+	public function zplLabel (ShipmentGls $shipment, Sender $sender, $ip, $port = 9100) {
+
+		$label = new Label($shipment, $sender);
+
+		$label->printZplLabel($ip, $port);
 
 	}
 

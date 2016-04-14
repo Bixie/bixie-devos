@@ -225,12 +225,47 @@ class ShipmentApiController extends Controller {
 			throw new HttpException(403, 'Geen rechten om deze verzending te bekijken');
 		}
 
-		if (!$html = $this['gls']->htmlLabel($shipment)) {
+		/** @var Sender $sender */
+		if (!$sender = $this['sender']->find($shipment->getSenderId())) {
+			throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
+		}
+
+		if (!$html = $this['gls']->htmlLabel($shipment, $sender)) {
 			throw new HttpException(400, sprintf('Fout in HTML verzending %d.', $domestic_parcel_number_nl));
 		}
 
 		return $html;
 
+	}
+
+	public function printZplShipmentGlsAction ($domestic_parcel_number_nl, $ip = '127.0.0.1', $port = 9100) {
+
+		/** @var ShipmentGls $shipment */
+		if (!$shipment = $this['shipmentgls']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
+			throw new HttpException(404, sprintf('Verzending nr %d niet gevonden.', $domestic_parcel_number_nl));
+		}
+
+		/** @var User $user */
+		$user = $this['users']->get();
+		if (!$user->hasPermission('manage_devos') && $shipment->getKlantnummer() != $user['klantnummer']) {
+			throw new HttpException(403, 'Geen rechten om deze verzending te bekijken');
+		}
+
+		/** @var Sender $sender */
+		if (!$sender = $this['sender']->find($shipment->getSenderId())) {
+			throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
+		}
+
+		try {
+			$ip = $ip ? : $this->app['config']['zpl_ip'];
+			$port = $port ? : $this->app['config']['zpl_port'];
+
+			$this['gls']->zplLabel($shipment, $sender, $ip, $port);
+		} catch (\Exception $e) {
+			throw new HttpException(500, sprintf('Fout bij printen: %s', $e->getMessage()), $e, 500);
+		}
+
+		return $this['response']->create('', 204); //no content	
 	}
 
 	public function pdfShipmentGlsAction ($domestic_parcel_number_nl, $string = false) {
@@ -339,6 +374,7 @@ class ShipmentApiController extends Controller {
 			array('/api/shipment/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/create', 'createShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/createbulk', 'createBulkShipmentGlsAction', 'POST', array('access' => 'client_devos')),
+			array('/api/shipment/zpl/:domestic_parcel_number_nl', 'printZplShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/html/:domestic_parcel_number_nl', 'labelHtmlShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/pdf/:domestic_parcel_number_nl', 'pdfShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos'))

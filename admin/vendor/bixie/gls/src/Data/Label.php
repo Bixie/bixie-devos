@@ -51,6 +51,13 @@ class Label implements \ArrayAccess {
 		return (new ZplTemplate($this->data['zpl_raw']))->addSenderLogo(JPATH_ROOT . $this->data['sender_image'])->render();
 	}
 
+	public function printZplLabel ($ip = '127.0.0.1', $port = 9100) {
+		if (empty($this->data['zpl_template'])) {
+			throw new \InvalidArgumentException(sprintf('Geen ZPL template gevonden %s.', $this->data['domestic_parcel_number_nl']));
+		}
+		(new ZplTemplate($this->data['zpl_template']))->toPrinter($ip, $port);
+	}
+
 	public function createPdfLabel () {
 		// instantiate and use the dompdf class
 		$dompdf = new Dompdf();
