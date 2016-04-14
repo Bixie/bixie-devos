@@ -55,7 +55,7 @@ class Label implements \ArrayAccess {
 		if (empty($this->data['zpl_template'])) {
 			throw new \InvalidArgumentException(sprintf('Geen ZPL template gevonden %s.', $this->data['domestic_parcel_number_nl']));
 		}
-		(new ZplTemplate($this->data['zpl_template']))->toPrinter($ip, $port);
+		ZplTemplate::toPrinter($this->data['zpl_template'], $ip, $port);
 	}
 
 	public function createPdfLabel () {

@@ -60,12 +60,13 @@ class ZplTemplate {
 	}
 
 	/**
+	 * @param string $zpl
 	 * @param string $ip
 	 * @param int    $port
 	 */
-	public function toPrinter ($ip = '10.0.0.50', $port = 9100) {
+	public static function toPrinter ($zpl, $ip = '10.0.0.50', $port = 9100) {
 		$client = new Client($ip, $port);
-		$client->send($this->render());
+		$client->send($zpl);
 	}
 
 }
