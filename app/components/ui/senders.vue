@@ -5,8 +5,9 @@
 
     <div class="uk-flex uk-flex-space-between">
         <div>
-            <div class="uk-search" data-uk-search>
-                <input class="uk-search-field" type="search" v-model="search">
+            <div class="uk-form-icon">
+                <i class="uk-icon-search"></i>
+                <input class="uk-margin-remove uk-form-width-small" type="search" v-model="search" debounce="500">
             </div>
         </div>
         <div>
