@@ -11,6 +11,7 @@ class SiteController extends Controller {
 	public function indexAction () {
 
 		$data = [
+			'countries' => $this['countries'],
 			'sender_states' => Sender::getStates()
 		];
 		$this['scripts']->add('devos-data', sprintf('var $data = %s;', json_encode($data)), '', 'string');

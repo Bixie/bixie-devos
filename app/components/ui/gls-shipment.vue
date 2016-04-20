@@ -237,7 +237,7 @@
         props: ['config'],
 
         data: function () {
-            return {
+            return _.merge({
                 zplPrinter: '',
                 pdfPrinter: '',
                 printEnabled: false,
@@ -256,6 +256,7 @@
                     data: {}
                 },
                 shipments: false,
+                countries: {},
                 senders: {},
                 filter: {
                     search: '',
@@ -267,7 +268,7 @@
                 total: 0,
                 pages: 1,
                 page: 0
-            }
+            }, window.$data)
         },
 
         created: function () {
@@ -558,22 +559,6 @@
         },
 
         fields1: {
-            'receiver_name_1': {
-                type: 'text',
-                label: 'Ontvanger naam 1 *',
-                attrs: {'name': 'name', 'class': 'uk-width-1-1', 'required': true}
-            },
-            'data.inbound_country_code': {
-                type: 'select',
-                label: 'Land verzending *',
-                options: {
-                    'Nederland': 'NL',
-                    'Duitsland': 'DE',
-                    'Groot Brittanië': 'GB',
-                    'België': 'BE'
-                },
-                attrs: {'class': 'uk-width-1-1', 'required': true}
-            },
             'receiver_zip_code': {
                 type: 'text',
                 label: 'Postcode ontvanger *',
