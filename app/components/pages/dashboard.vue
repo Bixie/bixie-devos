@@ -7,8 +7,8 @@
 
     <div class="uk-text-center">
         <p>Om een pakket aan te melden begint u met het aanmaken van een afzender. Vervolgens kunt u een verzending aanmelden.</p>
-        <a href="/beheer#afzenders" class="uk-button">Afzender aanmaken</a>
-        <a href="/beheer#verzendingen" class="uk-button">Verzending aanmelden</a>
+        <a href="/pakketten#afzenders" class="uk-button">Afzender aanmaken</a>
+        <a href="/pakketten#verzendingen" class="uk-button">Verzending aanmelden</a>
     </div>
 
     <div class="uk-panel uk-panel-box uk-margin-top">
