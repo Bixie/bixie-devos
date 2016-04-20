@@ -1,8 +1,10 @@
 <template>
 
-    <h1>Verzendingen</h1>
+    <div>
+        <h1>Verzendingen</h1>
 
-    <gls-shipment :config="config"></gls-shipment>
+        <gls-shipment :config="config"></gls-shipment>
+    </div>
 
 </template>
 

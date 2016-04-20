@@ -1,8 +1,11 @@
 <template>
 
-    <h1>Afzenders</h1>
+    <div>
+        <h1>Afzenders</h1>
 
-    <devos-senders :config="config" :data="data"></devos-senders>
+        <devos-senders :config="config" :data="data"></devos-senders>
+    </div>
+
 
 </template>
 
