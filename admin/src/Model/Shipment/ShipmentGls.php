@@ -706,22 +706,52 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return '';
 	}
 
+	public function getPngUrl () {
+		if (!empty($this->data['png_path'])) {
+			return \JUri::root() . str_replace(JPATH_ROOT.'/', '', $this->data['png_path']);
+		}
+		return '';
+	}
+
 	/**
-	 * @param $pdfPath
+	 * @param $basePath
 	 * @param $pdfString
 	 */
-	public function savePdfString ($pdfPath, $pdfString) {
+	public function savePdfString ($basePath, $pdfString) {
 		if (empty($pdfString) || empty($this->domestic_parcel_number_nl)) {
 			throw new \InvalidArgumentException(sprintf('Geen parcel_number of pdf-string leeg'));
 		}
-		$pdfPath = $pdfPath . '/s-' . floor($this->id / 100) . '00';
-		if (!is_dir($pdfPath)) {
-			mkdir($pdfPath, 0755, true);
-		}
-		$this->pdf_path = $pdfPath . '/' . $this->domestic_parcel_number_nl . '.pdf';
+		$this->pdf_path = $this->filePath($basePath) . '/' . $this->domestic_parcel_number_nl . '.pdf';
 		if (!@file_put_contents($this->pdf_path, $pdfString)) {
 			throw new \RuntimeException(sprintf('Fout bij opslaan %s.pdf', $this->parcel_number));
 		}
+	}
+
+	/**
+	 * @param $basePath
+	 * @param $pngString
+	 */
+	public function savePngString ($basePath, $pngString) {
+		if (empty($pngString) || empty($this->domestic_parcel_number_nl)) {
+			throw new \InvalidArgumentException(sprintf('Geen parcel_number of pdf-string leeg'));
+		}
+		$png_path = $this->filePath($basePath) . '/' . $this->domestic_parcel_number_nl . '.png';
+		if (!@file_put_contents($png_path, $pngString)) {
+			throw new \RuntimeException(sprintf('Fout bij opslaan %s.pdf', $this->parcel_number));
+		}
+		$this->offsetSet('png_path', $png_path);
+	}
+
+	/**
+	 * @param $base
+	 * @return string
+	 */
+	protected function filePath ($base) {
+		$filePath = $base . '/s-' . floor($this->id / 100) . '00';
+		if (!is_dir($filePath)) {
+			mkdir($filePath, 0755, true);
+		}
+		return $filePath;
 	}
 
 	/**
@@ -800,6 +830,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		$data = $this->toArray();
 		unset($data['gls_stream']);
 		$data['pdf_url'] = $this->getPdfUrl();
+		$data['png_url'] = $this->getPngUrl();
 		return $data;
 	}
 }

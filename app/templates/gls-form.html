@@ -82,11 +82,22 @@
                                         <i class="uk-icon-external-link uk-margin-small-right"></i>
                                         {{ shipment.data.track_trace }}</a>
                                 </dd>
-                                <dt v-show="shipment.pdf_url">Etiket</dt>
+                                <dt v-show="shipment.pdf_url"><i class="uk-icon-file-pdf-o uk-margin-small-right"></i>Etiket</dt>
                                 <dd v-show="shipment.pdf_url">
-                                    <a :href="shipment.pdf_url" class="uk-display-block uk-text-truncate">
-                                        <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
-                                        {{ shipment.pdf_url }}</a>
+                                    <a :href="shipment.pdf_url">
+                                        <i class="uk-icon-download uk-margin-small-right"></i>
+                                        Download PDF</a>
+                                    <a v-show="printEnabled && pdfPrinter && shipment.domestic_parcel_number_nl"
+                                       @click="printPdf(shipment.domestic_parcel_number_nl)"
+                                       class="uk-margin-left">
+                                        <i class="uk-icon-print uk-margin-small-right"></i>
+                                        Print PDF</a>
+                                </dd>
+                                <dt v-show="printEnabled && shipment.zpl_template"><i class="uk-icon-barcode uk-margin-small-right"></i>Etiket</dt>
+                                <dd v-show="printEnabled && zplPrinter && shipment.zpl_template">
+                                    <a @click="printZpl(shipment.zpl_template)" class="uk-display-block uk-text-truncate">
+                                        <i class="uk-icon-print uk-margin-small-right"></i>
+                                        Print etiket</a>
                                 </dd>
                             </dl>
                         </div>

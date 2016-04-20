@@ -138,7 +138,7 @@ class Broadcast implements \ArrayAccess {
 
 	/**
 	 * @param $numberBase
-	 * @return int|string
+	 * @return int
 	 */
 	private function addControlNumber ($numberBase) {
 		$_digitArray = str_split($numberBase);
@@ -151,11 +151,8 @@ class Broadcast implements \ArrayAccess {
 				$sum += $value;
 			}
 		}
-		$diff = (int)(ceil($sum/10)*10)-($sum+1);
-		if($diff == 10){
-			return $numberBase.'0';
-		}
-		return $numberBase.$diff;
+		$diff = 10 - ($sum%10);
+		return (int) $numberBase.$diff;
 
 	}
 

@@ -17,29 +17,52 @@ class GlsTracking {
 
 	}
 
-	public function getUrl ($gls_customer_number, $gls_parcel_number) {
-
+	/**
+	 * @param        $gls_customer_number
+	 * @param        $domestic_parcel_number_nl
+	 * @param string $redirto
+	 * @return mixed
+	 */
+	public function getUrl ($gls_customer_number, $domestic_parcel_number_nl, $redirto = 'Verlader') {
 		return sprintf(
-			'http://services.gls-netherlands.com/tracking/ttlink.aspx?NVRL=%d&NDOC=%s&TAAL=NL&ADDRESSTYPE=B&CHK=%d',
+			'http://services.gls-netherlands.com/tracking/ttlink.aspx?NVRL=%d&NDOC=%s&TAAL=NL&REDIRTO=%s&CHK=%d',
 			$gls_customer_number,
-			$gls_parcel_number,
-			$this->getChecksum($gls_customer_number . $gls_parcel_number)
+			$domestic_parcel_number_nl,
+			$redirto,
+			$this->getChecksum($gls_customer_number . $domestic_parcel_number_nl . $redirto)
 		);
 	}
 
+	/**
+	 * ->getUrl(75470057, 75470057000034, 'Verl'); //28455
+	 * for position in string:
+	 *     asc = ord(position)
+	 *     if asc >= 65 and asc <= 90:
+	 *         asc = asc - 64
+	 *     elif asc >= 48 and asc <= 57:
+	 *         asc = asc - 21
+	 *     chk = chk + (asc * pos)
+	 *     pos = pos + 1
+	 *
+	 * @param $data
+	 * @return int|mixed
+	 */
 	protected function getChecksum ($data) {
-		$nChk = '';
-		for ($i = 0; $i < strlen($data); $i++) {
+		$chk = $this->encryptionCode;
+		for ($i = 1; $i <= strlen($data); $i++) {
 			// asci waarde bepalen
-			$nAsc = ord(substr($data, $i, 1));
+			$c = substr($data, ($i - 1), 1);
+			$nAsc = ord($c);
 
 			if ($nAsc >= 65 && $nAsc <= 90)
 				$nAsc = $nAsc - 64;
 			elseif ($nAsc >= 48 && $nAsc <= 57)
 				$nAsc = $nAsc - 21;
-			$nChk = $nChk + (($i + 1) * $nAsc);
+
+			$chk += ($i * $nAsc);
 
 		}
-		return $nChk + $this->encryptionCode;
+		return $chk;
 	}
 }
+

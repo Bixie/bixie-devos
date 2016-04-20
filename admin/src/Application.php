@@ -94,7 +94,9 @@ class Application extends BaseApplication implements EventSubscriberInterface
 				'name' => $user->getName(),
 				'bedrijfsnaam' => $user['bedrijfsnaam'],
 				'gls_customer_number' => $user['gls_customer_number'] ? : $this['config']['gls_customer_number'],
-				'klantnummer' => $user['klantnummer']
+				'klantnummer' => $user['klantnummer'],
+				'zpl_printer' => $user['zpl_printer'],
+				'pdf_printer' => $user['pdf_printer']
 			],
 			'current' => \JUri::current(),
 			'url' => 'index.php',

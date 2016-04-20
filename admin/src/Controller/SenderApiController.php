@@ -57,7 +57,7 @@ class SenderApiController extends Controller {
 					$localFile = $file->move($path, sprintf('%d%d-%s',
 						(microtime(true) * 10000), rand(), preg_replace("/[^a-zA-Z0-9\.]/", "-", $file->getClientOriginalName())));
 
-					Image::thumbImage($localFile->getPathname(), 200, 200);
+					$localFile = Image::thumbImage($localFile, 178, 62);
 
 					$fileInfo[] = [
 						'name' => $file->getClientOriginalName(),

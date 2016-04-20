@@ -7,7 +7,7 @@ namespace Bixie\Gls;
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Gls\Data\Broadcast;
-use Bixie\Gls\Data\Label;
+use Bixie\Gls\Label\Label;
 use Bixie\Gls\Unibox\Socket;
 use YOOtheme\Framework\Application;
 use YOOtheme\Framework\ApplicationAware;
@@ -77,30 +77,25 @@ class Gls extends ApplicationAware {
 
 		$label = new Label($shipment, $sender);
 
-		$shipment->savePdfString($this->app['path.pdf'], $label->createPdfLabel());
 		$shipment->setZplTemplate($label->createZplLabel());
+		$shipment->savePdfString($this->app['path.pdf'], $label->createPdfLabel());
+		$shipment->savePngString($this->app['path.image'], $label->createPngLabel());
 
 	}
 
-	public function htmlLabel (ShipmentGls $shipment, Sender $sender) {
-
-		$label = new Label($shipment, $sender);
-
-		return $label->getTemplateContents();
-
+	public function pngLabel (ShipmentGls $shipment) {
+		
+		if ($png = $shipment['png_path'] && file_exists($shipment['png_path'])) {
+			return $shipment['png_path'];
+		}
+		
+		return '';
+		
 	}
 
-	public function zplLabel (ShipmentGls $shipment, Sender $sender, $ip, $port = 9100) {
+	public function getTrackTrace (ShipmentGls $shipment, $redirto = 'Verlader') {
 
-		$label = new Label($shipment, $sender);
-
-		$label->printZplLabel($ip, $port);
-
-	}
-
-	public function getTrackTrace (ShipmentGls $shipment) {
-
-		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getGlsParcelNumber());
+		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getDomesticParcelNumberNl(), $redirto);
 
 	}
 

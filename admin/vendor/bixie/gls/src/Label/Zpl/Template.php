@@ -1,11 +1,11 @@
 <?php
 
-namespace Bixie\Gls\Zpl;
+namespace Bixie\Gls\Label\Zpl;
 
 use Zebra\Client;
 use Zebra\Zpl\Image;
 
-class ZplTemplate {
+class Template {
 	/**
 	 * @var string
 	 */
@@ -23,13 +23,12 @@ class ZplTemplate {
 	 */
 	protected $zpl;
 	/**
-	 * ZplTemplate constructor.
+	 * Template constructor.
 	 * @param string $raw_string
 	 */
 	public function __construct ($raw_string) {
 		$this->raw_string = $raw_string;
 		$this->zpl = new Builder();
-
 	}
 
 	/**
@@ -43,7 +42,7 @@ class ZplTemplate {
 		if ($this->image) {
 			$this->raw_string = preg_replace('/DG001\.(.*)\^XA/', $this->zpl->imageString('DG001', $this->image), $this->raw_string);
 		}
-		$this->raw_string = preg_replace('/(\t|\r|\n)/', '', $this->raw_string);
+//		$this->raw_string = preg_replace('/(\t|\r|\n)/', '', $this->raw_string);
 
 		return $this->output = $this->raw_string;
 	}
@@ -58,15 +57,5 @@ class ZplTemplate {
 		}
 		return $this;
 	}
-
-	/**
-	 * @param string $zpl
-	 * @param string $ip
-	 * @param int    $port
-	 */
-	public static function toPrinter ($zpl, $ip = '10.0.0.50', $port = 9100) {
-		$client = new Client($ip, $port);
-		$client->send($zpl);
-	}
-
+	
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bixie\Gls\Zpl;
+namespace Bixie\Gls\Label\Zpl;
 
 
 use Zebra\Zpl\Builder as BuilderBase;

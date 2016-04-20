@@ -7,7 +7,7 @@
         <div>
             <div class="uk-form-icon">
                 <i class="uk-icon-search"></i>
-                <input class="uk-margin-remove uk-form-width-small" type="search" v-model="filter.search" debounce="500">
+                <input class="uk-margin-remove uk-form-width-medium" type="search" v-model="filter.search" debounce="500">
             </div>
         </div>
         <div>
@@ -26,7 +26,6 @@
             </div>
         </div>
     </div>
-
 
     <table class="uk-table uk-table-hover" v-show="shipments">
         <thead>
@@ -151,12 +150,17 @@
                     </li>
                     <li v-show="shipment.pdf_url" class="uk-text-truncate">
                         <a :href="shipment.pdf_url">
-                            <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
-                            Etiket</a>
+                            <i class="uk-icon-download uk-margin-small-right"></i>
+                            Download PDF</a>
                     </li>
-                    <li v-show="shipment.domestic_parcel_number_nl" class="uk-text-truncate">
-                        <a @click="printZpl(shipment.domestic_parcel_number_nl)">
-                            <i class="uk-icon-print uk-margin-small-right"></i>
+                    <li v-show="printEnabled && pdfPrinter && shipment.domestic_parcel_number_nl" class="uk-text-truncate">
+                        <a @click="printPdf(shipment.domestic_parcel_number_nl)">
+                            <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
+                            Print PDF</a>
+                    </li>
+                    <li v-show="printEnabled && zplPrinter && shipment.zpl_template" class="uk-text-truncate">
+                        <a @click="printZpl(shipment.zpl_template)">
+                            <i class="uk-icon-barcode uk-margin-small-right"></i>
                             Print etiket</a>
                     </li>
                 </ul>
@@ -173,6 +177,21 @@
         </tbody>
     </table>
     <div v-else class="uk-margin uk-text-center"><i class="uk-icon-circle-o-notch uk-icon-spin"></i></div>
+
+    <div v-if="printEnabled" class="uk-grid uk-grid-width-medium-1-3 uk-form uk-flex-middle" data-uk-grid-margin>
+        <div>
+            <i class="uk-icon-print uk-text-success uk-margin-small-right"></i>
+            <label class="uk-form-label uk-margin-right">Printen ingeschakeld</label>
+        </div>
+        <div>
+            <i class="uk-icon-barcode uk-margin-small-right"></i>
+            <input type="text" v-model="zplPrinter" class="uk-form-width-medium uk-form-blank"/>
+        </div>
+        <div>
+            <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
+            <input type="text" v-model="pdfPrinter" class="uk-form-width-medium uk-form-blank"/>
+        </div>
+    </div>
 
 
     <v-modal v-ref:editshipmentmodal :large="true" :closed="cancelEdit">
@@ -214,6 +233,9 @@
 
         data: function () {
             return {
+                zplPrinter: '',
+                pdfPrinter: '',
+                printEnabled: false,
                 currentTab: 'pakket',
                 task: '',
                 error: '',
@@ -243,8 +265,23 @@
             }
         },
 
+        created: function () {
+            this.ninjaPrint = this.$ninjaPrint(this);
+            this.zplPrinter = this.config.user.zpl_printer;
+            this.pdfPrinter = this.config.user.pdf_printer;
+        },
+
         ready: function () {
             this.load(this.page);
+        },
+
+        events: {
+            'ninjaprint.enabled': function () {
+                this.printEnabled = true;
+            },
+            'ninjaprint.result': function (result) {
+                UIkit.notify(result.message, result.success ? 'success' : 'danger');
+            }
         },
 
         filters: {
@@ -422,9 +459,12 @@
                     this.$refs.editshipmentmodal.open();
                 }
             },
-            printZpl: function (domestic_parcel_number_nl) {
-                this.$http.get('/api/shipment/zpl/' + domestic_parcel_number_nl, {ip: '', port: ''}).then(function () {
-                    UIkit.notify('Label naar printer verzonden', 'success');
+            printZpl: function (zpl_template) {
+                this.ninjaPrint.zpl(this.zplPrinter, zpl_template);
+            },
+            printPdf: function (domestic_parcel_number_nl) {
+                this.$http.get('/api/shipment/pdf/' + domestic_parcel_number_nl, {'string': 1}).then(function (res) {
+                    this.ninjaPrint.pdf(this.pdfPrinter, res.data);
                 }, function (res) {
                     UIkit.notify(res.data.message || res.data, 'danger');
                 });

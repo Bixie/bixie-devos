@@ -42,6 +42,7 @@ window._ = require('lodash');
 
 //needs window.Vue
 require('vue-form');
+require('./lib/ninja-print')(Vue);
 
 Vue.field.templates.formrow = require('./templates/formrow.html');
 Vue.field.templates.raw = require('./templates/raw.html');
