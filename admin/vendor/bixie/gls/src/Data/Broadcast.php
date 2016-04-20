@@ -152,7 +152,7 @@ class Broadcast implements \ArrayAccess {
 			}
 		}
 		$diff = 10 - ($sum%10);
-		return (int) $numberBase.$diff;
+		return (int) $numberBase.($diff < 10 ? $diff : 0);
 
 	}
 
