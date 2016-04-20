@@ -93,11 +93,16 @@
                                         <i class="uk-icon-print uk-margin-small-right"></i>
                                         Print PDF</a>
                                 </dd>
-                                <dt v-show="printEnabled && shipment.zpl_template"><i class="uk-icon-barcode uk-margin-small-right"></i>Etiket</dt>
+                                <dt v-show="(printEnabled && shipment.zpl_template) || shipment.png_url"><i class="uk-icon-barcode uk-margin-small-right"></i>Etiket</dt>
                                 <dd v-show="printEnabled && zplPrinter && shipment.zpl_template">
                                     <a @click="printZpl(shipment.zpl_template)" class="uk-display-block uk-text-truncate">
                                         <i class="uk-icon-print uk-margin-small-right"></i>
                                         Print etiket</a>
+                                    <dd v-show="shipment.png_url">
+                                        <a :href="shipment.png_url" data-uk-lightbox>
+                                            <i class="uk-icon-file-image-o uk-margin-small-right"></i>
+                                            Bekijk etiket</a>
+                                    </dd>
                                 </dd>
                             </dl>
                         </div>

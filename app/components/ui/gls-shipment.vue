@@ -163,6 +163,11 @@
                             <i class="uk-icon-barcode uk-margin-small-right"></i>
                             Print etiket</a>
                     </li>
+                    <li v-show="shipment.png_url">
+                        <a :href="shipment.png_url" data-uk-lightbox>
+                            <i class="uk-icon-file-image-o uk-margin-small-right"></i>
+                            Bekijk etiket</a>
+                    </li>
                 </ul>
 
                 <button class="uk-button uk-button-small" @click="editShipment(shipment.id)">
