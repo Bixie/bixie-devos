@@ -40,7 +40,28 @@ class Template {
 		}
 
 		if ($this->image) {
-			$this->raw_string = preg_replace('/DG001\.(.*)\^XA/', $this->zpl->imageString('DG001', $this->image), $this->raw_string);
+			if (preg_match('/DG001\.GRF,02688(.*)\^XA/', $this->raw_string)) { //testomgeving zpl
+
+				$this->raw_string = preg_replace('/DG001\.(.*)\^XA/', $this->zpl->imageString('DG001', $this->image), $this->raw_string);
+
+			} else { //live zpl
+
+				$this->raw_string = preg_replace([
+					'/DG000\.(.*)\^XA/',
+					'/\^FO36,1015\^XG000\.GRF,1,1\^FS/',
+					'/\^FO780,453\^FR\^GB0,588,4\^FS/',
+					'/\^FO382,588\^FR\^GB241,0,8\^FS/',
+					'/\^FO37,453\^FR\^GB0,588,4\^FS/'
+
+				], [
+					$this->zpl->imageString('DG001', $this->image),
+					'^FO560,1075^XG001.GRF,1,1^FS',
+					'^FO780,453^FR^GB0,728,4^FS',
+					'^FO37,1180^FR^GB747,0,4^FS',
+					'^FO37,453^FR^GB0,728,4^FS'
+				], $this->raw_string);
+
+			}
 		}
 //		$this->raw_string = preg_replace('/(\t|\r|\n)/', '', $this->raw_string);
 
