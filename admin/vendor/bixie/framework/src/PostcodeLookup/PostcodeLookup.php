@@ -31,16 +31,19 @@ class PostcodeLookup {
 		$this->api_secret = $api_secret;
 	}
 
+	/**
+	 * @param string $postcode
+	 * @param int $huisnr
+	 * @param string $toev
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public function lookup ($postcode, $huisnr, $toev) {
 
 		if (!$this->api_url || !$this->api_name || !$this->api_secret) {
-			throw new \InvalidArgumentException('Instellingen niet compleet.');
+			throw new \InvalidArgumentException('Instellingen niet compleet.', 401);
 		}
 
-		return $this->send($postcode, $huisnr, $toev);
-	}
-
-	protected function send ($postcode, $huisnr, $toev) {
 		$url = sprintf('%s/rest/addresses/%s/%s/%s', $this->api_url, urlencode($postcode), urlencode($huisnr), urlencode($toev));
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -50,10 +53,16 @@ class PostcodeLookup {
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_name .':'. $this->api_secret);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'BixiePostcodeLookup');
 		$result = curl_exec($ch);
+		curl_close($ch);
+		
 		$result = json_decode($result, true);
-		if (false === $result || curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
-			switch (@$result['exceptionId'])
-			{
+
+		if (false === $result) {
+			throw new \Exception('API niet bereikbaat', 503);
+		}
+		
+		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+			switch (@$result['exceptionId']) {
 				case 'PostcodeNl_Controller_Address_InvalidPostcodeException':
 					$exception = 'Geen geldige postcode';
 					break;
@@ -67,11 +76,8 @@ class PostcodeLookup {
 
 			throw new \Exception($exception, 404);
 		}
-
-		curl_close($ch);
-
+		
 		return $result;
-
 	}
 
 }
