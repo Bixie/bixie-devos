@@ -47,9 +47,7 @@
         },
         'pc_api_url': '',
         'pc_api_name': '',
-        'pc_api_secret': '',
-        'zpl_ip': '127.0.0.1',
-        'zpl_port': 9100
+        'pc_api_secret': ''
     };
 
     module.exports = {
@@ -183,21 +181,6 @@
             'pc_api_secret': {
                 type: 'text',
                 label: 'Postcode.nl API secret',
-                attrs: {'class': 'uk-width-1-1'}
-            },
-            'zplTitle': {
-                type: 'title',
-                title: 'ZPL Printer',
-                attrs: {'class': 'uk-margin-remove'}
-            },
-            'zpl_ip': {
-                type: 'text',
-                label: 'Printer IP address',
-                attrs: {'class': 'uk-width-1-1'}
-            },
-            'zpl_port': {
-                type: 'number',
-                label: 'Priner port number',
                 attrs: {'class': 'uk-width-1-1'}
             }
 
