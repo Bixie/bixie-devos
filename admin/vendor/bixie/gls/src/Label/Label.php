@@ -52,7 +52,7 @@ class Label {
 		if (empty($stream['zpl_raw'])) {
 			throw new \InvalidArgumentException(sprintf('Geen ZPL template gevonden %s.', $this->shipment['domestic_parcel_number_nl']));
 		}
-		return (new ZplTemplate($stream['zpl_raw']))->addSenderLogo(JPATH_ROOT . $this->sender['image'])->render();
+		return (new ZplTemplate($stream['zpl_raw']))->addSenderLogo(($this->sender['image'] ? JPATH_ROOT . $this->sender['image'] : ''))->render();
 	}
 
 	/**
