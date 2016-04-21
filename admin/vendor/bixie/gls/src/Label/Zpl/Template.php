@@ -2,7 +2,6 @@
 
 namespace Bixie\Gls\Label\Zpl;
 
-use Zebra\Client;
 use Zebra\Zpl\Image;
 
 class Template {

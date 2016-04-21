@@ -4,6 +4,7 @@ namespace Bixie\Devos\Controller;
 
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
+use Bixie\Framework\PostcodeLookup\PostcodeLookup;
 use Bixie\Framework\User\User;
 use Bixie\Framework\Utils\Query;
 use YOOtheme\Framework\Routing\Controller;
@@ -255,6 +256,23 @@ class ShipmentApiController extends Controller {
 
 	}
 
+	public function postcodeCheckAction ($postcode, $huisnr, $toev = '') {
+		$return = new \ArrayObject;
+		$settings = $this['settings'];
+		$lookup = new PostcodeLookup($settings['pc_api_url'], $settings['pc_api_name'], $settings['pc_api_secret']);
+
+		try {
+			
+			$return['result'] = $lookup->lookup($postcode, $huisnr, $toev);
+			
+			return $this['response']->json($return, 200);
+			
+		} catch (\Exception $e) {
+			throw new HttpException(400, $e->getMessage(), $e, $e->getCode());
+		}
+
+	}
+
 	/**
 	 * @param array $data
 	 * @return array|bool
@@ -342,7 +360,8 @@ class ShipmentApiController extends Controller {
 			array('/api/shipment/createbulk', 'createBulkShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/png/:domestic_parcel_number_nl', 'labelPngShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/pdf/:domestic_parcel_number_nl', 'pdfShipmentGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos'))
+			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos')),
+			array('/api/shipment/postcode', 'postcodeCheckAction', 'POST', array('access' => 'client_devos'))
 		);
 	}
 }

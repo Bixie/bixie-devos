@@ -242,11 +242,15 @@
                 pdfPrinter: '',
                 printEnabled: false,
                 currentTab: 'pakket',
+                postcode: '',
+                huisnr: '',
+                toev: '',
                 task: '',
                 error: '',
                 progress: 0,
                 progressmessage: '',
                 progresserror: '',
+                lookup: false,
                 sending: false,
                 saving: {},
                 editloading: {},
@@ -267,7 +271,8 @@
                 count: 0,
                 total: 0,
                 pages: 1,
-                page: 0
+                page: 0,
+                form: {}
             }, window.$data)
         },
 
@@ -514,6 +519,35 @@
                     return options[value];
                 }
                 return value;
+            },
+
+            postcodeLookup: function () {
+                var data = {
+                    postcode: this.postcode.replace(/\s+/, '').toUpperCase(),
+                    huisnr: Number(this.huisnr),
+                    toev: this.toev
+                };
+
+                if (data.postcode.length != 6 || !data.huisnr) return;
+                this.lookup = true;
+
+                this.$http.post('/api/shipment/postcode', data).then(function (res) {
+                    if (res.data.result) {
+                        console.log(res.data);
+                        this.$set('shipment.receiver_zip_code', res.data.result.postcode);
+                        this.$set('shipment.receiver_street', res.data.result.street + ' '
+                                + res.data.result.houseNumber
+                                + (res.data.result.houseNumberAddition ? ' ' + res.data.result.houseNumberAddition : ''));
+                        this.$set('shipment.receiver_place', res.data.result.city);
+                    }
+                    this.lookup = false;
+                }, function (res) {
+                    console.log(res.data);
+                    this.lookup = false;
+                    UIkit.notify(res.data.message || res.data, 'danger');
+                });
+
+
             }
 
         },
@@ -551,6 +585,9 @@
                     this.shipment.data.express_service_flag_sat = false;
                     this.shipment.data.express_flag = false;
                 }
+            },
+            'postcode + huisnr + toev': function () {
+                this.postcodeLookup();
             }
         },
 
@@ -559,38 +596,6 @@
         },
 
         fields1: {
-            'receiver_zip_code': {
-                type: 'text',
-                label: 'Postcode ontvanger *',
-                attrs: {'name': 'zip_code', 'class': 'uk-width-1-1', 'required': true}
-            },
-            'receiver_street': {
-                type: 'text',
-                label: 'Ontvanger adres *',
-                attrs: {'name': 'address', 'class': 'uk-width-1-1', 'required': true}
-            },
-            'receiver_place': {
-                type: 'text',
-                label: 'Ontvanger plaats *',
-                attrs: {'name': 'city', 'class': 'uk-width-1-1', 'required': true}
-            },
-            'customer_reference': {
-                type: 'text',
-                label: 'Klantreferentie *',
-                attrs: {'name': 'referentie', 'class': 'uk-width-1-1', maxLength: 10, 'required': true}
-            },
-            'receiver_name_2': {
-                type: 'text',
-                label: 'Ontvanger naam 2',
-                attrs: {'name': 'tav', 'class': 'uk-width-1-1'}
-            },
-            'receiver_name_3': {
-                type: 'text',
-                label: 'Ontvanger naam 3',
-                attrs: {'name': 'name_3', 'class': 'uk-width-1-1'}
-            }
-        },
-        fields2: {
             'receiver_contact': {
                 type: 'text',
                 label: 'Contact ontvanger',
@@ -613,7 +618,7 @@
             }
         },
 
-        fields3: {
+        fields2: {
             'date_of_shipping': {
                 type: 'format',
                 label: 'Verzenddatum',
@@ -636,7 +641,7 @@
             }
         },
 
-        fields4: {
+        fields3: {
             'data.label_template': {
                 type: 'select',
                 label: 'Print template',
@@ -656,7 +661,7 @@
             }
         },
 
-        fields5: {
+        fields4: {
             'sender_name_1': {
                 type: 'text',
                 label: 'Afzender naam 1 *',

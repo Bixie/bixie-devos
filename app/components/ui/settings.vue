@@ -43,8 +43,11 @@
         'glsport_test': 3032,
         'gls_test': 0,
         'gls_tracking' : {
-            encryptionCode: 123
+            encryptionCode: 541
         },
+        'pc_api_url': '',
+        'pc_api_name': '',
+        'pc_api_secret': '',
         'zpl_ip': '127.0.0.1',
         'zpl_port': 9100
     };
@@ -161,6 +164,26 @@
                 type: 'number',
                 label: 'Encryptie Code *',
                 attrs: {'class': 'uk-width-1-1', 'min': 100, 'max': 999, 'required': true}
+            },
+            'pc_api': {
+                type: 'title',
+                title: 'Postcode.nl API',
+                attrs: {'class': 'uk-margin-remove'}
+            },
+            'pc_api_url': {
+                type: 'text',
+                label: 'Postcode.nl API url',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'pc_api_name': {
+                type: 'text',
+                label: 'Postcode.nl API username',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'pc_api_secret': {
+                type: 'text',
+                label: 'Postcode.nl API secret',
+                attrs: {'class': 'uk-width-1-1'}
             },
             'zplTitle': {
                 type: 'title',
