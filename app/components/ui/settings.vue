@@ -42,6 +42,10 @@
         'glsport_live': 3033,
         'glsport_test': 3032,
         'gls_test': 0,
+        'gls_ftp_host': '',
+        'gls_ftp_user': '',
+        'gls_ftp_pass': '',
+        'gls_ftp_port': 21,
         'gls_tracking' : {
             encryptionCode: 541
         },
@@ -181,6 +185,31 @@
             'pc_api_secret': {
                 type: 'text',
                 label: 'Postcode.nl API secret',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'glsFtp': {
+                type: 'title',
+                title: 'GLS FTP syncing',
+                attrs: {'class': 'uk-margin-remove'}
+            },
+            'gls_ftp_host': {
+                type: 'text',
+                label: 'GLS FTP Server',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'gls_ftp_user': {
+                type: 'text',
+                label: 'GLS FTP username',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'gls_ftp_pass': {
+                type: 'text',
+                label: 'GLS FTP password',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'gls_ftp_port': {
+                type: 'number',
+                label: 'GLS FTP port',
                 attrs: {'class': 'uk-width-1-1'}
             }
 

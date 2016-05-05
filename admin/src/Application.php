@@ -10,6 +10,7 @@ use Bixie\Framework\Routing\ResponseProvider;
 use Bixie\Framework\User\User;
 use Bixie\Devos\User\UserProvider;
 use Bixie\Gls\Gls;
+use Bixie\Gls\Status\Ftp\FtpGls;
 use YOOtheme\Framework\Application as BaseApplication;
 use YOOtheme\Framework\Event\EventSubscriberInterface;
 
@@ -81,6 +82,21 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		//override userprovider
 		$this['users'] = function ($app) {
 			return new UserProvider($app, $app['component'], isset($app['permissions']) ? $app['permissions'] : array());
+		};
+		//setup ftp connection ftp-status
+		$this['gls.ftp'] = function ($app) {
+			return function ($file = null) use ($app) {
+				$ftp = new FtpGls(
+					$app['config']['gls_ftp_host'],
+					$app['config']['gls_ftp_user'],
+					$app['config']['gls_ftp_pass'],
+					$app['config']['gls_ftp_port']
+				);
+				if ($file) {
+					return $ftp->getFileContents($file);
+				}
+				return $ftp;
+			};
 		};
 
 		/** @var User $user */

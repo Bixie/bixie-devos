@@ -34,7 +34,8 @@
     "tecnickcom/tcpdf": "^6.2.12",
     "webit/gls-tracking": "dev-master",
     "symfony/http-foundation": "^3.0",
-    "robgridley/zebra": "^1.0"
+    "robgridley/zebra": "^1.0",
+    "touki/ftp": "^1.2"
   },
   "autoload": {
     "psr-4": {
