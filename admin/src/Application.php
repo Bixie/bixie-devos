@@ -2,6 +2,7 @@
 
 namespace Bixie\Devos;
 
+use Bixie\Devos\Model\GlsTracking\GlsTrackingProvider;
 use Bixie\Devos\Model\Sender\SenderProvider;
 use Bixie\Devos\Model\Shipment\ShipmentGlsProvider;
 use Bixie\Devos\Config\Settings;
@@ -11,6 +12,7 @@ use Bixie\Framework\User\User;
 use Bixie\Devos\User\UserProvider;
 use Bixie\Gls\Gls;
 use Bixie\Gls\Status\Ftp\FtpGls;
+use Bixie\Gls\Status\Status;
 use YOOtheme\Framework\Application as BaseApplication;
 use YOOtheme\Framework\Event\EventSubscriberInterface;
 
@@ -44,6 +46,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		//providers
 		$this['shipmentgls']   = new ShipmentGlsProvider($this);
 		$this['sender']   = new SenderProvider($this);
+		$this['glstracking'] = new GlsTrackingProvider($this);
 
 		$this->extend('locator', function ($locator, $app) {
             return $locator->addPath('', $app['path']);
@@ -65,10 +68,11 @@ class Application extends BaseApplication implements EventSubscriberInterface
     {
         // controller
         $this['controllers']->add('Bixie\Devos\Controller\DashboardController');
-        $this['controllers']->add('Bixie\Devos\Controller\ShipmentController');
+        $this['controllers']->add('Bixie\Devos\Controller\GlsTrackingController');
         $this['controllers']->add('Bixie\Devos\Controller\SiteController');
         $this['controllers']->add('Bixie\Devos\Controller\SenderApiController');
         $this['controllers']->add('Bixie\Devos\Controller\ShipmentApiController');
+        $this['controllers']->add('Bixie\Devos\Controller\GlsTrackingApiController');
 
 
         // combine assets
@@ -93,10 +97,13 @@ class Application extends BaseApplication implements EventSubscriberInterface
 					$app['config']['gls_ftp_port']
 				);
 				if ($file) {
-					return $ftp->getFileContents($file);
+					return $ftp->getFileContents($file, $app['path.xml']);
 				}
 				return $ftp;
 			};
+		};
+		$this['gls.status'] = function ($app) {
+		    return new Status($app);
 		};
 
 		/** @var User $user */
@@ -144,7 +151,6 @@ class Application extends BaseApplication implements EventSubscriberInterface
     {
 		$this['styles']->add('devos-admin', 'assets/css/admin.css');
 
-        $this['scripts']->add('devos-admin-dashboard', 'assets/js/admin-dashboard.js', array('vue'));
     }
 
     public static function getSubscribedEvents()

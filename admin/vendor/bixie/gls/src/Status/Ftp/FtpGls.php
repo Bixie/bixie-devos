@@ -42,25 +42,30 @@ class FtpGls {
 	}
 
 	/**
-	 * @param $path
+	 * @param      $path
+	 * @param      $dest_folder
+	 * @param bool $delete
 	 * @return string
 	 * @throws GlsException
 	 */
-	public function getFileContents ($path) {
+	public function getFileContents ($path, $dest_folder, $delete = false) {
 
 		try {
 			$contents = '';
 
 			$file = $this->ftp->findFileByName(basename($path), new Directory(dirname($path)));
 
+			$dest = $dest_folder . '/' . basename($path);
+
 			if (null !== $file) {
 
-				$temp = tmpfile();
-				$this->ftp->download($temp, $file);
+				$this->ftp->download($dest, $file);
 				
-				fseek($temp, 0);
-				$contents = stream_get_contents($temp);
-				fclose($temp); // this removes the file				
+				if ($contents = file_get_contents($dest) and $delete) {
+
+					$this->ftp->delete($file);
+
+				}
 
 			}
 			

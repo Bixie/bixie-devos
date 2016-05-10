@@ -7,6 +7,8 @@
             <i class="uk-icon-paper-plane-o uk-margin-small-right"></i>Versturen</a></li>
         <li :class="{'uk-active': currentTab == 'instellingen'}"><a href="#" @click.prevent="currentTab = 'instellingen'">
             <i class="uk-icon-cogs uk-margin-small-right"></i>Instellingen</a></li>
+        <li v-if="shipment.parcel.ParcelNumber" :class="{'uk-active': currentTab == 'parcel'}"><a href="#" @click.prevent="currentTab = 'parcel'">
+            <i class="uk-icon-refresh uk-margin-small-right"></i>GLS info</a></li>
     </ul>
 
     <div id="shipment-tabs" class="uk-margin">
@@ -318,6 +320,110 @@
             </div>
 
         </div>
+        <div v-show="currentTab == 'parcel'">
+            <div class="uk-grid uk-grid-width-medium-1-2" data-uk-grid-margin>
+                <div>
+                    <h3>GLS Parcel informatie</h3>
+
+                    <dl class="uk-description-list-horizontal">
+                        <dt>Aangemeld op</dt>
+                        <dd>{{ shipment.parcel.InsertTimeStamp | date }}</dd>
+                        <dt>Type product</dt>
+                        <dd>{{ shipment.parcel.ProductName }} ({{ shipment.parcel.ProductCode }})</dd>
+                        <dt>GLS klantnummer</dt>
+                        <dd>{{ shipment.parcel.CustomerID }}</dd>
+                        <dt>GLS nummer</dt>
+                        <dd>{{ shipment.parcel.ParcelNumber }}</dd>
+                        <dt>Referentie</dt>
+                        <dd>{{ shipment.parcel.Reference }}</dd>
+                        <template v-if="shipment.parcel.Weight">
+                            <dt>Gewicht</dt>
+                            <dd>{{ shipment.parcel.Weight }}</dd>
+                        </template>
+                    </dl>
+
+
+                    <div class="uk-grid uk-grid-width-1-2">
+                        <div v-for="address in shipment.parcel.Addresses">
+
+                            <dl>
+                                <dd>
+                                    <i class="uk-icon-tag uk-icon-justify uk-margin-small-right" title="Type" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ getAdresType(address.AddressType) }}</span>
+                                </dd>
+                                <dd>
+                                    <i class="uk-icon-user uk-icon-justify uk-margin-small-right" title="Naam 1" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.Name1 }}</span>
+                                </dd>
+                                <dd v-if="address.Name2">
+                                    <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Naam 2" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.Name2 }}</span>
+                                </dd>
+                                <dd v-if="address.Name3">
+                                    <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Naam 3" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.Name3 }}</span>
+                                </dd>
+                                <dd>
+                                    <i class="uk-icon-building-o uk-icon-justify uk-margin-small-right" title="Adres" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.Street1 }} {{ address.HouseNo }} {{ address.HouseNoExt }}</span>
+                                </dd>
+                                <dd v-if="address.Street2">
+                                    <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Adres 2" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.Street2 }}</span>
+                                </dd>
+                                <dd>
+                                    <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Postcode" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.ZipCode }}</span>
+                                </dd>
+                                <dd>
+                                    <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Plaats" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.City }}</span>
+                                </dd>
+                                <dd>
+                                    <i class="uk-icon-globe uk-icon-justify uk-margin-small-right" title="Land" data-uk-tooltip="{delay: 200}"></i>
+                                    <span>{{ address.CountryName }}</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+
+                    <p>Services</p>
+                </div>
+                <div>
+                    <h3>Events</h3>
+
+                    <ul v-if="shipment.events" class="uk-list uk-list-line">
+                        <li v-for="event in shipment.events">
+                            <div class="uk-grid uk-grid-width-1-2" data-uk-grid-margin>
+                                <div>
+                                    <dl>
+                                        <dt>Bron</dt>
+                                        <dd>{{ event.Source }}</dd>
+                                        <dt>Tijdstip event</dt>
+                                        <dd>{{ event.InsertTimeStamp | date }}</dd>
+                                        <dt>Locatie</dt>
+                                        <dd>{{ event.LocationName }}, {{ event.CountryName }}</dd>
+                                    </dl>
+                                </div>
+                                <div>
+                                    <dl>
+                                        <dt>Details</dt>
+                                        <dd>{{ event.EventReason.Description }}</dd>
+                                        <dd>{{ event.EventReason.EventCode }} <small>({{ event.EventReason.EventNumber }})</small></dd>
+                                        <dd>{{ event.EventReason.ReasonCode }} <small>({{ event.EventReason.ReasonNumber }})</small></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="uk-modal-footer uk-text-right">
         <button type="button" class="uk-button uk-margin-small-right uk-modal-close">Sluiten</button>

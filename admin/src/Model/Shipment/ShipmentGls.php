@@ -6,6 +6,7 @@ namespace Bixie\Devos\Model\Shipment;
 use Bixie\Framework\Traits\CreatedModifiedTrait;
 use Bixie\Framework\Traits\DataTrait;
 use Bixie\Framework\Utils\Arr;
+use Bixie\Gls\Data\Event;
 
 class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAccess {
 
@@ -151,6 +152,14 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 * @var string
 	 */
 	protected $gls_stream = '';
+	/**
+	 * @var array
+	 */
+	protected $parcel;
+	/**
+	 * @var array
+	 */
+	protected $events;
 
 	/**
 	 * @return int
@@ -691,6 +700,49 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getParcel () {
+		if (!$this->parcel || is_string($this->parcel)) {
+			$this->parcel = json_decode($this->parcel, true) ?: [];
+		}
+		return $this->parcel;
+	}
+
+	/**
+	 * @param array $parcel
+	 */
+	public function setParcel ($parcel) {
+		$this->parcel = $parcel;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEvents () {
+		if (!$this->events || is_string($this->events)) {
+			$this->events = json_decode($this->events, true) ?: [];
+		}
+		return $this->events;
+	}
+
+	/**
+	 * @param Event $event
+	 */
+	public function addEvent (Event $event) {
+		$this->getEvents();
+		$this->offsetSet('gls_status', $event->EventReason->Description);
+		$this->events[$event->EventTimeStamp] = $event;
+	}
+
+	/**
+	 * @param array $events
+	 */
+	public function setEvents ($events) {
+		$this->events = $events;
+	}
+
+	/**
 	 * @param string $gls_stream
 	 * @return ShipmentGls
 	 */
@@ -790,6 +842,8 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'parcel_quantity' => $this->parcel_quantity,
 			'sap_number' => $this->sap_number,
 			'data' => $this->getData(),
+			'parcel' => $this->getParcel(),
+			'events' => $this->getEvents(),
 			'state' => $this->state,
 			'gls_stream' => $this->gls_stream,
 			'pdf_path' => $this->pdf_path,

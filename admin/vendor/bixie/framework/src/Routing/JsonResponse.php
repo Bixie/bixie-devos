@@ -19,7 +19,7 @@ class JsonResponse extends JsonResponseBase
 	{
 		parent::__construct(null, $status, $headers);
 
-		$this->options = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK | JSON_FORCE_OBJECT;
+		$this->options = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK;
 		$this->setData($data);
 	}
 

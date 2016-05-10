@@ -16,6 +16,7 @@ $app['autoloader']  = $loader;
 $app['path.cache']  = rtrim(JPATH_SITE, '/').'/media/bix_devos/cache';
 $app['path.pdf']    = dirname(JPATH_ROOT) . '/pdf';
 $app['path.image']  = rtrim(JPATH_SITE, '/').'/media/bix_devos/images';
+$app['path.xml']  = dirname(JPATH_ROOT) . '/xml';
 $app['component']   = 'com_'.$app['name'];
 $app['permissions'] = [
 	'devos.client' => 'client_devos',

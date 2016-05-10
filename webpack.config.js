@@ -4,6 +4,7 @@ module.exports = {
     entry: {
         "admin-dashboard" : "./app/views/admin/dashboard.js",
         "admin-shipments" : "./app/views/admin/shipments.js",
+        "admin-gls-tracking" : "./app/views/admin/gls-tracking.js",
         "dashboard" : "./app/views/dashboard.js",
         "vue": "./app/vue"
     },

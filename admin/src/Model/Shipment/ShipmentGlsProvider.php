@@ -10,6 +10,8 @@ class ShipmentGlsProvider extends ApplicationAware {
 
 	protected $class = 'Bixie\Devos\Model\Shipment\ShipmentGls';
 	protected $table = '@dv_shipment_gls';
+	
+	protected static $cacheDomestic = [];
 
 	/**
 	 * Constructor.
@@ -46,11 +48,14 @@ class ShipmentGlsProvider extends ApplicationAware {
 	 * @return bool|ShipmentGls
 	 */
 	public function findDomesticParcelNumberNl ($domestic_parcel_number_nl) {
-		return $this['db']->fetchObject(
-			"SELECT * FROM {$this->table} WHERE domestic_parcel_number_nl = :domestic_parcel_number_nl",
-			compact('domestic_parcel_number_nl'),
-			$this->class
-		);
+		if (!isset(static::$cacheDomestic[$domestic_parcel_number_nl])) {
+			static::$cacheDomestic[$domestic_parcel_number_nl] = $this['db']->fetchObject(
+				"SELECT * FROM {$this->table} WHERE domestic_parcel_number_nl = :domestic_parcel_number_nl",
+				compact('domestic_parcel_number_nl'),
+				$this->class
+			);
+		}
+		return static::$cacheDomestic[$domestic_parcel_number_nl];
 	}
 
 	/**
@@ -98,11 +103,20 @@ class ShipmentGlsProvider extends ApplicationAware {
 		if (isset($store['data'])) {
 			$store['data'] = !empty($store['data']) ? json_encode($store['data'], true) : '[]';
 		}
+		if (isset($store['parcel'])) {
+			$store['parcel'] = !empty($store['parcel']) ? json_encode($store['parcel'], true) : '[]';
+		}
+		if (isset($store['events'])) {
+			$store['events'] = !empty($store['events']) ? json_encode($store['events'], true) : '[]';
+		}
 		if (!isset($store['pdf_path'])) {
 			$store['pdf_path'] = '';
 		}
 		if (!isset($store['zpl_template'])) {
 			$store['zpl_template'] = '';
+		}
+		if (!isset($store['gls_stream'])) {
+			$store['gls_stream'] = '';
 		}
 		unset($store['pdf_url']);
 		unset($store['png_url']);
