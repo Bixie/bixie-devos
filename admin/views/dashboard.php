@@ -1,5 +1,5 @@
 <?php
-$app['scripts']->add('devos-dashboard', 'assets/js/dashboard.js', ['uikit-pagination']);
+$app['scripts']->add('devos-dashboard', 'assets/js/dashboard.js', ['vue', 'uikit-pagination']);
 ?>
 
 <div id="devos-dashboard" class="uk-noconflict">

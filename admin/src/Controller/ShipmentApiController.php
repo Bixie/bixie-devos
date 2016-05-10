@@ -33,18 +33,20 @@ class ShipmentApiController extends Controller {
 		}
 
 		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
-			'gls_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
+			'gls_parcel_number', 'klantnummer', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
 			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place'
 		])), ['search' => "%{$search}%"]);
 
-		/** @var User $user */
-		$user = $this['users']->get();
+		if (!$this['admin']) {
+			/** @var User $user */
+			$user = $this['users']->get();
 
-		if (!$user['klantnummer']) {
-			throw new HttpException(403, 'Geen klantnummer bekend');
+			if (!$user['klantnummer']) {
+				throw new HttpException(403, 'Geen klantnummer bekend');
+			}
+
+			$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']]);
 		}
-
-		$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']]);
 
 		$order_col = in_array($order, [
 				'gls_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'

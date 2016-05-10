@@ -114,6 +114,10 @@
             <td>
                 <dl>
                     <dd>
+                        <i class="uk-icon-hashtag uk-icon-justify uk-margin-small-right" title="Klantnummer" data-uk-tooltip="{delay: 200}"></i>
+                        <strong>{{ shipment.klantnummer }}</strong>
+                    </dd>
+                    <dd>
                         <i class="uk-icon-tag uk-icon-justify uk-margin-small-right" title="Klantreferentie" data-uk-tooltip="{delay: 200}"></i>
                         <strong>{{ shipment.customer_reference }}</strong>
                     </dd>
@@ -140,7 +144,8 @@
                 </dl>
             </td>
             <td>
-                {{ shipment.state }}<br>
+                <em v-if=" shipment.data.gls_status">{{ shipment.data.gls_status }}</em><br>
+                {{ shipment.state }}
                 <ul class="uk-list">
                     <li>
                         <a v-show="shipment.data.track_trace" :href="shipment.data.track_trace"
@@ -548,6 +553,12 @@
                 });
 
 
+            },
+            getAdresType: function (adresType) {
+                return {
+                            'DELADR' : 'Afleveradres',
+                            'REQADR' : 'Afzenderadres'
+                        }[adresType] || adresType;
             }
 
         },

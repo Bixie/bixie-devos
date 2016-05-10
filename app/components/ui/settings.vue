@@ -46,6 +46,7 @@
         'gls_ftp_user': '',
         'gls_ftp_pass': '',
         'gls_ftp_port': 21,
+        'gls_ftp_remove': 0,
         'gls_tracking' : {
             encryptionCode: 541
         },
@@ -211,6 +212,15 @@
                 type: 'number',
                 label: 'GLS FTP port',
                 attrs: {'class': 'uk-width-1-1'}
+            },
+            'gls_ftp_remove': {
+                type: 'select',
+                label: 'Verwijder statusbestand na verwerking',
+                options: {
+                    'Ja': 1,
+                    'Nee': 0
+                },
+                attrs: {'class': 'uk-form-width-medium'}
             }
 
         }

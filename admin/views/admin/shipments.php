@@ -1,5 +1,5 @@
 <?php
-$app['scripts']->add('devos-admin-shipments', 'assets/js/admin-shipments.js', array('vue'));
+$app['scripts']->add('devos-admin-shipments', 'assets/js/admin-shipments.js', ['vue', 'uikit-pagination']);
 ?>
 <div id="devos-shipments" class="uk-noconflict">
 
@@ -8,6 +8,7 @@ $app['scripts']->add('devos-admin-shipments', 'assets/js/admin-shipments.js', ar
 			<ul class="uk-nav uk-nav-side">
 				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos')?>">Dashboard</a></li>
 				<li class="uk-active"><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/shipments')?>">Verzendingen</a></li>
+				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/gls-tracking')?>">GLS Tracking</a></li>
 			</ul>
 
 		</div>

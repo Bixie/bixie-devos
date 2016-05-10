@@ -23,7 +23,7 @@ trait DataTrait {
 	 * @param array $data
 	 */
 	public function addData ($data) {
-		$this->data = array_merge($this->data, $data);
+		$this->data = array_merge($this->getData(), $data);
 	}
 
 	/**
