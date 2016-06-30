@@ -327,7 +327,7 @@
 
                     <dl class="uk-description-list-horizontal">
                         <dt>Aangemeld op</dt>
-                        <dd>{{ shipment.parcel.InsertTimeStamp | date }}</dd>
+                        <dd>{{ shipment.parcel.InsertTimeStamp | datetime }}</dd>
                         <dt>Type product</dt>
                         <dd>{{ shipment.parcel.ProductName }} ({{ shipment.parcel.ProductCode }})</dd>
                         <dt>GLS klantnummer</dt>
@@ -401,7 +401,7 @@
                                         <dt>Bron</dt>
                                         <dd>{{ event.Source }}</dd>
                                         <dt>Tijdstip event</dt>
-                                        <dd>{{ event.InsertTimeStamp | date }}</dd>
+                                        <dd>{{ event.InsertTimeStamp | datetime }}</dd>
                                         <dt>Locatie</dt>
                                         <dd>{{ event.LocationName }}, {{ event.CountryName }}</dd>
                                     </dl>

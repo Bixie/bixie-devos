@@ -19,7 +19,6 @@ function install (Vue) {
     Vue.component('v-modal', require('./components/modal.vue'));
     Vue.component('v-pagination', require('./components/pagination'));
 
-    Vue.directive('datetime', require('./directives/datetime'));
     Vue.directive('confirm', require('./directives/confirm'));
     Vue.directive('spinner', require('./directives/spinner'));
 
@@ -43,6 +42,7 @@ window._ = require('lodash');
 //needs window.Vue
 require('vue-form');
 require('./lib/ninja-print')(Vue);
+require('./lib/filters')(Vue);
 
 Vue.field.templates.formrow = require('./templates/formrow.html');
 Vue.field.templates.raw = require('./templates/raw.html');
