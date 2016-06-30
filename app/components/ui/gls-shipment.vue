@@ -3,12 +3,30 @@
 
     <div v-if="error" class="uk-alert uk-alert-danger">{{ error }}</div>
 
-    <div class="uk-flex uk-flex-space-between uk-flex-middle">
+    <div class="uk-flex uk-flex-space-between uk-flex-middle uk-flex-wrap" data-uk-margin="">
         <div>
             <div class="uk-form-icon">
                 <i class="uk-icon-search"></i>
-                <input class="uk-margin-remove uk-form-width-medium" type="search" v-model="filter.search" debounce="500">
+                <input class="uk-margin-remove uk-form-width-medium" placeholder="Pakketnummer, referentie, adres..."
+                       type="search" v-model="filter.search" debounce="500">
             </div>
+        </div>
+        <div v-if="isAdmin">
+            <div class="uk-form-icon">
+                <i class="uk-icon-search"></i>
+                <input class="uk-margin-remove uk-form-width-small" placeholder="De Vos klantnummer"
+                       type="search" v-model="filter.klantnummer" debounce="500">
+            </div>
+        </div>
+        <div v-if="isAdmin">
+            <div class="uk-form-icon">
+                <i class="uk-icon-search"></i>
+                <input class="uk-margin-remove uk-form-width-small" placeholder="GLS klantnummer"
+                       type="search" v-model="filter.gls_customer_number" debounce="500">
+            </div>
+        </div>
+        <div>
+            <button class="uk-button uk-button-mini" @click="exportShipments"><i class="uk-icon-download"></i></button>
         </div>
         <div>
             <small>{{ total }} verzending<span v-show="total != 1">en</span></small>
@@ -145,7 +163,7 @@
             </td>
             <td>
                 <em v-if=" shipment.data.gls_status">{{ shipment.data.gls_status }}</em><br>
-                {{ shipment.state }}
+                {{ shipment.statusname }}
                 <ul class="uk-list">
                     <li>
                         <a v-show="shipment.data.track_trace" :href="shipment.data.track_trace"
@@ -232,6 +250,41 @@
         <partial name="gls-form"></partial>
 
     </v-modal>
+
+    <v-modal v-ref:downloadcsvmodal>
+        <div class="uk-modal-header">
+            <h3 class="uk-flex-item-1">Download als CSV</h3>
+        </div>
+        <div class="uk-form">
+            <div class="uk-grid uk-grid-width-medium-1-3" data-uk-grid-margin>
+                <div>
+                    <label for="created_from">Datum vanaf</label>
+                    <input type="date" id="created_from" class="uk-width-1-1" v-model="exportFilter.created_from"/>
+                </div>
+                <div>
+                    <label for="created_to">Datum tot</label>
+                    <input type="date" id="created_to" class="uk-width-1-1" v-model="exportFilter.created_to"/>
+                </div>
+                <div>
+                    <label for="state">Status</label>
+                    <select v-model="exportFilter.state" class="uk-width-1-1" id="state" size="4">
+                        <option value="">Alle</option>
+                        <option value="0">Verwijderd</option>
+                        <option value="1">Aangemaakt</option>
+                        <option value="2">Gescand</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="uk-modal-footer uk-text-right">
+            <button type="button" class="uk-button uk-margin-small-right uk-modal-close">Sluiten</button>
+            <button type="submit" class="uk-button uk-button-primary" @click="downloadCSV">
+                <i v-spinner="exporting" icon="download"></i>Downloaden</button>
+
+        </div>
+    </v-modal>
+
 </div>
 </template>
 
@@ -239,7 +292,7 @@
 
     module.exports = {
 
-        props: ['config'],
+        props: ['config', 'isAdmin'],
 
         data: function () {
             return _.merge({
@@ -257,6 +310,7 @@
                 progresserror: '',
                 lookup: false,
                 sending: false,
+                exporting: false,
                 saving: {},
                 editloading: {},
                 shipment: {
@@ -267,8 +321,15 @@
                 shipments: false,
                 countries: {},
                 senders: {},
+                exportFilter: {
+                    created_from: '',
+                    created_to: '',
+                    state: ''
+                },
                 filter: {
                     search: '',
+                    klantnummer: '',
+                    gls_customer_number: '',
                     order: 'created',
                     dir: 'desc',
                     limit: 10
@@ -484,6 +545,14 @@
                 }, function (res) {
                     UIkit.notify(res.data.message || res.data, 'danger');
                 });
+            },
+            exportShipments: function () {
+
+                this.$refs.downloadcsvmodal.open();
+            },
+            downloadCSV: function () {
+                var filter = {filter: _.merge({}, this.filter, this.exportFilter)};
+                window.location = 'index.php?p=%2Fapi%2Fshipment%2Fcsv&option=com_bix_devos&api=1&' + jQuery.param(filter);
             },
             setError: function (message) {
                 this.$set('progressmessage', '');

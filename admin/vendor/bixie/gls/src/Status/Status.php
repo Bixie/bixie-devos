@@ -3,6 +3,7 @@
 namespace Bixie\Gls\Status;
 
 use Bixie\Devos\Model\GlsTracking\GlsTracking;
+use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Gls\Data\Address;
 use Bixie\Gls\Data\Event;
 use Bixie\Gls\Data\EventReason;
@@ -194,6 +195,7 @@ class Status extends ApplicationAware {
 			if ($shipmentGls = $this['shipmentgls']->findDomesticParcelNumberNl($event->ParcelNumber)) {
 
 				$shipmentGls->addEvent($event);
+				$shipmentGls->setState(ShipmentGls::SHIPMENTGLS_STATE_SCANNED);
 				$this->processedShipmentGls[$shipmentGls->getId()] = $shipmentGls;
 
 				$log->count('events');

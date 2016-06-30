@@ -15,7 +15,7 @@ $app['scripts']->add('devos-admin-shipments', 'assets/js/admin-shipments.js', ['
 		<div class="uk-width-medium-5-6">
 
 			<div class="uk-panel uk-panel-box">
-				<gls-shipment :config="config"></gls-shipment>
+				<gls-shipment :config="config" :is-admin="true"></gls-shipment>
 			</div>
 
 		</div>

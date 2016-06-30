@@ -5,6 +5,7 @@ namespace Bixie\Devos\Controller;
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Framework\PostcodeLookup\PostcodeLookup;
+use Bixie\Framework\Routing\StreamedResponse;
 use Bixie\Framework\User\User;
 use Bixie\Framework\Utils\Query;
 use YOOtheme\Framework\Routing\Controller;
@@ -14,48 +15,10 @@ class ShipmentApiController extends Controller {
 
 	public function indexGlsAction ($filter = [], $page = 0) {
 		$return = new \ArrayObject;
-		$query = Query::query('@dv_shipment_gls', '*');
-		$filter = array_merge(array_fill_keys(['search', 'state', 'order', 'dir', 'limit'], ''), $filter);
 
-		/**
-		 * @var string $search
-		 * @var string $state
-		 * @var string $order
-		 * @var int $dir
-		 * @var int $limit
-		 */
-		extract($filter, EXTR_SKIP);
+		$query = $this->getQuery($filter);
 
-		if (is_numeric($state)) {
-			$query->where('state = ?', [(int)$state]);
-		} elseif ($state != 'all') {
-			$query->where(['state > 0']);
-		}
-
-		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
-			'gls_parcel_number', 'klantnummer', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
-			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place'
-		])), ['search' => "%{$search}%"]);
-
-		if (!$this['admin']) {
-			/** @var User $user */
-			$user = $this['users']->get();
-
-			if (!$user['klantnummer']) {
-				throw new HttpException(403, 'Geen klantnummer bekend');
-			}
-
-			$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']]);
-		}
-
-		$order_col = in_array($order, [
-				'gls_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'
-			]) ? $order : 'created';
-		$dir = $dir ?: 'DESC';
-
-		$query->orderBy($order_col, $dir);
-
-		$limit = (int)$limit ?: 10;
+		$limit = isset($filter['limit']) ? (int)$filter['limit'] : 10;
 		$return['total'] = $this['shipmentgls']->count($query);
 		$return['pages'] = ceil($return['total'] / $limit);
 		$return['page'] = max(0, min($return['pages'] - 1, $page));
@@ -65,6 +28,35 @@ class ShipmentApiController extends Controller {
 
 		return $this['response']->json($return);
 
+	}
+
+	public function csvGlsAction ($filter = []) {
+
+		$query = $this->getQuery($filter);
+
+		$filename = sprintf('verzendingen_%s_%s', $filter['created_from'], $filter['created_to']);
+
+		$shipments = $this['shipmentgls']->query($query);
+		$ignore = ['data','parcel','events','gls_stream','pdf_path','zpl_template'];
+		$response = new StreamedResponse();
+		$response->setCallback(function() use ($shipments, $ignore, $filename) {
+
+			$handle = fopen('php://output', 'w');
+			fputcsv($handle, array_keys(ShipmentGls::create()->toArray(['track_trace' => ''], $ignore)), ';');
+
+			foreach ($shipments as $shipment) {
+				$a = array_values($shipment->toArray(['track_trace' => $shipment['track_trace']], $ignore));
+				fputcsv($handle, $a, ';');
+			}
+
+			fclose($handle);
+		});
+
+		$response->setStatus(200);
+		$response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+		$response->headers->set('Content-Disposition','attachment; filename="'.$filename.'.csv"');
+
+		return $response;
 	}
 
 	public function getShipmentGlsAction ($id) {
@@ -349,11 +341,87 @@ class ShipmentApiController extends Controller {
 	}
 
 	/**
+	 * @param $filter
+	 * @return Query
+	 */
+	protected function getQuery ($filter) {
+		$query = Query::query('@dv_shipment_gls', '*');
+		$filter = array_merge(array_fill_keys([
+			'search', 'state', 'gls_customer_number', 'klantnummer', 'created_from', 'created_to', 'order', 'dir', 'limit'
+		], ''), $filter);
+
+		/**
+		 * @var string $search
+		 * @var string $klantnummer
+		 * @var string $gls_customer_number
+		 * @var string $created_from
+		 * @var string $created_to
+		 * @var string $state
+		 * @var string $order
+		 * @var int    $dir
+		 * @var int    $limit
+		 */
+		extract($filter, EXTR_SKIP);
+
+		if (is_numeric($state)) {
+			$query->where('state = :state', ['state' =>(int)$state]);
+		} elseif ($state != 'all') {
+			$query->where(['state > 0']);
+		}
+
+		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
+			'gls_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
+			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place'
+		])), ['search' => "%{$search}%"]);
+
+		if (!$this['admin']) {
+
+			/** @var User $user */
+			$user = $this['users']->get();
+
+			if (!$user['klantnummer']) {
+				throw new HttpException(403, 'Geen klantnummer bekend');
+			}
+
+			$query->where('klantnummer = :klantnummer', ['klantnummer' => $user['klantnummer']]);
+		} elseif ($klantnummer) {
+
+			$query->where('klantnummer = :klantnummer', ['klantnummer' => $klantnummer]);
+		}
+
+		if ($gls_customer_number) {
+			$query->where('gls_customer_number = :gls_customer_number', ['gls_customer_number' => $gls_customer_number]);
+		}
+
+		if ($created_from) {
+			$created_from = $this->dateToSql($created_from);
+			$query->where('created > :created_from', ['created_from' => $created_from]);
+		}
+		if ($created_to) {
+			$created_to = $this->dateToSql($created_to);
+			$query->where('created < :created_to', ['created_to' => $created_to]);
+		}
+
+		$order_col = in_array($order, [
+			'gls_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'
+		]) ? $order : 'created';
+		$dir = $dir ?: 'DESC';
+
+		$query->orderBy($order_col, $dir);
+		return $query;
+	}
+
+	public function dateToSql ($date_string) {
+		return (new \DateTime($date_string, new \DateTimeZone(\JFactory::$config->get('offset'))))->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+	}
+
+	/**
 	 * @return array
 	 */
 	public static function getRoutes () {
 		return array(
 			array('/api/shipment', 'indexGlsAction', 'GET', array('access' => 'client_devos')),
+			array('/api/shipment/csv', 'csvGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/:id', 'getShipmentGlsAction', 'GET', array('access' => 'client_devos')),
 			array('/api/shipment/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
 			array('/api/shipment/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'client_devos')),
@@ -366,4 +434,5 @@ class ShipmentApiController extends Controller {
 			array('/api/shipment/postcode', 'postcodeCheckAction', 'POST', array('access' => 'client_devos'))
 		);
 	}
+
 }

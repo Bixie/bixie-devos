@@ -15,6 +15,10 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	const PRODUCT_BUSINESS_PARCEL = 'BP';
 	const PRODUCT_EXPRESS_PARCEL = 'EP';
 	const PRODUCT_EURO_BUSINESS_PARCEL = 'EBP';
+	
+	const SHIPMENTGLS_STATE_REMOVED = 0;
+	const SHIPMENTGLS_STATE_CREATED = 1;
+	const SHIPMENTGLS_STATE_SCANNED = 2;
 
 	/**
 	 * @var integer
@@ -703,7 +707,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 * @return array
 	 */
 	public function getParcel () {
-		if (!$this->parcel || is_string($this->parcel)) {
+		if (!isset($this->parcel) || is_string($this->parcel)) {
 			$this->parcel = json_decode($this->parcel, true) ?: [];
 		}
 		return $this->parcel;
@@ -720,7 +724,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 * @return array
 	 */
 	public function getEvents () {
-		if (!$this->events || is_string($this->events)) {
+		if (!isset($this->events) || is_string($this->events)) {
 			$this->events = json_decode($this->events, true) ?: [];
 		}
 		return $this->events;
@@ -751,6 +755,9 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPdfUrl () {
 		if (!empty($this->pdf_path)) {
 			return \JUri::root() . ltrim(\JRoute::_('index.php?option=com_bix_devos&p=/api/shipment/pdf/' . $this->domestic_parcel_number_nl), '/');
@@ -758,6 +765,9 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return '';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPngUrl () {
 		if (!empty($this->data['png_path'])) {
 			return \JUri::root() . str_replace(JPATH_ROOT.'/', '', $this->data['png_path']);
@@ -806,11 +816,24 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return $filePath;
 	}
 
+	public function getStatusName () {
+		return self::getStatuses()[$this->state];
+	}
+	/**
+	 * @return array
+	 */
+	public static function getStatuses () {
+		return [
+			self::SHIPMENTGLS_STATE_REMOVED => 'Verwijderd',
+			self::SHIPMENTGLS_STATE_CREATED => 'Aangemaakt',
+			self::SHIPMENTGLS_STATE_SCANNED => 'Gescand',
+		];
+	}
 	/**
 	 * {@inheritdoc}
 	 */
-	public function toArray () {
-		return [
+	public function toArray ($data = [], $ignore = []) {
+		$data = array_merge([
 			'id' => $this->id,
 			'sender_id' => $this->sender_id,
 			'klantnummer' => $this->klantnummer,
@@ -845,6 +868,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'parcel' => $this->getParcel(),
 			'events' => $this->getEvents(),
 			'state' => $this->state,
+			'statusname' => $this->getStatusName(),
 			'gls_stream' => $this->gls_stream,
 			'pdf_path' => $this->pdf_path,
 			'zpl_template' => $this->zpl_template,
@@ -852,7 +876,8 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'created_by' => $this->created_by,
 			'modified' => $this->modified,
 			'modified_by' => $this->modified_by
-		];
+		], $data);
+		return array_diff_key($data, array_flip($ignore));
 	}
 
 	/**

@@ -3,6 +3,7 @@
 namespace Bixie\Framework\Joomlacomponent;
 
 use Bixie\Framework\Routing\BinaryFileResponse;
+use Bixie\Framework\Routing\StreamedResponse;
 use JAdministratorHelper, JDocument, JRequest;
 use YOOtheme\Framework\Application;
 use YOOtheme\Framework\Plugin\Plugin;
@@ -74,7 +75,7 @@ class JoomlacomponentPlugin extends Plugin
             if ($response instanceof JsonResponse) {
                 JRequest::setVar('format', 'json');
                 $app['joomla']->loadDocument(JDocument::getInstance('json')->setBuffer((string) $response));
-            } elseif ($response instanceof BinaryFileResponse) {
+            } elseif ($response instanceof BinaryFileResponse || $response instanceof StreamedResponse ) {
                 JRequest::setVar('format', 'raw');
                 $app['joomla']->loadDocument(JDocument::getInstance('file')
 					->setMimeEncoding($response->headers->get('Content-Type'))

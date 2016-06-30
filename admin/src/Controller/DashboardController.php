@@ -3,6 +3,8 @@
 namespace Bixie\Devos\Controller;
 
 use Bixie\Devos\Model\Sender\Sender;
+use Bixie\Devos\Model\Shipment\ShipmentGls;
+use Webit\GlsTracking\Model\DateTime;
 use YOOtheme\Framework\Routing\Controller;
 
 class DashboardController extends Controller {
@@ -31,8 +33,16 @@ class DashboardController extends Controller {
 		if ($this['user']->hasPermission('manage_devos')) {
 			\JToolbarHelper::preferences('com_bix_devos');
 		}
-
+		$now = new \DateTime();
+		$created_from = new \DateTime($now->format('Y-m-01'));
+		$created_to = clone $created_from;
+		$created_to->add(new \DateInterval('P1M'))->sub(new \DateInterval('P1D'));
 		$data = [
+			'exportFilter' => [
+				'created_from' => $created_from->format('Y-m-d'),
+				'created_to' => $created_to->format('Y-m-d'),
+				'state' => ShipmentGls::SHIPMENTGLS_STATE_SCANNED
+			],
 			'countries' => $this['countries'],
 			'sender_states' => Sender::getStates()
 		];
