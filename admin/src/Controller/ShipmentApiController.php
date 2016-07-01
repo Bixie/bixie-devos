@@ -273,13 +273,15 @@ class ShipmentApiController extends Controller {
 	 */
 	protected function saveShipment ($data) {
 		/** @var User $user */
-		$user = $this['users']->get();
-		if (!$user['klantnummer']) {
-			throw new HttpException(403, 'Geen klantnummer bekend');
-		}
+		if (!$this['admin']) {
+			$user = $this['users']->get();
+			if (!$user['klantnummer']) {
+				throw new HttpException(403, 'Geen klantnummer bekend');
+			}
 
-		$data['klantnummer'] = $user['klantnummer'];
-		$data['gls_customer_number'] = $user['gls_customer_number'] ? : $this['config']['gls_customer_number'];
+			$data['klantnummer'] = $user['klantnummer'];
+			$data['gls_customer_number'] = $user['gls_customer_number'] ?: $this['config']['gls_customer_number'];
+		}
 
 		if (empty($data['date_of_shipping'])) {
 			$data['date_of_shipping'] = (new \DateTime())->format('Y-m-d H:i:s');

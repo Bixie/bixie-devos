@@ -376,6 +376,9 @@
 
         methods: {
             newDefault: function () {
+                this.postcode = '';
+                this.huisnr = '';
+                this.toev = '';
                 this.editShipment(-1, {
                     product_short_description: 'BP',
                     data: {
@@ -386,6 +389,9 @@
                 });
             },
             newExpress: function (flag) {
+                this.postcode = '';
+                this.huisnr = '';
+                this.toev = '';
                 this.editShipment((flag === '' ? -2 : flag), {
                     product_short_description: 'EP',
                     data: {
