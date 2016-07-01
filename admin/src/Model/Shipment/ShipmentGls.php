@@ -760,7 +760,8 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 */
 	public function getPdfUrl () {
 		if (!empty($this->pdf_path)) {
-			return \JUri::root() . ltrim(\JRoute::_('index.php?option=com_bix_devos&p=/api/shipment/pdf/' . $this->domestic_parcel_number_nl), '/');
+			$u = \JRoute::_('index.php?option=com_bix_devos&p=/api/shipment/pdf/' . $this->domestic_parcel_number_nl, false);
+			return \JUri::root() . ltrim($u, '/');
 		}
 		return '';
 	}
