@@ -120,6 +120,7 @@ class ShipmentGlsProvider extends ApplicationAware {
 		}
 		unset($store['pdf_url']);
 		unset($store['png_url']);
+		unset($store['statusname']);
 		foreach (['date_of_shipping', 'created', 'modified'] as $dateField) {
 			if (isset($store[$dateField]) && $store[$dateField] instanceof \DateTime) {
 				$store[$dateField] = $store[$dateField]->format('Y-m-d H:i:s');
