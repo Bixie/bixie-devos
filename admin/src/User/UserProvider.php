@@ -13,7 +13,7 @@ class UserProvider extends UserProviderBase implements UserProviderInterface
 	 */
 	public function get($id = null)
 	{
-		if ($this->app['apitoken']->getToken()) {
+		if ($id == null && $this->app['apitoken']->getToken()) {
 			return $this->getByApiUsername($this->app['apitoken']->getName());
 		} else {
 			return $this->loadUserBy('id', $id);
