@@ -17,7 +17,7 @@ class SenderApiController extends Controller {
 		$return = new \ArrayObject;
 
 		$query = Query::query('@dv_sender', '*');
-		$query->where('user_id = :user_id', ['user_id' => $this['users']->get()->getId()]);
+		if (!$this['admin']) $query->where('user_id = :user_id', ['user_id' => $this['users']->get()->getId()]);
 		if (!$inactive) $query->where('state = 1');
 		$query->orderBy('sender_name_1', 'ASC');
 		$return['senders'] = $this['sender']->query((string) $query, $query->getParams(), 0, 0);

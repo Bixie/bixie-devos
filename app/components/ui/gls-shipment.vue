@@ -521,7 +521,7 @@
                         var def = _.find(res.data.senders, 'def', 1) || _.find(res.data.senders, 'state', 1);
                         if (def.id) {
                             this.$set('senders', res.data.senders);
-                            this.$set('shipment.sender_id', def.id);
+                            if (!this.shipment.sender_id) this.$set('shipment.sender_id', def.id);
                             this.$refs.editshipmentmodal.open();
                         } else {
                             this.$set('error', 'Geen afzender gevonden');
@@ -532,7 +532,7 @@
                         this.$set('error', res.data.message || res.data);
                     });
                 } else {
-                    this.$set('shipment.sender_id', def.id);
+                    if (!this.shipment.sender_id) this.$set('shipment.sender_id', def.id);
                     this.$refs.editshipmentmodal.open();
                 }
             },
