@@ -373,7 +373,7 @@ class ShipmentApiController extends Controller {
 
 		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
 			'gls_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
-			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place'
+			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place', 'reciever_email'
 		])), ['search' => "%{$search}%"]);
 
 		if (!$this['admin']) {

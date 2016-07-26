@@ -71,6 +71,10 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @var string
 	 */
+	protected $reciever_email;
+	/**
+	 * @var string
+	 */
 	protected $receiver_contact = '';
 	/**
 	 * @var string
@@ -357,6 +361,22 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 */
 	public function setReceiverPhone ($receiver_phone) {
 		$this->receiver_phone = $receiver_phone;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRecieverEmail () {
+		return $this->reciever_email;
+	}
+
+	/**
+	 * @param string $reciever_email
+	 * @return ShipmentGls
+	 */
+	public function setRecieverEmail ($reciever_email) {
+		$this->reciever_email = $reciever_email;
 		return $this;
 	}
 
@@ -847,6 +867,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'date_of_shipping' => $this->getDateOfShipping()->format('Y-m-d H:i:s'),
 			'domestic_parcel_number_nl' => $this->domestic_parcel_number_nl,
 			'receiver_phone' => $this->receiver_phone,
+			'reciever_email' => $this->reciever_email,
 			'receiver_contact' => $this->receiver_contact,
 			'sender_name_1' => $this->sender_name_1,
 			'sender_name_2' => $this->sender_name_2,

@@ -54,6 +54,7 @@ Vue.field.types.select = '<select v-bind="attrs" v-model="value"><option v-for="
 Vue.field.types.radio = '<p class="uk-form-controls-condensed">\n    <label class="uk-margin-small-right" v-for="option in options" v-bind="attrs"><input type="radio" :value="option" v-model="value"> {{ $key }}</label>\n</p>';
 Vue.field.types.checkbox = '<p class="uk-form-controls-condensed"><label><input type="checkbox" v-bind="attrs" v-model="value" v-bind:true-value="1" v-bind:false-value="0" number> {{ optionlabel }}</label></p>';
 
+Vue.field.types.email = '<input type="email" v-bind="attrs" v-model="value">';
 Vue.field.types.number = '<input type="number" v-bind="attrs" v-model="value" number>';
 Vue.field.types.title = '<h3 v-bind="attrs">{{ title }}</h3>';
 Vue.field.types.price = '<i class="uk-icon-euro uk-margin-small-right"></i><input type="number" v-bind="attrs" v-model="value" number>';

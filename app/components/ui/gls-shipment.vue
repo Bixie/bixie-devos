@@ -7,7 +7,7 @@
         <div>
             <div class="uk-form-icon">
                 <i class="uk-icon-search"></i>
-                <input class="uk-margin-remove uk-form-width-medium" placeholder="Pakketnummer, referentie, adres..."
+                <input class="uk-margin-remove uk-form-width-medium" placeholder="Pakketnummer, referentie, adres, email..."
                        type="search" v-model="filter.search" debounce="500">
             </div>
         </div>
@@ -126,6 +126,10 @@
                     <dd v-if="shipment.receiver_phone">
                         <i class="uk-icon-phone uk-icon-justify uk-margin-small-right" title="Telefoon ontvanger" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ shipment.receiver_phone }}</span>
+                    </dd>
+                    <dd v-if="shipment.reciever_email">
+                        <i class="uk-icon-envelope-o uk-icon-justify uk-margin-small-right" title="Email ontvanger" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ shipment.reciever_email }}</span>
                     </dd>
                 </dl>
             </td>
@@ -691,6 +695,11 @@
                 type: 'text',
                 label: 'Telefoon ontvanger',
                 attrs: {'name': 'telefoon', 'class': 'uk-width-1-1'}
+            },
+            'reciever_email': {
+                type: 'email',
+                label: 'Email ontvanger',
+                attrs: {'name': 'email', 'class': 'uk-width-1-1'}
             },
             'additional_text_1': {
                 type: 'textarea',
