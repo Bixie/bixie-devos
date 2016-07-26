@@ -269,11 +269,11 @@
                             <label class="uk-form-label">Express type</label>
                             <div class="uk-form-controls">
                                 <p class="uk-form-controls-condensed">
-                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_flag" type="radio"
+                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_service_flag" type="radio"
                                                                        value=""> Volgende dag 17.00 uur</label>
-                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_flag" type="radio"
+                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_service_flag" type="radio"
                                                                        value="T9"> Volgende dag 9.00 uur</label>
-                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_flag" type="radio"
+                                    <label class="uk-width-1-1"><input v-model="shipment.data.express_service_flag" type="radio"
                                                                        value="T12"> Volgende dag 12.00 uur</label>
                                 </p>
                             </div>
@@ -292,7 +292,7 @@
 
                     </div>
 
-                    <div class="uk-form-row">
+                    <div class="uk-form-row uk-margin">
                         <label class="uk-form-label" for="form-parcel_sequence">Pakket reeks</label>
                         <div class="uk-form-controls">
                             <input v-model="shipment.parcel_sequence" id="form-parcel_sequence" type="number"

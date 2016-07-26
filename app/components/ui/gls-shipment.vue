@@ -69,9 +69,9 @@
                         <i class="uk-icon-cubes uk-icon-justify uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
                     </dd>
-                    <dd v-if="shipment.data.express_service_flag">
+                    <dd v-if="shipment.data.express_flag">
                         <i class="uk-icon-bolt uk-icon-justify uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
+                        <span>{{ getValueLabel('express_service_flag', shipment.data.express_service_flag) }}</span>
                         <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
                         <i v-show="shipment.data.express_service_flag_sat" class="uk-icon-calendar-plus-o uk-text-danger uk-margin-small-left" title="Saturday Service aan" data-uk-tooltip="{delay: 200}"></i>
                     </dd>
@@ -241,7 +241,7 @@
                     </div>
                     <div class="uk-margin-left" v-show="shipment.data.express_service_flag">
                         <i class="uk-icon-bolt uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ getValueLabel('express_flag', shipment.data.express_flag) }}</span>
+                        <span>{{ getValueLabel('express_service_flag', shipment.data.express_service_flag) }}</span>
                         <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="{delay: 200}"></i>
                         <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
                            @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
@@ -320,6 +320,7 @@
                 shipment: {
                     id: 0,
                     sender_id: 0,
+                    parcel: {},
                     data: {}
                 },
                 shipments: false,
@@ -386,8 +387,8 @@
                 this.editShipment(-1, {
                     product_short_description: 'BP',
                     data: {
-                        express_flag: '',
-                        express_service_flag: false,
+                        express_service_flag: '',
+                        express_flag: false,
                         inbound_country_code: 'NL'
                     }
                 });
@@ -399,8 +400,8 @@
                 this.editShipment((flag === '' ? -2 : flag), {
                     product_short_description: 'EP',
                     data: {
-                        express_flag: flag,
-                        express_service_flag: true,
+                        express_service_flag: flag,
+                        express_flag: true,
                         inbound_country_code: 'NL'
                     }
                 });
@@ -510,11 +511,12 @@
                     parcel_quantity: 1,
                     gls_parcel_number: 0,
                     state: 1,
+                    parcel: {},
                     data: {
                         track_trace: '',
                         label_template: 'gls_default',
-                        express_flag: '',
-                        express_service_flag: false,
+                        express_service_flag: '',
+                        express_flag: false,
                         express_service_flag_sat: false,
                         inbound_country_code: 'NL'
                     },
@@ -557,7 +559,6 @@
                 });
             },
             exportShipments: function () {
-
                 this.$refs.downloadcsvmodal.open();
             },
             downloadCSV: function () {
@@ -584,7 +585,7 @@
             getValueLabel: function (key, value) {
                 var options = {}, label;
                 switch (key) {
-                case 'express_flag':
+                case 'express_service_flag':
                         options = {
                             '': 'Volgende dag 17.00 uur',
                             'T9': 'Volgende dag 9.00 uur',
@@ -670,7 +671,7 @@
                 }
             },
             'shipment.product_short_description': function (value) {
-                this.shipment.data.express_service_flag = value === 'EP';
+                this.shipment.data.express_flag = (value === 'EP');
                 if (value !== 'EP') {
                     this.shipment.data.express_service_flag_sat = false;
                     this.shipment.data.express_flag = false;

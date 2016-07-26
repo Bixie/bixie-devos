@@ -125,6 +125,27 @@ class Broadcast implements \ArrayAccess {
 		foreach ($this->tags as $tag) {
 			$tag->validate();
 		}
+		//set express flags and texts
+		if ($this['product_short_description'] == 'EP') {
+			$this['service_type_1_text'] = 'EXPRESS-Service';
+			$day_text = 'Volgende werkdag ';
+			$time_text = 'voor 17:00 uur';
+			if ($this['express_service_flag_sat']) {
+				$this['barcode_article_flag'] .= ';SCB' ;
+				$day_text = 'Zaterdag ';
+			}
+			if ($this['express_service_flag'] == 'T9') {
+				$time_text = 'voor 9:00 uur';
+			}
+			if ($this['express_service_flag'] == 'T12') {
+				$time_text = 'voor 12:00 uur';
+			}
+			$this['service_type_1_value'] = $day_text . $time_text;
+			if (!$this['receiver_phone']) {
+				throw new GlsException('Bij expressverzendingen is telefoonnummer ontvanger verplicht!');
+			}
+			$this['text_label_and_phone'] = 'Tel. Geaddreseerde: ' . $this['receiver_phone'];
+		}
 	}
 
 	/**

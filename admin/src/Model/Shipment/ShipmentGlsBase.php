@@ -12,7 +12,7 @@ class ShipmentGlsBase  {
 		return self::hydrate(array_merge([
 			'data' => [
 				'label_template' => 'gls_default',
-				'express_flag' => '',
+				'express_service_flag' => '',
 				'inbound_country_code' => 'NL'
 			]
 		], $data), 'Bixie\Devos\Model\Shipment\ShipmentGls');
