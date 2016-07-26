@@ -116,7 +116,7 @@ class SyncGlsCli extends JApplicationCli {
 
 			foreach ($responseData['trackings'] as $tracking) {
 				$this->out("Bestand {$tracking['filename']} verwerkt");
-				if ($tracking['errors']) {
+				if (!empty($tracking['errors'])) {
 					$this->out("Fouten:" . implode(', ', $tracking['errors']));
 				}
 			}
@@ -150,13 +150,14 @@ class SyncGlsCli extends JApplicationCli {
 
 	function __destruct () {
 		if ($this->logToFile && count($this->logs)) {
+			$logpath = '/var/www/webroot';
 			$now = new \DateTime('', new DateTimeZone('Europe/Amsterdam'));
-			$path = JPATH_BASE . '/../logs/cronjobs_logs' . $now->format('YM');
-			if (!is_dir(JPATH_BASE . '/../logs')) {
-				mkdir(JPATH_BASE . '/../logs', 0644);
+			$path = $logpath . '/logs/cronjobs_logs' . $now->format('YM');
+			if (!is_dir($logpath . '/logs')) {
+				mkdir($logpath . '/logs', 0775);
 			}
 			if (!is_dir($path)) {
-				mkdir($path, 0644);
+				mkdir($path, 0775);
 			}
 			array_unshift($this->logs, "Log added " . $now->format('Y-m-d H:i:s'));
 			file_put_contents($path . '/cronlog_week' . $now->format('W') . '.txt', implode("\n", $this->logs) . "\n", FILE_APPEND);
