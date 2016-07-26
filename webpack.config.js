@@ -1,5 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
+var assets = __dirname + '/admin/vendor/assets';
 module.exports = {
     entry: {
         "admin-dashboard" : "./app/views/admin/dashboard.js",
@@ -15,10 +16,11 @@ module.exports = {
     resolve: {
         root: [path.join(__dirname, "admin/vendor/assets")],
         alias: {
-            "md5$": __dirname + "/admin/vendor/assets/js-md5/js/md5.min.js",
-            "vue$": __dirname + "/admin/vendor/assets/vue/dist/vue.js",
-            "vue-form": __dirname + "/admin/vendor/assets/vue-form/src/index.js",
-            "vue-resource$": __dirname + "/admin/vendor/assets/vue-resource/dist/vue-resource.min.js"
+            // "vue$": assets + "/vue/dist/vue.js",
+            "vue-form$": assets + "/vue-form/dist/vue-form.common.js",
+            "vue-intl$": assets + "/vue-intl/dist/vue-intl.common.js",
+            "vue-resource$": assets + "/vue-resource/dist/vue-resource.common.js",
+            "JSONStorage$": assets + "/JSONStorage/storage.js"
         }
     },
     externals: {
@@ -27,8 +29,8 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.vue$/, loader: "vue" },
-            { test: /\.json/, loader: "json" },
-            { test: /\.html$/, loader: "html" }
+            { test: /\.json$/, loader: "json" },
+            { test: /\.html$/, loader: "vue-html" }
         ]
     },
     plugins: [
