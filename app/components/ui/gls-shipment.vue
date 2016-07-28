@@ -127,9 +127,9 @@
                         <i class="uk-icon-phone uk-icon-justify uk-margin-small-right" title="Telefoon ontvanger" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ shipment.receiver_phone }}</span>
                     </dd>
-                    <dd v-if="shipment.reciever_email">
+                    <dd v-if="shipment.receiver_email">
                         <i class="uk-icon-envelope-o uk-icon-justify uk-margin-small-right" title="Email ontvanger" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.reciever_email }}</span>
+                        <span>{{ shipment.receiver_email }}</span>
                     </dd>
                 </dl>
             </td>
@@ -232,20 +232,23 @@
                 <h3 class="uk-flex-item-1">GLS verzending</h3>
                 <div class="uk-flex uk-flex-middle uk-h5">
                     <div v-if="shipment.sender_id" class="uk-margin-left">
-                        <i class="uk-icon-user uk-margin-small-right" title="Afzender" data-uk-tooltip="{delay: 200}"></i>
+                        <i class="uk-icon-user uk-margin-small-right" title="Afzender" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                         <span>{{ senders[shipment.sender_id].sender_name_1 }}</span>
                     </div>
+                    <div class="uk-margin-small-left" v-show="shipment.receiver_email && shipment.data.send_email">
+                        <i class="uk-icon-envelope-o uk-text-success" title="Email wordt naar ontvanger verstuurd" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
+                    </div>
                     <div class="uk-margin-left">
-                        <i class="uk-icon-cubes uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
+                        <i class="uk-icon-cubes uk-margin-small-right" title="Product type" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                         <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
                     </div>
                     <div class="uk-margin-left" v-show="shipment.data.express_service_flag">
-                        <i class="uk-icon-bolt uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
+                        <i class="uk-icon-bolt uk-margin-small-right" title="Express" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                         <span>{{ getValueLabel('express_service_flag', shipment.data.express_service_flag) }}</span>
-                        <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="{delay: 200}"></i>
+                        <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                         <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
                            @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
-                           class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="{delay: 200}"></a>
+                           class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="delay: 200, pos: 'bottom'"></a>
                     </div>
                 </div>
             </div>
@@ -516,6 +519,7 @@
                         track_trace: '',
                         label_template: 'gls_default',
                         express_service_flag: '',
+                        send_email: true,
                         express_flag: false,
                         express_service_flag_sat: false,
                         inbound_country_code: 'NL'
@@ -648,9 +652,13 @@
             'shipment.sender_id': function (id) {
                 var sender = this.senders[id];
                 if (sender) {
-                    ['sender_name_1', 'sender_name_2', 'sender_street', 'sender_zip', 'sender_city', 'sender_country'].forEach(function (key) {
-                        this.$set('shipment.' + key, sender[key]);
+                    ['sender_name_1', 'sender_name_2', 'sender_street', 'sender_zip', 'sender_city', 'sender_country', 'sender_email'].forEach(function (key) {
+                        this.$set('shipment.' + key, sender[key] || '');
                     }.bind(this));
+                    ['sender_contact', 'sender_phone', 'message_subject'].forEach(function (key) {
+                        this.$set('shipment.data.' + key, sender[key] || '');
+                    }.bind(this));
+
                 }
             },
             'shipment.parcel_sequence': function (sequence) {
@@ -697,7 +705,7 @@
                 label: 'Telefoon ontvanger',
                 attrs: {'name': 'telefoon', 'class': 'uk-width-1-1'}
             },
-            'reciever_email': {
+            'receiver_email': {
                 type: 'email',
                 label: 'Email ontvanger',
                 attrs: {'name': 'email', 'class': 'uk-width-1-1'}
@@ -738,6 +746,17 @@
         },
 
         fields3: {
+            'data.send_email': {
+                type: 'checkbox',
+                label: 'Send email',
+                optionLabel: 'Send email to user via GLS',
+                attrs: {}
+            },
+            'data.message_subject': {
+                type: 'text',
+                label: 'Onderwerp email',
+                attrs: {'class': 'uk-width-1-1'}
+            },
             'data.label_template': {
                 type: 'select',
                 label: 'Print template',
@@ -787,6 +806,21 @@
                 type: 'text',
                 label: 'Afzender land *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
+            },
+            'sender_email': {
+                type: 'email',
+                label: 'Email',
+                attrs: {'name': 'sender_email', 'class': 'uk-width-1-1'}
+            },
+            'data.sender_contact': {
+                type: 'text',
+                label: 'Contactpersoon',
+                attrs: {'name': 'sender_contact', 'class': 'uk-width-1-1'}
+            },
+            'data.sender_phone': {
+                type: 'text',
+                label: 'Telefoon',
+                attrs: {'name': 'sender_phone', 'class': 'uk-width-1-1'}
             }
         }
 

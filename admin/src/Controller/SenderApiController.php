@@ -8,8 +8,8 @@ use Bixie\Framework\Utils\Image;
 use Bixie\Framework\Utils\Query;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
-use YOOtheme\Framework\Routing\Controller;
-use YOOtheme\Framework\Routing\Exception\HttpException;
+use Bixie\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Exception\HttpException;
 
 class SenderApiController extends Controller {
 

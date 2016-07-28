@@ -3,7 +3,7 @@
 namespace Bixie\Devos\Controller;
 
 use Bixie\Devos\Model\GlsTracking\GlsTracking;
-use YOOtheme\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Controller;
 
 class GlsTrackingController extends Controller {
 

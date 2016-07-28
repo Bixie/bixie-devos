@@ -8,8 +8,8 @@ use Bixie\Framework\PostcodeLookup\PostcodeLookup;
 use Bixie\Framework\Routing\StreamedResponse;
 use Bixie\Framework\User\User;
 use Bixie\Framework\Utils\Query;
-use YOOtheme\Framework\Routing\Controller;
-use YOOtheme\Framework\Routing\Exception\HttpException;
+use Bixie\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Exception\HttpException;
 
 class ShipmentApiController extends Controller {
 
@@ -373,7 +373,7 @@ class ShipmentApiController extends Controller {
 
 		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
 			'gls_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
-			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place', 'reciever_email'
+			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place', 'receiver_email'
 		])), ['search' => "%{$search}%"]);
 
 		if (!$this['admin']) {

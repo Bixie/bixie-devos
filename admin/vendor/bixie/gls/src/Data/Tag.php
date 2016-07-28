@@ -96,6 +96,9 @@ class Tag {
 			case 'express_service_flag':
 				$value = $value ? 'T' : '';
 				break;
+			case 'send_email':
+				$value = $value ? '1' : '0';
+				break;
 			case 'secondary_code':
 				$value = str_replace("¬", "|",iconv("ISO-8859-1" ,"UTF-8//IGNORE", $value));
 				break;

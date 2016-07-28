@@ -4,8 +4,8 @@ namespace Bixie\Devos\Controller;
 
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
-use YOOtheme\Framework\Routing\Controller;
-use YOOtheme\Framework\Routing\Exception\HttpException;
+use Bixie\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Exception\HttpException;
 
 class SiteController extends Controller {
 

@@ -5,7 +5,7 @@ namespace Bixie\Framework\Utils;
 
 
 
-use YOOtheme\Framework\Application;
+use Bixie\Framework\Application;
 
 class Cms {
 	/**

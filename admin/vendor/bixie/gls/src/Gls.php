@@ -9,8 +9,8 @@ use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Gls\Data\Broadcast;
 use Bixie\Gls\Label\Label;
 use Bixie\Gls\Unibox\Socket;
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\ApplicationAware;
+use Bixie\Framework\Application;
+use Bixie\Framework\ApplicationAware;
 
 class Gls extends ApplicationAware {
 	/**

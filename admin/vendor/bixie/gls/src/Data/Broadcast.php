@@ -140,6 +140,7 @@ class Broadcast implements \ArrayAccess {
 			if ($this['express_service_flag'] == 'T12') {
 				$time_text = 'voor 12:00 uur';
 			}
+			$this['express_flag'] = true;
 			$this['service_type_1_value'] = $day_text . $time_text;
 			if (!$this['receiver_phone']) {
 				throw new GlsException('Bij expressverzendingen is telefoonnummer ontvanger verplicht!');

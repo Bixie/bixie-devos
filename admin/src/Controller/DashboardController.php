@@ -5,7 +5,7 @@ namespace Bixie\Devos\Controller;
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Webit\GlsTracking\Model\DateTime;
-use YOOtheme\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Controller;
 
 class DashboardController extends Controller {
 

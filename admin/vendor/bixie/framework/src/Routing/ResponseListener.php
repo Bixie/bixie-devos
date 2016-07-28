@@ -2,9 +2,9 @@
 
 namespace Bixie\Framework\Routing;
 
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\Event\Event;
-use YOOtheme\Framework\Event\EventSubscriberInterface;
+use Bixie\Framework\Application;
+use Bixie\Framework\Event\Event;
+use Bixie\Framework\Event\EventSubscriberInterface;
 
 class ResponseListener implements EventSubscriberInterface
 {
@@ -17,6 +17,12 @@ class ResponseListener implements EventSubscriberInterface
     public function stringToResponse($event, $app)
     {
         $response = $event['response'];
+
+		if ($response && is_string($response)) {
+
+			$event['response'] = $app['response']->create($response);
+			$event->stopPropagation();
+		}
 
         if (null !== $response && $response instanceof BinaryFileResponse) {
 

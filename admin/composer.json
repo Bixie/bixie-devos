@@ -27,7 +27,6 @@
     }
   ],
   "require": {
-    "yootheme/framework": "1.1.*",
     "jublonet/codebird-php": "2.7.0",
     "clue/socket-raw": "^1.2",
     "dompdf/dompdf": "0.7.x@beta",

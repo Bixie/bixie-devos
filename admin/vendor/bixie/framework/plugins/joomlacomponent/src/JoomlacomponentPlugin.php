@@ -5,10 +5,10 @@ namespace Bixie\Framework\Joomlacomponent;
 use Bixie\Framework\Routing\BinaryFileResponse;
 use Bixie\Framework\Routing\StreamedResponse;
 use JAdministratorHelper, JDocument, JRequest;
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\Plugin\Plugin;
-use YOOtheme\Framework\Routing\JsonResponse;
-use YOOtheme\Framework\Routing\RawResponse;
+use Bixie\Framework\Application;
+use Bixie\Framework\Plugin\Plugin;
+use Bixie\Framework\Routing\JsonResponse;
+use Bixie\Framework\Routing\RawResponse;
 
 class JoomlacomponentPlugin extends Plugin
 {

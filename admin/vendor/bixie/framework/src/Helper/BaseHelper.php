@@ -3,8 +3,8 @@
 namespace Bixie\Framework\Helper;
 
 
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\ApplicationAware;
+use Bixie\Framework\Application;
+use Bixie\Framework\ApplicationAware;
 
 class BaseHelper extends ApplicationAware {
 

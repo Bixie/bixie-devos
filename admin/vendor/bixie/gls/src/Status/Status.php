@@ -11,7 +11,7 @@ use Bixie\Gls\Data\Parcel;
 use Bixie\Gls\Data\Service;
 use Bixie\Gls\GlsException;
 use Bixie\Gls\Status\Ftp\FtpGls;
-use YOOtheme\Framework\ApplicationAware;
+use Bixie\Framework\ApplicationAware;
 
 class Status extends ApplicationAware {
 

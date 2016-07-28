@@ -3,8 +3,8 @@
 namespace Bixie\Devos\Model\Sender;
 
 use Bixie\Framework\Utils\Query;
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\ApplicationAware;
+use Bixie\Framework\Application;
+use Bixie\Framework\ApplicationAware;
 
 class SenderProvider extends ApplicationAware {
 

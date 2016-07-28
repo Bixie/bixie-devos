@@ -2,7 +2,7 @@
 
 namespace Bixie\Devos\Config;
 
-use YOOtheme\Framework\Config\Config;
+use Bixie\Framework\Config\Config;
 
 class Settings extends Config
 {

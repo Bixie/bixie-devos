@@ -190,6 +190,33 @@ return [
 		false,
 		50
 	),
+	'receiver_email' => new Tag(
+		'1229',
+		'receiver_email',
+		'Receiver Email',
+		'john@example.com',
+		'C',
+		false,
+		70
+	),
+	'sender_email' => new Tag(
+		'1235',
+		'sender_email',
+		'Sender Email',
+		'john@company.com',
+		'C',
+		false,
+		70
+	),
+	'send_email' => new Tag(
+		'859',
+		'send_email',
+		'Send Email',
+		'1',
+		'N',
+		false,
+		1
+	),
 	'gls_customer_number' => new Tag(
 		'805',
 		'gls_customer_number',
@@ -206,7 +233,7 @@ return [
 		'General Logistics Systems',
 		'C',
 		true,
-		50
+		30
 	),
 	'sender_name_2' => new Tag(
 		'811',
@@ -251,7 +278,25 @@ return [
 		'ANSFELDEN',
 		'C',
 		true,
-		50
+		30
+	),
+	'sender_contact' => new Tag(
+		'825',
+		'sender_contact',
+		'Sender Contact name',
+		'Sjaak',
+		'C',
+		true,
+		30
+	),
+	'sender_phone' => new Tag(
+		'826',
+		'sender_phone',
+		'Sender Phone',
+		'085-1548743',
+		'C',
+		true,
+		15
 	),
 	'label_id_number' => new Tag(
 		'853',
@@ -270,6 +315,15 @@ return [
 		'C',
 		true,
 		10
+	),
+	'receiver_address_type' => new Tag(
+		'859',
+		'receiver_address_type',
+		'Receiver Email Address Type (P/B)',
+		'P',
+		'C',
+		true,
+		1
 	),
 	'receiver_name_1' => new Tag(
 		'860',
@@ -330,6 +384,15 @@ return [
 		'additional_text_2',
 		'Additional Text 2',
 		'Infotext',
+		'C',
+		false,
+		50
+	),
+	'message_subject' => new Tag(
+		'1044',
+		'message_subject',
+		'Message subject',
+		'Uw bestelling',
 		'C',
 		false,
 		50

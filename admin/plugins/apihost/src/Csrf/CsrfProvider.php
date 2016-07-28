@@ -3,7 +3,7 @@
 namespace Bixie\Devos\Apihost\Csrf;
 
 use Bixie\Devos\Apihost\ApihostPlugin;
-use YOOtheme\Framework\Csrf\DefaultCsrfProvider;
+use Bixie\Framework\Csrf\DefaultCsrfProvider;
 
 class CsrfProvider extends DefaultCsrfProvider
 {

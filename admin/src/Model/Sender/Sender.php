@@ -49,6 +49,22 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 	 */
 	protected $sender_logo = '';
 	/**
+	 * @var string
+	 */
+	protected $sender_email = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_contact = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_phone = '';
+	/**
+	 * @var string
+	 */
+	protected $message_subject = '';
+	/**
 	 * @var int
 	 */
 	protected $state = 1;
@@ -208,6 +224,69 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getSenderEmail () {
+		return $this->sender_email;
+	}
+
+	/**
+	 * @param string $sender_email
+	 * @return Sender
+	 */
+	public function setSenderEmail ($sender_email) {
+		$this->sender_email = $sender_email;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderContact () {
+		return $this->sender_contact;
+	}
+
+	/**
+	 * @param string $sender_contact
+	 * @return Sender
+	 */
+	public function setSenderContact ($sender_contact) {
+		$this->sender_contact = $sender_contact;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderPhone () {
+		return $this->sender_phone;
+	}
+
+	/**
+	 * @param string $sender_phone
+	 * @return Sender
+	 */
+	public function setSenderPhone ($sender_phone) {
+		$this->sender_phone = $sender_phone;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMessageSubject () {
+		return $this->message_subject;
+	}
+
+	/**
+	 * @param string $message_subject
+	 * @return Sender
+	 */
+	public function setMessageSubject ($message_subject) {
+		$this->message_subject = $message_subject;
+		return $this;
+	}
 
 	/**
 	 * @return int
@@ -256,6 +335,10 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 			'sender_zip' => $this->sender_zip,
 			'sender_country' => $this->sender_country,
 			'sender_logo' => $this->sender_logo,
+			'sender_email' => $this->sender_email,
+			'sender_contact' => $this->sender_contact,
+			'sender_phone' => $this->sender_phone,
+			'message_subject' => $this->message_subject,
 			'data' => $this->getData(),
 			'state' => $this->state,
 			'def' => $this->def,

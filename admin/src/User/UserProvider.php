@@ -3,7 +3,7 @@
 namespace Bixie\Devos\User;
 
 use Bixie\Framework\User\UserProvider as UserProviderBase;
-use YOOtheme\Framework\User\UserProviderInterface;
+use Bixie\Framework\User\UserProviderInterface;
 
 class UserProvider extends UserProviderBase implements UserProviderInterface
 {

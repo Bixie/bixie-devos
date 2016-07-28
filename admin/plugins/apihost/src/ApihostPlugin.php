@@ -6,10 +6,10 @@ use Bixie\Devos\Apihost\Apitoken\Exception\ApitokenException;
 use Bixie\Devos\Apihost\Apitoken\Provider\RequestApitokenProvider;
 use Bixie\Devos\Apihost\Csrf\CsrfProvider;
 use Bixie\Devos\Apihost\Request\RequestParameters;
-use YOOtheme\Framework\Application;
-use YOOtheme\Framework\Event\Event;
-use YOOtheme\Framework\Plugin\Plugin;
-use YOOtheme\Framework\Routing\Request;
+use Bixie\Framework\Application;
+use Bixie\Framework\Event\Event;
+use Bixie\Framework\Plugin\Plugin;
+use Bixie\Framework\Routing\Request;
 
 class ApihostPlugin extends Plugin
 {

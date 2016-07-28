@@ -2,9 +2,8 @@
 
 namespace Bixie\Framework\User;
 
-use YOOtheme\Framework\Application;
+use Bixie\Framework\Application;
 use Bixie\Framework\Utils\Query;
-use YOOtheme\Framework\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
@@ -58,7 +57,7 @@ class UserProvider implements UserProviderInterface
      *
      * @param  string $field
      * @param  string $value
-     * @return \YOOtheme\Framework\User\UserInterface
+     * @return \Bixie\Framework\User\UserInterface
      */
     protected function loadUserBy($field, $value)
     {
@@ -75,7 +74,7 @@ class UserProvider implements UserProviderInterface
      *
      * @param  string $field
      * @param  string $value
-     * @return \YOOtheme\Framework\User\UserInterface
+     * @return \Bixie\Framework\User\UserInterface
      */
     protected function loadUserByProfile($field, $value)
     {
@@ -99,7 +98,7 @@ class UserProvider implements UserProviderInterface
 	 * Loads a user.
 	 *
 	 * @param \JUser $user
-	 * @return \YOOtheme\Framework\User\UserInterface
+	 * @return \Bixie\Framework\User\UserInterface
 	 */
 	protected function loadUser(\JUser $user)
 	{

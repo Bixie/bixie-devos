@@ -3,7 +3,6 @@
 namespace Bixie\Framework\User;
 
 use Bixie\Framework\Traits\DataTrait;
-use YOOtheme\Framework\User\UserInterface;
 
 class User implements UserInterface, \ArrayAccess
 {

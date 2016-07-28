@@ -3,8 +3,8 @@
 namespace Bixie\Devos\Controller;
 
 use Bixie\Framework\Utils\Query;
-use YOOtheme\Framework\Routing\Controller;
-use YOOtheme\Framework\Routing\Exception\HttpException;
+use Bixie\Framework\Routing\Controller;
+use Bixie\Framework\Routing\Exception\HttpException;
 
 class GlsTrackingApiController extends Controller {
 	/**

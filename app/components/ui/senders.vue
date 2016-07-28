@@ -22,8 +22,7 @@
             <th></th>
             <th>Naam</th>
             <th>Adres</th>
-            <th>Postcode</th>
-            <th>Plaats</th>
+            <th>Email</th>
             <th>Logo</th>
             <th></th>
         </tr>
@@ -45,9 +44,16 @@
                 <strong>{{ sender.sender_name_1 }}</strong>
                 <div v-if="sender.sender_name_2">{{ sender.sender_name_2 }}</div>
             </td>
-            <td>{{ sender.sender_street }}</td>
-            <td>{{ sender.sender_zip }}</td>
-            <td>{{ sender.sender_city }} ({{ sender.sender_country }})</td>
+            <td>
+                {{ sender.sender_street }}<br/>
+                {{ sender.sender_zip }}<br/>
+                {{ sender.sender_city }} ({{ sender.sender_country }})
+            </td>
+            <td>
+                {{ sender.sender_email }}<br/>
+                {{ sender.sender_contact }}<br/>
+                {{ sender.sender_phone }}
+            </td>
             <td class="uk-table-middle"><img v-if="sender.data.image" :src="sender.data.image" alt="logo" />
                 <a @click="editSender(sender.id)" v-else>Upload logo</a></td>
             <td>
@@ -257,6 +263,26 @@
                     'Duitsland': 'DE'
                 },
                 attrs: {'class': 'uk-form-width-large', 'required': true}
+            },
+            'sender_email': {
+                type: 'email',
+                label: 'Email *',
+                attrs: {'class': 'uk-width-1-1', 'required': true}
+            },
+            'sender_contact': {
+                type: 'text',
+                label: 'Contactpersoon',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'sender_phone': {
+                type: 'text',
+                label: 'Telefoon',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'message_subject': {
+                type: 'text',
+                label: 'Standaard email onderwerp',
+                attrs: {'class': 'uk-width-1-1'}
             }
         },
 

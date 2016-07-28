@@ -13,8 +13,8 @@ use Bixie\Devos\User\UserProvider;
 use Bixie\Gls\Gls;
 use Bixie\Gls\Status\Ftp\FtpGls;
 use Bixie\Gls\Status\Status;
-use YOOtheme\Framework\Application as BaseApplication;
-use YOOtheme\Framework\Event\EventSubscriberInterface;
+use Bixie\Framework\Application as BaseApplication;
+use Bixie\Framework\Event\EventSubscriberInterface;
 
 class Application extends BaseApplication implements EventSubscriberInterface
 {
@@ -133,6 +133,12 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		$this['scripts']->register('uikit-notify', 'vendor/assets/uikit/js/components/notify.min.js', ['uikit']);
 		$this['scripts']->register('uikit-upload', 'vendor/assets/uikit/js/components/upload.min.js', ['uikit']);
 		$this['scripts']->register('uikit-pagination', 'vendor/assets/uikit/js/components/pagination.min.js', ['uikit']);
+		$this['scripts']->register('uikit-sticky', 'vendor/assets/uikit/js/components/sticky.js', ['uikit']);
+		$this['scripts']->register('uikit-form-select', 'vendor/assets/uikit/js/components/form-select.js', ['uikit']);
+		$this['scripts']->register('uikit-lightbox', 'vendor/assets/uikit/js/components/lightbox.js', ['uikit']);
+		$this['scripts']->register('uikit-slideset', 'vendor/assets/uikit/js/components/slideset.js', ['uikit']);
+		$this['scripts']->register('uikit-slider', 'vendor/assets/uikit/js/components/slider.js', ['uikit']);
+		$this['scripts']->register('uikit-slideshow', 'vendor/assets/uikit/js/components/slideshow.js', ['uikit']);
 
 		// site event
         if (!$this['admin']) {
@@ -143,8 +149,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
     public function initSite()
     {
         // scripts
-		$this['joomla']->set('uikit', true);
-		$this['scripts']->add('vue', 'assets/js/vue.js', ['uikit-tooltip', 'uikit-notify']);
+		\plgSystemBixsystem::loadJsAssets([], true, $this);
     }
 
     public function initAdmin()

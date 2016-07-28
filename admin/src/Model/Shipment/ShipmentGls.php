@@ -71,7 +71,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	/**
 	 * @var string
 	 */
-	protected $reciever_email;
+	protected $receiver_email = '';
 	/**
 	 * @var string
 	 */
@@ -100,6 +100,10 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 * @var string
 	 */
 	protected $sender_city = '';
+	/**
+	 * @var string
+	 */
+	protected $sender_email = '';
 	/**
 	 * @var string
 	 */
@@ -368,15 +372,15 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 * @return string
 	 */
 	public function getRecieverEmail () {
-		return $this->reciever_email;
+		return $this->receiver_email;
 	}
 
 	/**
-	 * @param string $reciever_email
+	 * @param string $receiver_email
 	 * @return ShipmentGls
 	 */
-	public function setRecieverEmail ($reciever_email) {
-		$this->reciever_email = $reciever_email;
+	public function setRecieverEmail ($receiver_email) {
+		$this->receiver_email = $receiver_email;
 		return $this;
 	}
 
@@ -489,6 +493,22 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 	 */
 	public function setSenderCity ($sender_city) {
 		$this->sender_city = $sender_city;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSenderEmail () {
+		return $this->sender_email;
+	}
+
+	/**
+	 * @param string $sender_email
+	 * @return ShipmentGls
+	 */
+	public function setSenderEmail ($sender_email) {
+		$this->sender_email = $sender_email;
 		return $this;
 	}
 
@@ -867,7 +887,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'date_of_shipping' => $this->getDateOfShipping()->format('Y-m-d H:i:s'),
 			'domestic_parcel_number_nl' => $this->domestic_parcel_number_nl,
 			'receiver_phone' => $this->receiver_phone,
-			'reciever_email' => $this->reciever_email,
+			'receiver_email' => $this->receiver_email,
 			'receiver_contact' => $this->receiver_contact,
 			'sender_name_1' => $this->sender_name_1,
 			'sender_name_2' => $this->sender_name_2,
@@ -875,6 +895,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			'sender_city' => $this->sender_city,
 			'sender_zip' => $this->sender_zip,
 			'sender_country' => $this->sender_country,
+			'sender_email' => $this->sender_email,
 			'customer_reference' => $this->customer_reference,
 			'receiver_name_1' => $this->receiver_name_1,
 			'receiver_name_2' => $this->receiver_name_2,
