@@ -3,46 +3,47 @@
 namespace Bixie\Devos\Controller;
 
 use Bixie\Devos\Model\Sender\Sender;
-use Bixie\Devos\Model\Shipment\ShipmentGls;
+use Bixie\Devos\Model\Shipment\ShipmentSendCloud;
 use Bixie\Framework\PostcodeLookup\PostcodeLookup;
 use Bixie\Framework\Routing\StreamedResponse;
 use Bixie\Framework\User\User;
 use Bixie\Framework\Utils\Query;
 use Bixie\Framework\Routing\Controller;
 use Bixie\Framework\Routing\Exception\HttpException;
+use Bixie\SendCloud\Carriers\SendCloud\Parcel;
 
-class ShipmentApiController extends Controller {
+class SendCloudApiController extends Controller {
 
-	public function indexGlsAction ($filter = [], $page = 0) {
+	public function indexSendCloudAction ($filter = [], $page = 0) {
 		$return = new \ArrayObject;
 
 		$query = $this->getQuery($filter);
 
 		$limit = isset($filter['limit']) ? (int)$filter['limit'] : 10;
-		$return['total'] = $this['shipmentgls']->count($query);
+		$return['total'] = $this['shipmentsendcloud']->count($query);
 		$return['pages'] = ceil($return['total'] / $limit);
 		$return['page'] = max(0, min($return['pages'] - 1, $page));
 		$start = $return['page'] * $limit;
 
-		$return['shipments'] = $this['shipmentgls']->query($query, $start, $limit);
+		$return['shipments'] = $this['shipmentsendcloud']->query($query, $start, $limit);
 
 		return $this['response']->json($return);
 
 	}
 
-	public function csvGlsAction ($filter = []) {
+	public function csvSendCloudAction ($filter = []) {
 
 		$query = $this->getQuery($filter);
 
 		$filename = sprintf('verzendingen_%s_%s', $filter['created_from'], $filter['created_to']);
 
-		$shipments = $this['shipmentgls']->query($query);
-		$ignore = ['data','parcel','events','gls_stream','pdf_path','zpl_template'];
+		$shipments = $this['shipmentsendcloud']->query($query);
+		$ignore = ['data','parcel','events','sendcloud_stream','pdf_path','zpl_template'];
 		$response = new StreamedResponse();
 		$response->setCallback(function() use ($shipments, $ignore, $filename) {
 
 			$handle = fopen('php://output', 'w');
-			fputcsv($handle, array_keys(ShipmentGls::create()->toArray(['track_trace' => ''], $ignore)), ';');
+			fputcsv($handle, array_keys(ShipmentSendCloud::create()->toArray(['track_trace' => ''], $ignore)), ';');
 
 			foreach ($shipments as $shipment) {
 				$a = array_values($shipment->toArray(['track_trace' => $shipment['track_trace']], $ignore));
@@ -59,7 +60,7 @@ class ShipmentApiController extends Controller {
 		return $response;
 	}
 
-	public function getShipmentGlsAction ($id) {
+	public function getShipmentSendCloudAction ($id) {
 		/** @var User $user */
 		$user = $this['users']->get();
 		if (!$user['klantnummer']) {
@@ -67,14 +68,14 @@ class ShipmentApiController extends Controller {
 		}
 		if ($id == 0) {
 
-			$object = ShipmentGls::create([
+			$object = ShipmentSendCloud::create([
 				'klantnummer' => $user['klantnummer'],
-				'gls_customer_number' => $user['gls_customer_number']
+				'sendcloud_customer_number' => $user['sendcloud_customer_number']
 			]);
 			return $this['response']->json($object);
 		}
-		/** @var ShipmentGls $shipment */
-		if ($shipment = $this['shipmentgls']->find($id)) {
+		/** @var ShipmentSendCloud $shipment */
+		if ($shipment = $this['shipmentsendcloud']->find($id)) {
 			if (!$user->hasPermission('manage_devos') && $shipment->getKlantnummer() != $user['klantnummer']) {
 				throw new HttpException(403, 'Geen rechten om deze verzending te bekijken');
 			}
@@ -85,7 +86,7 @@ class ShipmentApiController extends Controller {
 
 	}
 
-	public function saveShipmentGlsAction ($data) {
+	public function saveShipmentSendCloudAction ($data) {
 		$status = !isset($data['id']) || !$data['id'] ? 201 : 200;
 		$return = new \ArrayObject;
 
@@ -98,12 +99,12 @@ class ShipmentApiController extends Controller {
 		throw new HttpException(400);
 	}
 
-	public function sendShipmentGlsAction ($id) {
+	public function sendShipmentSendCloudAction ($id) {
 		$return = new \ArrayObject;
 
 		try {
-			/** @var ShipmentGls $shipment */
-			if (!$shipment = $this['shipmentgls']->find($id)) {
+			/** @var ShipmentSendCloud $shipment */
+			if (!$shipment = $this['shipmentsendcloud']->find($id)) {
 				throw new \Exception(sprintf('Verzending id %d niet gevonden.', $id));
 			}
 			/** @var User $user */
@@ -125,12 +126,12 @@ class ShipmentApiController extends Controller {
 
 	}
 
-	public function labelShipmentGlsAction ($id) {
+	public function labelShipmentSendCloudAction ($id) {
 		$return = new \ArrayObject;
 
 		try {
-			/** @var ShipmentGls $shipment */
-			if (!$shipment = $this['shipmentgls']->find($id)) {
+			/** @var ShipmentSendCloud $shipment */
+			if (!$shipment = $this['shipmentsendcloud']->find($id)) {
 				throw new \Exception(sprintf('Verzending id %d niet gevonden.', $id));
 			}
 			/** @var User $user */
@@ -143,9 +144,9 @@ class ShipmentApiController extends Controller {
 				throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
 			}
 
-			$this['gls']->createLabel($shipment, $sender);
+			$this['sendcloud']->createLabel($shipment, $sender);
 
-			$this->app['shipmentgls']->save($shipment->toArray());
+			$this->app['shipmentsendcloud']->save($shipment->toArray());
 
 			$return['shipment'] = $shipment;
 
@@ -161,7 +162,7 @@ class ShipmentApiController extends Controller {
 	}
 
 
-	public function createShipmentGlsAction ($data) {
+	public function createShipmentSendCloudAction ($data) {
 
 		$return = new \ArrayObject;
 		try {
@@ -181,7 +182,7 @@ class ShipmentApiController extends Controller {
 
 	}
 
-	public function createBulkShipmentGlsAction ($shipments) {
+	public function createBulkShipmentSendCloudAction ($shipments) {
 
 		$return = new \ArrayObject;
 		$created = [];
@@ -207,10 +208,10 @@ class ShipmentApiController extends Controller {
 	}
 
 
-	public function labelPngShipmentGlsAction ($domestic_parcel_number_nl) {
+	public function labelPngShipmentSendCloudAction ($tracking_number) {
 
-		/** @var ShipmentGls $shipment */
-		if (!$shipment = $this['shipmentgls']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
+		/** @var ShipmentSendCloud $shipment */
+		if (!$shipment = $this['shipmentsendcloud']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
 			throw new HttpException(404, sprintf('Verzending nr %d niet gevonden.', $domestic_parcel_number_nl));
 		}
 
@@ -220,7 +221,7 @@ class ShipmentApiController extends Controller {
 			throw new HttpException(403, 'Geen rechten om deze verzending te bekijken');
 		}
 
-		if (!$png_string = $this['gls']->pngLabel($shipment)) {
+		if (!$png_string = $this['sendcloud']->pngLabel($shipment)) {
 			throw new HttpException(400, sprintf('Fout in PNG verzending %d.', $domestic_parcel_number_nl));
 		}
 
@@ -229,11 +230,11 @@ class ShipmentApiController extends Controller {
 	}
 
 
-	public function pdfShipmentGlsAction ($domestic_parcel_number_nl, $string = false) {
+	public function pdfShipmentSendCloudAction ($tracking_number, $string = false) {
 
-		/** @var ShipmentGls $shipment */
-		if (!$shipment = $this['shipmentgls']->findDomesticParcelNumberNl($domestic_parcel_number_nl)) {
-			throw new HttpException(404, sprintf('Verzending nr %d niet gevonden.', $domestic_parcel_number_nl));
+		/** @var ShipmentSendCloud $shipment */
+		if (!$shipment = $this['shipmentsendcloud']->findTrackingNumber($tracking_number)) {
+			throw new HttpException(404, sprintf('Verzending nr %d niet gevonden.', $tracking_number));
 		}
 
 		/** @var User $user */
@@ -243,7 +244,7 @@ class ShipmentApiController extends Controller {
 		}
 
 		if (!$file = $shipment->getPdfPath() or !file_exists($file)) {
-			throw new HttpException(400, sprintf('Verzending nr %d heeft geen gekoppeld PDF bestand.', $domestic_parcel_number_nl));
+			throw new HttpException(400, sprintf('Verzending nr %d heeft geen gekoppeld PDF bestand.', $tracking_number));
 		}
 
 		return $this['response']->file($file, 200, [], false, $string ? 'inline' :'attachment');
@@ -256,11 +257,11 @@ class ShipmentApiController extends Controller {
 		$lookup = new PostcodeLookup($settings['pc_api_url'], $settings['pc_api_name'], $settings['pc_api_secret']);
 
 		try {
-			
+
 			$return['result'] = $lookup->lookup($postcode, $huisnr, $toev);
-			
+
 			return $this['response']->json($return, 200);
-			
+
 		} catch (\Exception $e) {
 			throw new HttpException(400, $e->getMessage(), $e, $e->getCode());
 		}
@@ -280,50 +281,47 @@ class ShipmentApiController extends Controller {
 			}
 
 			$data['klantnummer'] = $user['klantnummer'];
-			$data['gls_customer_number'] = $user['gls_customer_number'] ?: $this['config']['gls_customer_number'];
 		}
 
-		if (empty($data['date_of_shipping'])) {
-			$data['date_of_shipping'] = (new \DateTime())->format('Y-m-d H:i:s');
-		}
-
-		if ($data = $this['shipmentgls']->save($data)) {
+		if ($data = $this['shipmentsendcloud']->save($data)) {
 			return $data;
 		}
 		return false;
 	}
 
 	/**
-	 * @param ShipmentGls $shipment
-	 * @return ShipmentGls
+	 * @param ShipmentSendCloud $shipment
+	 * @return ShipmentSendCloud
 	 * @throws \Exception
 	 */
-	protected function sendShipment (ShipmentGls $shipment) {
+	protected function sendShipment (ShipmentSendCloud $shipment) {
 
-		$existingGls = $shipment->getGlsParcelNumber();
-		if (!empty($existingGls)) {
-			throw new \Exception(sprintf('Verzending heeft al een GLS nummer: %s.', $existingGls));
+		$existingSendCloud = $shipment->getSendcloudId();
+		if (!empty($existingSendCloud)) {
+			throw new \Exception(sprintf('Verzending heeft al een SENDCLOUD nummer: %s.', $existingSendCloud));
 		}
+        /** @var Parcel $parcel */
+		if (!$parcel = $this['sendcloud']->createShipment($shipment)) {
+            throw new \Exception('Fout in soundcload API');
+        }
+        $parcel->setParcelData($shipment);
+        $shipment['track_trace'] = $parcel->getTrackingUrl();
 
-		$this['gls']->createShipment($shipment);
-
-		$shipment['track_trace'] = $this['gls']->getTrackTrace($shipment);
-
-		$this->app['shipmentgls']->save($shipment->toArray());
+        $this->app['shipmentsendcloud']->save($shipment->toArray());
 
 		return $shipment;
 	}
 
 	/**
 	 * @param array $data
-	 * @return ShipmentGls|bool
+	 * @return ShipmentSendCloud|bool
 	 * @throws \Exception
 	 */
 	protected function createShipment ($data) {
 		if ($data = $this->saveShipment($data)) {
 
-			/** @var ShipmentGls $shipment */
-			if (!$shipment = $this['shipmentgls']->find($data['id'])) {
+			/** @var ShipmentSendCloud $shipment */
+			if (!$shipment = $this['shipmentsendcloud']->find($data['id'])) {
 				throw new \Exception(sprintf('Verzending id %d niet gevonden.', $data['id']));
 			}
 
@@ -333,9 +331,9 @@ class ShipmentApiController extends Controller {
 			if (!$sender = $this['sender']->find($shipment->getSenderId())) {
 				throw new \Exception(sprintf('Verzender id %d niet gevonden.', $shipment->getSenderId()));
 			}
-			$this['gls']->createLabel($shipment, $sender);
+			$this['sendcloud']->createLabel($shipment, $sender);
 
-			$this->app['shipmentgls']->save($shipment->toArray());
+			$this->app['shipmentsendcloud']->save($shipment->toArray());
 
 			return $shipment;
 		}
@@ -347,16 +345,16 @@ class ShipmentApiController extends Controller {
 	 * @return Query
 	 */
 	protected function getQuery ($filter) {
-		$query = Query::query('@dv_shipment_gls', '*');
+		$query = Query::query('@dv_shipment_sendcloud', '*');
 		$filter = array_merge(array_fill_keys([
-			'search', 'state', 'gls_customer_number', 'klantnummer', 'sender_id', 'created_from', 'created_to', 'order', 'dir', 'limit'
+			'search', 'state', 'sendcloud_customer_number', 'klantnummer', 'sender_id', 'created_from', 'created_to', 'order', 'dir', 'limit'
 		], ''), $filter);
 
 		/**
 		 * @var string $search
 		 * @var string $klantnummer
 		 * @var int    $sender_id
-		 * @var string $gls_customer_number
+		 * @var string $sendcloud_customer_number
 		 * @var string $created_from
 		 * @var string $created_to
 		 * @var string $state
@@ -373,7 +371,7 @@ class ShipmentApiController extends Controller {
 		}
 
 		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
-			'gls_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
+			'sendcloud_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
 			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place', 'receiver_email'
 		])), ['search' => "%{$search}%"]);
 
@@ -392,8 +390,8 @@ class ShipmentApiController extends Controller {
 			$query->where('klantnummer = :klantnummer', ['klantnummer' => $klantnummer]);
 		}
 
-		if ($gls_customer_number) {
-			$query->where('gls_customer_number = :gls_customer_number', ['gls_customer_number' => $gls_customer_number]);
+		if ($sendcloud_customer_number) {
+			$query->where('sendcloud_customer_number = :sendcloud_customer_number', ['sendcloud_customer_number' => $sendcloud_customer_number]);
 		}
 
 		if ($sender_id) {
@@ -410,7 +408,7 @@ class ShipmentApiController extends Controller {
 		}
 
 		$order_col = in_array($order, [
-			'gls_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'
+			'sendcloud_parcel_number', 'sender_name_1', 'receiver_zip_code', 'modified', 'created'
 		]) ? $order : 'created';
 		$dir = $dir ?: 'DESC';
 
@@ -427,18 +425,18 @@ class ShipmentApiController extends Controller {
 	 */
 	public static function getRoutes () {
 		return array(
-			array('/api/shipment', 'indexGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/csv', 'csvGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/:id', 'getShipmentGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/save', 'saveShipmentGlsAction', 'POST', array('access' => 'client_devos')),
-			array('/api/shipment/send/:id', 'sendShipmentGlsAction', 'POST', array('access' => 'client_devos')),
-			array('/api/shipment/label/:id', 'labelShipmentGlsAction', 'POST', array('access' => 'client_devos')),
-			array('/api/shipment/create', 'createShipmentGlsAction', 'POST', array('access' => 'client_devos')),
-			array('/api/shipment/createbulk', 'createBulkShipmentGlsAction', 'POST', array('access' => 'client_devos')),
-			array('/api/shipment/png/:domestic_parcel_number_nl', 'labelPngShipmentGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/pdf/:domestic_parcel_number_nl', 'pdfShipmentGlsAction', 'GET', array('access' => 'client_devos')),
-			array('/api/shipment/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos')),
-			array('/api/shipment/postcode', 'postcodeCheckAction', 'POST', array('access' => 'client_devos'))
+			array('/api/sendcloud', 'indexSendCloudAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sendcloud/csv', 'csvSendCloudAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sendcloud/:id', 'getShipmentSendCloudAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sendcloud/save', 'saveShipmentSendCloudAction', 'POST', array('access' => 'client_devos')),
+			array('/api/sendcloud/send/:id', 'sendShipmentSendCloudAction', 'POST', array('access' => 'client_devos')),
+			array('/api/sendcloud/label/:id', 'labelShipmentSendCloudAction', 'POST', array('access' => 'client_devos')),
+			array('/api/sendcloud/create', 'createShipmentSendCloudAction', 'POST', array('access' => 'client_devos')),
+			array('/api/sendcloud/createbulk', 'createBulkShipmentSendCloudAction', 'POST', array('access' => 'client_devos')),
+			array('/api/sendcloud/png/:tracking_number', 'labelPngShipmentSendCloudAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sendcloud/pdf/:tracking_number', 'pdfShipmentSendCloudAction', 'GET', array('access' => 'client_devos')),
+			array('/api/sendcloud/:id', 'deleteContentAction', 'DELETE', array('access' => 'client_devos')),
+			array('/api/sendcloud/postcode', 'postcodeCheckAction', 'POST', array('access' => 'client_devos'))
 		);
 	}
 

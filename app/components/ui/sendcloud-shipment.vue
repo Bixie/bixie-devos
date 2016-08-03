@@ -33,15 +33,11 @@
         </div>
         <div>
             <button class="uk-button" @click="newDefault">
-                <i v-spinner="editloading[-1]" icon="plus"></i>Standaard</button>
-            <div class="uk-button-group">
-                <button class="uk-button" @click="newExpress('')">
-                    <i v-spinner="editloading[-2]" icon="bolt"></i>Express 17 uur</button>
-                <button class="uk-button" @click="newExpress('T12')">
-                    <i v-spinner="editloading['T12']" icon="bolt"></i>12 uur</button>
-                <button class="uk-button" @click="newExpress('T9')">
-                    <i v-spinner="editloading['T9']" icon="bolt"></i>9 uur</button>
-            </div>
+                <i v-spinner="editloading[-1]" icon="plus"></i>PostNL</button>
+            <button class="uk-button" @click="newSignature">
+                <i v-spinner="editloading[-2]" icon="plus"></i>Aangetekend</button>
+            <button class="uk-button" @click="newExpress">
+                <i v-spinner="editloading[-3]" icon="bolt"></i>Express SameDay</button>
         </div>
     </div>
 
@@ -67,69 +63,51 @@
                 <dl>
                     <dd>
                         <i class="uk-icon-cubes uk-icon-justify uk-margin-small-right" title="Product type" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
-                    </dd>
-                    <dd v-if="shipment.data.express_flag">
-                        <i class="uk-icon-bolt uk-icon-justify uk-margin-small-right" title="Express" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ getValueLabel('express_service_flag', shipment.data.express_service_flag) }}</span>
-                        <i v-show="shipment.data.express_service_flag" class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service aan" data-uk-tooltip="{delay: 200}"></i>
-                        <i v-show="shipment.data.express_service_flag_sat" class="uk-icon-calendar-plus-o uk-text-danger uk-margin-small-left" title="Saturday Service aan" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ getShippingMethodName(shipment.shipping_method) }}</span>
                     </dd>
                     <dd>
-                        <i class="uk-icon-ticket uk-icon-justify uk-margin-small-right" title="NL pakket nummer" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.domestic_parcel_number_nl }}</span>
-                    </dd>
-                    <dd>
-                        <i class="uk-icon-barcode uk-icon-justify uk-margin-small-right" title="GLS pakket nummer" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.gls_parcel_number }}</span>
+                        <i class="uk-icon-barcode uk-icon-justify uk-margin-small-right" title="Sendcloud pakket nummer" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ shipment.sendcloud_id }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-circle uk-icon-justify uk-margin-small-right" title="Gewicht" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.parcel_weight }} kg</span>
+                        <span>{{ shipment.weight }} kg</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-clock-o uk-icon-justify uk-margin-small-right" title="Datum" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.date_of_shipping | datetime }}</span>
+                        <span>{{ shipment.created | datetime }}</span>
                     </dd>
                 </dl>
             </td>
             <td>
                 <dl>
                     <dd>
-                        <i class="uk-icon-user uk-icon-justify uk-margin-small-right" title="Ontvanger naam 1" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_name_1 }}</span>
+                        <i class="uk-icon-user uk-icon-justify uk-margin-small-right" title="Ontvanger naam" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ shipment.name }}</span>
                     </dd>
-                    <dd v-if="shipment.receiver_name_2">
-                        <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Ontvanger naam 2" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_name_2 }}</span>
-                    </dd>
-                    <dd v-if="shipment.receiver_name_3">
-                        <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Ontvanger naam 3" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_name_3 }}</span>
+                    <dd v-if="shipment.company_name">
+                        <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Bedrijfsnaam" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ shipment.company_name }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-building-o uk-icon-justify uk-margin-small-right" title="Ontvanger adres" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_street }}</span>
+                        <span>{{ shipment.address }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Ontvanger postcode" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_zip_code }}</span>
+                        <span>{{ shipment.postal_code }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Ontvanger plaats" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_place }}</span>
+                        <span>{{ shipment.city }}</span>
                     </dd>
-                    <dd v-if="shipment.receiver_contact">
-                        <i class="uk-icon-user uk-icon-justify uk-margin-small-right" title="Contact ontvanger" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_contact }}</span>
-                    </dd>
-                    <dd v-if="shipment.receiver_phone">
+                    <dd v-if="shipment.telephone">
                         <i class="uk-icon-phone uk-icon-justify uk-margin-small-right" title="Telefoon ontvanger" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_phone }}</span>
+                        <span>{{ shipment.telephone }}</span>
                     </dd>
-                    <dd v-if="shipment.receiver_email">
+                    <dd v-if="shipment.email">
                         <i class="uk-icon-envelope-o uk-icon-justify uk-margin-small-right" title="Email ontvanger" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.receiver_email }}</span>
+                        <span>{{ shipment.email }}</span>
                     </dd>
                 </dl>
             </td>
@@ -141,39 +119,39 @@
                     </dd>
                     <dd>
                         <i class="uk-icon-tag uk-icon-justify uk-margin-small-right" title="Klantreferentie" data-uk-tooltip="{delay: 200}"></i>
-                        <strong>{{ shipment.customer_reference }}</strong>
+                        <strong>{{ shipment.order_number }}</strong>
                     </dd>
                     <dd>
                         <i class="uk-icon-user uk-icon-justify uk-margin-small-right" title="Afzender naam 1" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_name_1 }}</span>
+                        <span>{{ shipment.data.sender_name_1 }}</span>
                     </dd>
                     <dd v-if="shipment.sender_name_2">
                         <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Afzender naam 2" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_name_2 }}</span>
+                        <span>{{ shipment.data.sender_name_2 }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-building-o uk-icon-justify uk-margin-small-right" title="Afzender adres" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_street }}</span>
+                        <span>{{ shipment.data.sender_street }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Afzender postcode" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_zip }}</span>
+                        <span>{{ shipment.data.sender_zip }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon- uk-icon-justify uk-margin-small-right" title="Afzender plaats" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_city }}</span>
+                        <span>{{ shipment.data.sender_city }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-comment-o uk-icon-justify uk-margin-small-right" title="Afzender contact" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_contact }}</span>
+                        <span>{{ shipment.data.sender_contact }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-phone uk-icon-justify uk-margin-small-right" title="Afzender telefoon" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_phone | nrquotes }}</span>
+                        <span>{{ shipment.data.sender_phone | nrquotes }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-envelope-o uk-icon-justify uk-margin-small-right" title="Afzender email" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_email }}</span>
+                        <span>{{ shipment.data.sender_email }}</span>
                     </dd>
                 </dl>
             </td>
@@ -192,8 +170,8 @@
                             <i class="uk-icon-download uk-margin-small-right"></i>
                             Download PDF</a>
                     </li>
-                    <li v-show="printEnabled && pdfPrinter && shipment.domestic_parcel_number_nl" class="uk-text-truncate">
-                        <a @click="printPdf(shipment.domestic_parcel_number_nl)">
+                    <li v-show="printEnabled && pdfPrinter && shipment.sendcloud_id" class="uk-text-truncate">
+                        <a @click="printPdf(shipment.sendcloud_id)">
                             <i class="uk-icon-file-pdf-o uk-margin-small-right"></i>
                             Print PDF</a>
                     </li>
@@ -202,7 +180,7 @@
                             <i class="uk-icon-barcode uk-margin-small-right"></i>
                             Print etiket</a>
                     </li>
-                    <li v-show="shipment.png_url">
+                    <li v-show="shipment.data.png_url">
                         <a :href="shipment.png_url" data-uk-lightbox>
                             <i class="uk-icon-file-image-o uk-margin-small-right"></i>
                             Bekijk etiket</a>
@@ -241,32 +219,27 @@
     <v-modal v-ref:editshipmentmodal :large="true" :closed="cancelEdit">
         <div class="uk-modal-header">
             <div class="uk-flex">
-                <h3 class="uk-flex-item-1">GLS verzending</h3>
+                <h3 class="uk-flex-item-1">Sendcloud verzending</h3>
                 <div class="uk-flex uk-flex-middle uk-h5">
                     <div v-if="shipment.sender_id" class="uk-margin-left">
                         <i class="uk-icon-user uk-margin-small-right" title="Afzender" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                         <span>{{ senders[shipment.sender_id].sender_name_1 }}</span>
                     </div>
-                    <div class="uk-margin-small-left" v-show="shipment.receiver_email && shipment.data.send_email">
+                    <div class="uk-margin-small-left" v-show="shipment.email">
                         <i class="uk-icon-envelope-o uk-text-success" title="Email wordt naar ontvanger verstuurd" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
                     </div>
                     <div class="uk-margin-left">
                         <i class="uk-icon-cubes uk-margin-small-right" title="Product type" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
-                        <span>{{ getValueLabel('product_short_description', shipment.product_short_description) }}</span>
+                        <span>{{ getShippingMethodName(shipment.shipping_method) }}</span>
                     </div>
-                    <div class="uk-margin-left" v-show="shipment.data.express_service_flag">
+                    <div class="uk-margin-left" v-show="isExpress">
                         <i class="uk-icon-bolt uk-margin-small-right" title="Express" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
-                        <span>{{ getValueLabel('express_service_flag', shipment.data.express_service_flag) }}</span>
-                        <i class="uk-icon-flag uk-text-danger uk-margin-small-left" title="Express Service" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
-                        <a :class="{'uk-text-danger': shipment.data.express_service_flag_sat}"
-                           @click="shipment.data.express_service_flag_sat = !shipment.data.express_service_flag_sat"
-                           class="uk-icon-calendar-plus-o uk-margin-small-left" title="Saturday Service" data-uk-tooltip="delay: 200, pos: 'bottom'"></a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <partial name="gls-form"></partial>
+        <partial name="sendcloud-form"></partial>
 
     </v-modal>
 
@@ -335,10 +308,17 @@
                 shipment: {
                     id: 0,
                     sender_id: 0,
+                    shipment: 0,
+                    requestShipment: 1,
+                    country: 'NL',
                     parcel: {},
-                    data: {}
+                    data: {
+                        sender_name: '',
+                        sender_phone: ''
+                    }
                 },
                 shipments: false,
+                sc_shipping_methods: [],
                 countries: {},
                 senders: {},
                 exportFilter: {
@@ -349,7 +329,6 @@
                 filter: {
                     search: '',
                     klantnummer: '',
-                    gls_customer_number: '',
                     order: 'created',
                     dir: 'desc',
                     limit: 10
@@ -391,6 +370,9 @@
         computed: {
             direction: function () {
                 return this.filter.dir == 'asc' ? 1 : -1;
+            },
+            isExpress: function () {
+                return [88].indexOf(this.shipment.shipping_method) > -1;
             }
         },
 
@@ -400,30 +382,28 @@
                 this.huisnr = '';
                 this.toev = '';
                 this.editShipment(-1, {
-                    product_short_description: 'BP',
-                    data: {
-                        express_service_flag: '',
-                        express_flag: false,
-                        inbound_country_code: 'NL'
-                    }
+                    shipping_method: 1
                 });
             },
-            newExpress: function (flag) {
+            newSignature: function () {
                 this.postcode = '';
                 this.huisnr = '';
                 this.toev = '';
-                this.editShipment((flag === '' ? -2 : flag), {
-                    product_short_description: 'EP',
-                    data: {
-                        express_service_flag: flag,
-                        express_flag: true,
-                        inbound_country_code: 'NL'
-                    }
+                this.editShipment(-2, {
+                    shipping_method: 2
+                });
+            },
+            newExpress: function () {
+                this.postcode = '';
+                this.huisnr = '';
+                this.toev = '';
+                this.editShipment(-3, {
+                    shipping_method: 88
                 });
             },
             load: function (page) {
                 this.$set('shipments', false);
-                this.$http.get('/api/shipment', {filter: this.filter, page: this.page}).then(function (res) {
+                this.$http.get('/api/sendcloud', {filter: this.filter, page: this.page}).then(function (res) {
                     if (res.data.shipments !== undefined) {
                         this.$set('shipments', res.data.shipments);
                         this.$set('total', res.data.total);
@@ -445,7 +425,7 @@
             },
             saveShipment: function () {
                 Vue.set(this.saving, this.shipment.id, true);
-                this.$http.post('/api/shipment/save', {
+                this.$http.post('/api/sendcloud/save', {
                     data: this.shipment
                 }).then(function (res) {
                     if (res.data.shipment) {
@@ -467,14 +447,14 @@
 
                 this.$set('progressmessage', 'Zending opslaan');
 
-                this.$http.post('/api/shipment/save', {
+                this.$http.post('/api/sendcloud/save', {
                     data: this.shipment
                 }).then(function (res) {
                     if (res.data.shipment) {
                         if (!this.shipments || this.shipments.length !== undefined) this.shipments = {};
                         this.$set('shipment', res.data.shipment);
                         Vue.set(this.shipments, this.shipment.id, res.data.shipment);
-                        this.$set('progressmessage', 'Zending aanmelden bij GLS');
+                        this.$set('progressmessage', 'Zending aanmelden bij SendCloud');
                         this.$set('progress', 30);
                         this.sendShipment(this.shipment.id);
                     }
@@ -484,7 +464,7 @@
 
             },
             sendShipment: function (id) {
-                this.$http.post('/api/shipment/send/' + id).then(function (res) {
+                this.$http.post('/api/sendcloud/send/' + id).then(function (res) {
                     if (res.data.error) {
                         this.setError(res.data.error);
                     }
@@ -500,7 +480,7 @@
                 });
             },
             getLabel: function (id) {
-                this.$http.post('/api/shipment/label/' + id).then(function (res) {
+                this.$http.post('/api/sendcloud/label/' + id).then(function (res) {
                     if (res.data.error) {
                         this.setError(res.data.error);
                     }
@@ -518,23 +498,17 @@
             createShipment: function (data) {
                 return _.merge({
                     klantnummer: this.config.user.klantnummer,
-                    gls_customer_number: this.config.user.gls_customer_number,
+                    shipping_method: 0,
                     sender_id: 0,
-                    product_short_description: 'BP',
-                    parcel_weight: 0,
-                    parcel_sequence: 1,
-                    parcel_quantity: 1,
-                    gls_parcel_number: 0,
+                    requestShipment: 1,
+                    sendcloud_id: 0,
+                    weight: 0,
+                    country: 'NL',
                     state: 1,
                     parcel: {},
                     data: {
-                        track_trace: '',
-                        label_template: 'gls_default',
-                        express_service_flag: '',
-                        send_email: true,
-                        express_flag: false,
-                        express_service_flag_sat: false,
-                        inbound_country_code: 'NL'
+                        sender_name: '',
+                        sender_phone: ''
                     },
                     pdf_url: ''
                 }, (data || {}));
@@ -568,7 +542,7 @@
                 this.ninjaPrint.zpl(this.zplPrinter, zpl_template);
             },
             printPdf: function (domestic_parcel_number_nl) {
-                this.$http.get('/api/shipment/pdf/' + domestic_parcel_number_nl, {'string': 1}).then(function (res) {
+                this.$http.get('/api/sendcloud/pdf/' + domestic_parcel_number_nl, {'string': 1}).then(function (res) {
                     this.ninjaPrint.pdf(this.pdfPrinter, res.data);
                 }, function (res) {
                     UIkit.notify(res.data.message || res.data, 'danger');
@@ -598,30 +572,10 @@
                     data: {}
                 });
             },
-            getValueLabel: function (key, value) {
-                var options = {}, label;
-                switch (key) {
-                case 'express_service_flag':
-                        options = {
-                            '': 'Volgende dag 17.00 uur',
-                            'T9': 'Volgende dag 9.00 uur',
-                            'T12': 'Volgende dag 12.00 uur'
-                        };
-                    break;
-                case 'product_short_description':
-                        options = {
-                            'BP': 'Business parcel',
-                            'EBP': 'Euro business parcel',
-                            'EP': 'Express parcel'
-                        };
-                    break;
-                }
-                if (options[value]) {
-                    return options[value];
-                }
-                return value;
+            getShippingMethodName: function (id) {
+                var shipping_method = _.find(this.sc_shipping_methods, 'id', id);
+                return shipping_method ? shipping_method.name : '';
             },
-
             postcodeLookup: function () {
                 var data = {
                     postcode: this.postcode.replace(/\s+/, '').toUpperCase(),
@@ -635,11 +589,11 @@
                 this.$http.post('/api/shipment/postcode', data).then(function (res) {
                     if (res.data.result) {
                         console.log(res.data);
-                        this.$set('shipment.receiver_zip_code', res.data.result.postcode);
-                        this.$set('shipment.receiver_street', res.data.result.street + ' '
+                        this.$set('shipment.postal_code', res.data.result.postcode);
+                        this.$set('shipment.address', res.data.result.street + ' '
                                 + res.data.result.houseNumber
                                 + (res.data.result.houseNumberAddition ? ' ' + res.data.result.houseNumberAddition : ''));
-                        this.$set('shipment.receiver_place', res.data.result.city);
+                        this.$set('shipment.city', res.data.result.city);
                     }
                     this.lookup = false;
                 }, function (res) {
@@ -648,13 +602,6 @@
                     UIkit.notify(res.data.message || res.data, 'danger');
                 });
 
-
-            },
-            getAdresType: function (adresType) {
-                return {
-                            'DELADR' : 'Afleveradres',
-                            'REQADR' : 'Afzenderadres'
-                        }[adresType] || adresType;
             }
 
         },
@@ -665,19 +612,12 @@
                 var sender = this.senders[id];
                 if (sender) {
                     sender.sender_phone = sender.sender_phone.replace(new RegExp('"', 'g'), '');
-                    ['sender_name_1', 'sender_name_2', 'sender_street', 'sender_zip', 'sender_city', 'sender_country', 'sender_email'].forEach(function (key) {
-                        this.$set('shipment.' + key, sender[key] || '');
-                    }.bind(this));
-                    ['sender_contact', 'sender_phone', 'message_subject'].forEach(function (key) {
-                        if (key !== 'message_subject' || !this.shipment.data[key]) { //prevent subject from override
-                            this.$set('shipment.data.' + key, sender[key] || '');
-                        }
+                    ['sender_contact', 'sender_phone', 'sender_name_1', 'sender_name_2', 'sender_street',
+                        'sender_zip', 'sender_city', 'sender_country', 'sender_email'].forEach(function (key) {
+                        if (!this.shipment.data[key]) this.$set('shipment.data.' + key, sender[key] || '');
                     }.bind(this));
 
                 }
-            },
-            'shipment.parcel_sequence': function (sequence) {
-                if (this.shipment.parcel_quantity < sequence) this.shipment.parcel_quantity = sequence;
             },
             'filter': {
                 handler: 'load',
@@ -686,99 +626,55 @@
             'page': function (page) {
                 this.load(page);
             },
-            'shipment.data.inbound_country_code': function (value) {
-                if (value !== 'NL') {
-                    this.shipment.product_short_description =  'EBP';
-                } else if (this.shipment.product_short_description === 'EBP') {
-                    this.shipment.product_short_description =  'BP';
-                }
-            },
-            'shipment.product_short_description': function (value) {
-                this.shipment.data.express_flag = (value === 'EP');
-                if (value !== 'EP') {
-                    this.shipment.data.express_service_flag_sat = false;
-                    this.shipment.data.express_flag = false;
-                }
-            },
             'postcode + huisnr + toev': function () {
                 this.postcodeLookup();
             }
         },
 
         partials: {
-            'gls-form': require('../../templates/gls-form.html')
+            'sendcloud-form': require('../../templates/sendcloud-form.html')
         },
 
         fields1: {
-            'receiver_contact': {
-                type: 'text',
-                label: 'Contact ontvanger',
-                attrs: {'name': 'contact', 'class': 'uk-width-1-1'}
-            },
-            'receiver_phone': {
+            'telephone': {
                 type: 'text',
                 label: 'Telefoon ontvanger',
                 attrs: {'name': 'telefoon', 'class': 'uk-width-1-1'}
             },
-            'receiver_email': {
+            'email': {
                 type: 'email',
                 label: 'Email ontvanger',
                 attrs: {'name': 'email', 'class': 'uk-width-1-1'}
-            },
-            'additional_text_1': {
-                type: 'textarea',
-                label: 'Aanvullende tekst 1',
-                attrs: {'name': 'extra', 'class': 'uk-width-1-1'}
-            },
-            'additional_text_2': {
-                type: 'textarea',
-                label: 'Aanvullende tekst 2',
-                attrs: {'name': 'extra2', 'class': 'uk-width-1-1'}
             }
         },
 
         fields2: {
-            'date_of_shipping': {
+            'created': {
                 type: 'format',
                 label: 'Verzenddatum',
                 attrs: {'v-datetime': 'd-m-Y'}
             },
-            'gls_parcel_number': {
+            'sendcloud_id': {
                 type: 'format',
-                label: 'GLS pakket nummer',
+                label: 'Sendcloud ID',
                 attrs: {'class': ''}
             },
-            'domestic_parcel_number_nl': {
+            'tracking_number': {
                 type: 'format',
-                label: 'NL pakket nummer',
-                attrs: {'class': ''}
-            },
-            'sap_number': {
-                type: 'format',
-                label: 'SAP nummer',
+                label: 'Tracking nummer',
                 attrs: {'class': ''}
             }
         },
 
         fields3: {
-            'data.send_email': {
-                type: 'checkbox',
-                label: 'Send email',
-                optionLabel: 'Send email to user via GLS',
-                attrs: {}
-            },
-            'data.message_subject': {
-                type: 'text',
-                label: 'Onderwerp email',
-                attrs: {'class': 'uk-width-1-1'}
-            },
-            'data.label_template': {
+            'requestShipment': {
                 type: 'select',
-                label: 'Print template',
+                label: 'Vraag track en trace aan',
                 options: {
-                    'GLS standaard': 'gls_default'
+                    'Ja': 1,
+                    'Nee': 0
                 },
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
+                attrs: {'class': 'uk-form-width-medium'}
             },
             'state': {
                 type: 'select',
@@ -792,37 +688,37 @@
         },
 
         fields4: {
-            'sender_name_1': {
+            'data.sender_name_1': {
                 type: 'text',
                 label: 'Afzender naam 1 *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },
-            'sender_name_2': {
+            'data.sender_name_2': {
                 type: 'text',
                 label: 'Afzender naam 2',
                 attrs: {'class': 'uk-form-width-medium'}
             },
-            'sender_street': {
+            'data.sender_street': {
                 type: 'text',
                 label: 'Afzender adres *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },
-            'sender_zip': {
+            'data.sender_zip': {
                 type: 'text',
                 label: 'Afzender postcode *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },
-            'sender_city': {
+            'data.sender_city': {
                 type: 'text',
                 label: 'Afzender plaats *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },
-            'sender_country': {
+            'data.sender_country': {
                 type: 'text',
                 label: 'Afzender land *',
                 attrs: {'class': 'uk-form-width-medium', 'required': true}
             },
-            'sender_email': {
+            'data.sender_email': {
                 type: 'email',
                 label: 'Email',
                 attrs: {'name': 'sender_email', 'class': 'uk-width-1-1'}

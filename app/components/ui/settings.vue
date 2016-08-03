@@ -50,6 +50,9 @@
         'gls_tracking' : {
             encryptionCode: 541
         },
+        'sc_api_key': '',
+        'sc_api_secret': '',
+        'sc_api_env': 'test',
         'pc_api_url': '',
         'pc_api_name': '',
         'pc_api_secret': ''
@@ -167,6 +170,30 @@
                 type: 'number',
                 label: 'Encryptie Code *',
                 attrs: {'class': 'uk-width-1-1', 'min': 100, 'max': 999, 'required': true}
+            },
+            'sc_api': {
+                type: 'title',
+                title: 'Sendcloud API',
+                attrs: {'class': 'uk-margin-remove'}
+            },
+            'sc_api_key': {
+                type: 'text',
+                label: 'Sendcloud API key',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'sc_api_secret': {
+                type: 'text',
+                label: 'Sendcloud API secret',
+                attrs: {'class': 'uk-width-1-1'}
+            },
+            'sc_api_env': {
+                type: 'select',
+                label: 'API modus',
+                options: {
+                    'Test': 'test',
+                    'Live': 'live'
+                },
+                attrs: {'class': 'uk-form-width-medium'}
             },
             'pc_api': {
                 type: 'title',

@@ -53,6 +53,7 @@ class PostcodeLookup {
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_name .':'. $this->api_secret);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'BixiePostcodeLookup');
 		$result = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		
 		$result = json_decode($result, true);
@@ -60,8 +61,7 @@ class PostcodeLookup {
 		if (false === $result) {
 			throw new \Exception('API niet bereikbaat', 503);
 		}
-		
-		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
+		if ($code != 200) {
 			switch (@$result['exceptionId']) {
 				case 'PostcodeNl_Controller_Address_InvalidPostcodeException':
 					$exception = 'Geen geldige postcode';

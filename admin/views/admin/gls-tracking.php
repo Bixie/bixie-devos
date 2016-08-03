@@ -10,7 +10,8 @@ $app['scripts']->add('devos-admin-gls-tracking', 'assets/js/admin-gls-tracking.j
 		<div class="uk-width-medium-1-6">
 			<ul class="uk-nav uk-nav-side">
 				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos')?>">Dashboard</a></li>
-				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/shipments')?>">Verzendingen</a></li>
+				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/shipments')?>">Verzendingen GLS</a></li>
+				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/sendcloud')?>">Verzendingen Sendcloud</a></li>
 				<li class="uk-active"><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/gls-tracking')?>">GLS Tracking</a></li>
 			</ul>
 
@@ -71,16 +72,29 @@ $app['scripts']->add('devos-admin-gls-tracking', 'assets/js/admin-gls-tracking.j
 							{{ glstracking.date_to | date }}
 						</td>
 						<td class="uk-text-center">
-							<div class="uk-badge uk-badge-notification uk-badge-success">{{ glstracking.parcels.counter.parcels || 0 }}</div>
-							<log-modal :messages="glstracking.parcels.errors" label="Fouten" cls="uk-badge-danger"></log-modal>
-							<log-modal :messages="glstracking.parcels.warnings" label="Waarschuwingen" cls="uk-badge-warning"></log-modal>
-							<log-modal :messages="glstracking.parcels.messages" label="Berichten"></log-modal>
+							<template v-if="glstracking.parcels.counter">
+								<div class="uk-badge uk-badge-notification uk-badge-success">{{
+									glstracking.parcels.counter.parcels || 0 }}
+								</div>
+								<log-modal :messages="glstracking.parcels.errors" label="Fouten"
+										   cls="uk-badge-danger"></log-modal>
+								<log-modal :messages="glstracking.parcels.warnings" label="Waarschuwingen"
+										   cls="uk-badge-warning"></log-modal>
+								<log-modal :messages="glstracking.parcels.messages" label="Berichten"></log-modal>
+							</template>
 						</td>
 						<td class="uk-text-center">
-							<div class="uk-badge uk-badge-notification uk-badge-success">{{ glstracking.events.counter.events || 0 }}</div>
-							<log-modal :messages="glstracking.events.errors" label="Fouten" cls="uk-badge-danger"></log-modal>
-							<log-modal :messages="glstracking.events.warnings" label="Waarschuwingen" cls="uk-badge-warning"></log-modal>
-							<log-modal :messages="glstracking.events.messages" label="Berichten"></log-modal>
+							<template v-if="glstracking.events.counter">
+								<div class="uk-badge uk-badge-notification uk-badge-success">{{
+									glstracking.events.counter.events || 0 }}
+								</div>
+								<log-modal :messages="glstracking.events.errors" label="Fouten"
+										   cls="uk-badge-danger"></log-modal>
+								<log-modal :messages="glstracking.events.warnings" label="Waarschuwingen"
+										   cls="uk-badge-warning"></log-modal>
+								<log-modal :messages="glstracking.events.messages" label="Berichten"></log-modal>
+							</template>
+
 						</td>
 						<td>
 							{{ getStateName(glstracking.state) }}

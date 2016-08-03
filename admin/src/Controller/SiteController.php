@@ -21,7 +21,8 @@ class SiteController extends Controller {
 				'created_to' => $created_to->format('Y-m-d'),
 				'state' => ShipmentGls::SHIPMENTGLS_STATE_SCANNED
 			],
-			'countries' => $this['countries'],
+            'sc_shipping_methods' => $this['sendcloud']->getShippingMethods(),
+            'countries' => $this['countries'],
 			'sender_states' => Sender::getStates()
 		];
 		$this['scripts']->add('devos-data', sprintf('var $data = %s;', json_encode($data)), '', 'string');

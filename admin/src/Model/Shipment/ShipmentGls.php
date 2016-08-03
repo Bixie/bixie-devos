@@ -8,7 +8,7 @@ use Bixie\Framework\Traits\DataTrait;
 use Bixie\Framework\Utils\Arr;
 use Bixie\Gls\Data\Event;
 
-class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAccess {
+class ShipmentGls extends ShipmentGlsBase implements ShipmentInterface, \JsonSerializable, \ArrayAccess {
 
 	use CreatedModifiedTrait, DataTrait;
 
@@ -786,7 +786,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		$this->events = $events;
 	}
 
-	/**
+    /**
 	 * @param string $gls_stream
 	 * @return ShipmentGls
 	 */
@@ -795,7 +795,14 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return $this;
 	}
 
-	/**
+    /**
+     * @return string
+     */
+    public function getReceiverCountry () {
+        return $this['inbound_country_code'];
+    }
+
+    /**
 	 * @return string
 	 */
 	public function getPdfUrl () {
@@ -806,7 +813,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return '';
 	}
 
-	/**
+    /**
 	 * @return string
 	 */
 	public function getPngUrl () {
@@ -816,7 +823,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return '';
 	}
 
-	/**
+    /**
 	 * @param $basePath
 	 * @param $pdfString
 	 */
@@ -830,7 +837,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		}
 	}
 
-	/**
+    /**
 	 * @param $basePath
 	 * @param $pngString
 	 */
@@ -845,11 +852,11 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		$this->offsetSet('png_path', $png_path);
 	}
 
-	/**
+    /**
 	 * @param $base
 	 * @return string
 	 */
-	protected function filePath ($base) {
+	public function filePath ($base) {
 		$filePath = $base . '/s-' . floor($this->id / 100) . '00';
 		if (!is_dir($filePath)) {
 			mkdir($filePath, 0755, true);
@@ -857,10 +864,13 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return $filePath;
 	}
 
-	public function getStatusName () {
+    /**
+     * @return mixed
+     */
+    public function getStatusName () {
 		return self::getStatuses()[$this->state];
 	}
-	/**
+    /**
 	 * @return array
 	 */
 	public static function getStatuses () {
@@ -870,7 +880,8 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 			self::SHIPMENTGLS_STATE_SCANNED => 'Gescand',
 		];
 	}
-	/**
+
+    /**
 	 * {@inheritdoc}
 	 */
 	public function toArray ($data = [], $ignore = []) {
@@ -923,7 +934,55 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return array_diff_key($data, array_flip($ignore));
 	}
 
-	/**
+    /**
+     * @return string
+     */
+    function getWeight () {
+        return $this->getParcelWeight();
+    }
+
+    /**
+     * @return string
+     */
+    function getName () {
+        return $this->getReceiverName1();
+    }
+
+    /**
+     * @return string
+     */
+    function getCompanyName () {
+        return $this->getReceiverName2();
+    }
+
+    /**
+     * @return string
+     */
+    function getAddress () {
+        return $this->getReceiverStreet();
+    }
+
+    /**
+     * @return string
+     */
+    function getCity () {
+        return $this->getReceiverPlace();
+    }
+
+    /**
+     * @return string
+     */
+    function getCountry () {
+        return $this->getReceiverCountry();
+    }
+
+    /**
+     * @return string
+     */
+    function getEmail () {
+        return $this->getRecieverEmail();
+    }
+    /**
 	 * Checks if a key exists.
 	 * @param  string $key
 	 * @return bool
@@ -932,7 +991,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return (property_exists($this, $key) || Arr::has($this->getData(), $key));
 	}
 
-	/**
+    /**
 	 * Gets a value by key.
 	 * @param  string $key
 	 * @return mixed
@@ -941,7 +1000,7 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		return property_exists($this, $key) ? $this->$key : Arr::get($this->getData(), $key);
 	}
 
-	/**
+    /**
 	 * Specify data which should be serialized to JSON
 	 * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
 	 * @return mixed data which can be serialized by <b>json_encode</b>,
@@ -955,4 +1014,5 @@ class ShipmentGls extends ShipmentGlsBase implements \JsonSerializable, \ArrayAc
 		$data['png_url'] = $this->getPngUrl();
 		return $data;
 	}
+
 }

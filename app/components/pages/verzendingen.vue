@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <h1>Verzendingen</h1>
+        <h1>Verzendingen GLS</h1>
 
         <gls-shipment :config="config"></gls-shipment>
     </div>

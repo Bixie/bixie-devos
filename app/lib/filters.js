@@ -1,5 +1,9 @@
 module.exports = function (Vue) {
 
+    Vue.filter('nrquotes', function (quoted_string) {
+        return String(quoted_string || '').replace(new RegExp('"', 'g'), '');
+    });
+
     Vue.filter('date', function (date_string, format) {
         var formatted;
         try {

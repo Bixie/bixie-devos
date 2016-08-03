@@ -34,11 +34,13 @@
     "webit/gls-tracking": "dev-master",
     "symfony/http-foundation": "^3.0",
     "robgridley/zebra": "^1.0",
-    "touki/ftp": "^1.2"
+    "touki/ftp": "^1.2",
+    "picqer/sendcloud-php-client": "^2.2"
   },
   "autoload": {
     "psr-4": {
       "Bixie\\Devos\\": "src",
+      "Bixie\\SendCloud\\": "vendor/bixie/sendcloud/src",
       "Bixie\\Gls\\": "vendor/bixie/gls/src",
       "Bixie\\Framework\\": "vendor/bixie/framework/src"
     }

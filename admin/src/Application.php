@@ -6,6 +6,7 @@ use Bixie\Devos\Model\GlsTracking\GlsTrackingProvider;
 use Bixie\Devos\Model\Sender\SenderProvider;
 use Bixie\Devos\Model\Shipment\ShipmentGlsProvider;
 use Bixie\Devos\Config\Settings;
+use Bixie\Devos\Model\Shipment\ShipmentSendCloudProvider;
 use Bixie\Framework\Routing\ResponseListener;
 use Bixie\Framework\Routing\ResponseProvider;
 use Bixie\Framework\User\User;
@@ -15,6 +16,7 @@ use Bixie\Gls\Status\Ftp\FtpGls;
 use Bixie\Gls\Status\Status;
 use Bixie\Framework\Application as BaseApplication;
 use Bixie\Framework\Event\EventSubscriberInterface;
+use Bixie\SendCloud\SendCloudApi;
 
 class Application extends BaseApplication implements EventSubscriberInterface
 {
@@ -45,6 +47,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 
 		//providers
 		$this['shipmentgls']   = new ShipmentGlsProvider($this);
+		$this['shipmentsendcloud']   = new ShipmentSendCloudProvider($this);
 		$this['sender']   = new SenderProvider($this);
 		$this['glstracking'] = new GlsTrackingProvider($this);
 
@@ -72,6 +75,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
         $this['controllers']->add('Bixie\Devos\Controller\SiteController');
         $this['controllers']->add('Bixie\Devos\Controller\SenderApiController');
         $this['controllers']->add('Bixie\Devos\Controller\ShipmentApiController');
+        $this['controllers']->add('Bixie\Devos\Controller\SendCloudApiController');
         $this['controllers']->add('Bixie\Devos\Controller\GlsTrackingApiController');
 
 
@@ -81,6 +85,8 @@ class Application extends BaseApplication implements EventSubscriberInterface
 //            $this['scripts']->combine('wk-scripts', 'widgetkit-*')->combine('uikit', 'uikit*')->combine('angular', 'angular*')->combine('application', 'application{,-translator,-templates}');
         }
 
+		//gls
+		$this['sendcloud'] = new SendCloudApi($this);
 		//gls
 		$this['gls'] = new Gls($this);
 		//override userprovider

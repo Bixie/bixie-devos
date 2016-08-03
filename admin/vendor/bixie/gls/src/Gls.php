@@ -35,6 +35,10 @@ class Gls extends ApplicationAware {
 		return $this->glsTracking;
 	}
 
+    /**
+     * @param ShipmentGls $shipment
+     * @return Broadcast
+     */
 	public function createShipment (ShipmentGls $shipment) {
 
 		try {
@@ -73,6 +77,10 @@ class Gls extends ApplicationAware {
 		}
 	}
 
+    /**
+     * @param ShipmentGls $shipment
+     * @param Sender $sender
+     */
 	public function createLabel (ShipmentGls $shipment, Sender $sender) {
 
 		$label = new Label($shipment, $sender);

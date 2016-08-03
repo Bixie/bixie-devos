@@ -6,12 +6,12 @@ use Bixie\Framework\Utils\Query;
 use Bixie\Framework\Application;
 use Bixie\Framework\ApplicationAware;
 
-class ShipmentGlsProvider extends ApplicationAware {
+class ShipmentSendCloudProvider extends ApplicationAware {
 
-	protected $class = 'Bixie\Devos\Model\Shipment\ShipmentGls';
-	protected $table = '@dv_shipment_gls';
+	protected $class = 'Bixie\Devos\Model\Shipment\ShipmentSendCloud';
+	protected $table = '@dv_shipment_sendcloud';
 	
-	protected static $cacheDomestic = [];
+	protected static $cacheTracking = [];
 
 	/**
 	 * Constructor.
@@ -24,7 +24,7 @@ class ShipmentGlsProvider extends ApplicationAware {
 	/**
 	 * Gets the content object, if type object exists.
 	 * @param  int $id
-	 * @return ShipmentGls
+	 * @return ShipmentSendCloud
 	 */
 	public function get ($id) {
 		if ($object = $this->find($id)) {
@@ -36,7 +36,7 @@ class ShipmentGlsProvider extends ApplicationAware {
 	/**
 	 * Gets the shipment object by id.
 	 * @param  int $id
-	 * @return bool|ShipmentGls
+	 * @return bool|ShipmentSendCloud
 	 */
 	public function find ($id) {
 		return $this['db']->fetchObject("SELECT * FROM {$this->table} WHERE id = :id", compact('id'), $this->class);
@@ -44,18 +44,18 @@ class ShipmentGlsProvider extends ApplicationAware {
 
 	/**
 	 * Gets the shipment object by domestic_parcel_number_nl.
-	 * @param  int $domestic_parcel_number_nl
-	 * @return bool|ShipmentGls
+	 * @param string $tracking_number
+	 * @return bool|ShipmentSendCloud
 	 */
-	public function findDomesticParcelNumberNl ($domestic_parcel_number_nl) {
-		if (!isset(static::$cacheDomestic[$domestic_parcel_number_nl])) {
-			static::$cacheDomestic[$domestic_parcel_number_nl] = $this['db']->fetchObject(
-				"SELECT * FROM {$this->table} WHERE domestic_parcel_number_nl = :domestic_parcel_number_nl",
-				compact('domestic_parcel_number_nl'),
+	public function findTrackingNumber ($tracking_number) {
+		if (!isset(static::$cacheTracking[$tracking_number])) {
+			static::$cacheTracking[$tracking_number] = $this['db']->fetchObject(
+				"SELECT * FROM {$this->table} WHERE tracking_number = :tracking_number",
+				compact('tracking_number'),
 				$this->class
 			);
 		}
-		return static::$cacheDomestic[$domestic_parcel_number_nl];
+		return static::$cacheTracking[$tracking_number];
 	}
 
 	/**
@@ -109,15 +109,19 @@ class ShipmentGlsProvider extends ApplicationAware {
 		if (isset($store['events'])) {
 			$store['events'] = !empty($store['events']) ? json_encode($store['events'], true) : '[]';
 		}
-        foreach (['gls_stream', 'zpl_template', 'pdf_path', 'sender_email', 'receiver_email'] as $key) {
+		if (isset($store['shipping_method'])) { //used in js to avoid scope conflict
+			$store['shipment'] = $store['shipping_method'];
+		}
+        foreach (['zpl_template', 'pdf_path', 'tracking_number'] as $key) {
             if (!isset($store[$key])) {
                 $store[$key] = '';
             }
         }
+		unset($store['shipping_method']);
 		unset($store['pdf_url']);
 		unset($store['png_url']);
 		unset($store['statusname']);
-		foreach (['date_of_shipping', 'created', 'modified'] as $dateField) {
+		foreach (['created', 'modified'] as $dateField) {
 			if (isset($store[$dateField]) && $store[$dateField] instanceof \DateTime) {
 				$store[$dateField] = $store[$dateField]->format('Y-m-d H:i:s');
 			}
@@ -133,18 +137,6 @@ class ShipmentGlsProvider extends ApplicationAware {
 			$this['db']->update($this->table, $store, ['id' => $store['id']]);
 		}
 		return $data;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function lastParcelNumber ($gls_customer_number) {
-		$query = Query::query('@dv_shipment_gls', 'parcel_number')
-			->where('gls_customer_number = :gls_customer_number', compact('gls_customer_number'))
-			->orderBy('parcel_number', 'DESC')
-			->setLimit(0, 1);
-		$result = $this['db']->fetchAssoc((string) $query, $query->getParams());
-		return (int) $result['parcel_number'];
 	}
 
 	/**

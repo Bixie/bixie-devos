@@ -5,7 +5,6 @@ namespace Bixie\Framework\Routing;
 
 use Bixie\Framework\File\Exception\FileException;
 use Bixie\Framework\File\File;
-use YOOtheme\Framework\Routing\Request;
 
 class BinaryFileResponse extends Response
 {

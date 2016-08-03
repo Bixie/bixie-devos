@@ -358,6 +358,7 @@ class Sender extends SenderBase implements \JsonSerializable, \ArrayAccess {
 	 */
 	function jsonSerialize () {
 		$data = $this->toArray();
+        $data['sender_phone'] = '"' . $data['sender_phone'] . '"'; //trick json_encode NUMERIC_CHECK
 		return $data;
 	}
 }

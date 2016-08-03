@@ -52,7 +52,7 @@
             <td>
                 {{ sender.sender_email }}<br/>
                 {{ sender.sender_contact }}<br/>
-                {{ sender.sender_phone }}
+                {{ sender.sender_phone | nrquotes }}
             </td>
             <td class="uk-table-middle"><img v-if="sender.data.image" :src="sender.data.image" alt="logo" />
                 <a @click="editSender(sender.id)" v-else>Upload logo</a></td>
@@ -180,6 +180,7 @@
                         }
                     });
                 } else {
+                    sender.sender_phone = sender.sender_phone.replace(new RegExp('"', 'g'), '');
                     this.$set('sender', sender);
                 }
                 this.$refs.editsendermodal.open();
@@ -271,18 +272,18 @@
             },
             'sender_contact': {
                 type: 'text',
-                label: 'Contactpersoon',
-                attrs: {'class': 'uk-width-1-1'}
+                label: 'Contactpersoon *',
+                attrs: {'class': 'uk-width-1-1', 'required': true}
             },
             'sender_phone': {
                 type: 'text',
-                label: 'Telefoon',
-                attrs: {'class': 'uk-width-1-1'}
+                label: 'Telefoon *',
+                attrs: {'class': 'uk-width-1-1', 'required': true}
             },
             'message_subject': {
                 type: 'text',
-                label: 'Standaard email onderwerp',
-                attrs: {'class': 'uk-width-1-1'}
+                label: 'Standaard email onderwerp *',
+                attrs: {'class': 'uk-width-1-1', 'maxlength': 50, 'required': true}
             }
         },
 

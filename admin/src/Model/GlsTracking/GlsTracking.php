@@ -49,11 +49,18 @@ class GlsTracking implements \JsonSerializable, \ArrayAccess {
 	 */
 	protected $events;
 
-
+    /**
+     * @param array $data
+     * @return mixed
+     */
 	public static function create ($data = []) {
 		return self::hydrate($data, 'Bixie\Devos\Model\GlsTracking\GlsTracking');
 	}
 
+    /**
+     * @param array $data
+     * @return $this
+     */
 	public function mergeData ($data) {
 		return $this->merge($data, 'Bixie\Devos\Model\GlsTracking\GlsTracking');
 	}
