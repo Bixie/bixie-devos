@@ -23,12 +23,11 @@ class GlsTracking {
 	 * @param string $redirto
 	 * @return mixed
 	 */
-	public function getUrl ($gls_customer_number, $domestic_parcel_number_nl, $redirto = 'Verlader') {
+	public function getUrl ($gls_customer_number, $domestic_parcel_number_nl) {
 		return sprintf(
-			'http://services.gls-netherlands.com/tracking/ttlink.aspx?NVRL=%d&NDOC=%s&TAAL=NL&REDIRTO=%s&CHK=%d',
+			'http://services.gls-netherlands.com/tracking/ttlink.aspx?NVRL=%d&NDOC=%s&TAAL=NL&CHK=%d',
 			$gls_customer_number,
 			$domestic_parcel_number_nl,
-			$redirto,
 			$this->getChecksum($gls_customer_number . $domestic_parcel_number_nl . $redirto)
 		);
 	}
