@@ -20,7 +20,6 @@ class GlsTracking {
 	/**
 	 * @param        $gls_customer_number
 	 * @param        $domestic_parcel_number_nl
-	 * @param string $redirto
 	 * @return mixed
 	 */
 	public function getUrl ($gls_customer_number, $domestic_parcel_number_nl) {
@@ -28,7 +27,7 @@ class GlsTracking {
 			'http://services.gls-netherlands.com/tracking/ttlink.aspx?NVRL=%d&NDOC=%s&TAAL=NL&CHK=%d',
 			$gls_customer_number,
 			$domestic_parcel_number_nl,
-			$this->getChecksum($gls_customer_number . $domestic_parcel_number_nl . $redirto)
+			$this->getChecksum($gls_customer_number . $domestic_parcel_number_nl)
 		);
 	}
 

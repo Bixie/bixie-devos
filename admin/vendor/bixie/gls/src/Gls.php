@@ -101,9 +101,9 @@ class Gls extends ApplicationAware {
 		
 	}
 
-	public function getTrackTrace (ShipmentGls $shipment, $redirto = 'Verlader') {
+	public function getTrackTrace (ShipmentGls $shipment) {
 
-		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getDomesticParcelNumberNl(), $redirto);
+		return $this->getGlsTracking()->getUrl($shipment->getGlsCustomerNumber(), $shipment->getDomesticParcelNumberNl());
 
 	}
 
