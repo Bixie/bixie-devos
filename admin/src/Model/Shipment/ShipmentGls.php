@@ -913,6 +913,7 @@ class ShipmentGls extends ShipmentGlsBase implements ShipmentInterface, \JsonSer
 			'receiver_name_3' => $this->receiver_name_3,
 			'receiver_street' => $this->receiver_street,
 			'receiver_place' => $this->receiver_place,
+			'receiver_country' =>$this['inbound_country_code'],
 			'additional_text_1' => $this->additional_text_1,
 			'additional_text_2' => $this->additional_text_2,
 			'parcel_sequence' => $this->parcel_sequence,
