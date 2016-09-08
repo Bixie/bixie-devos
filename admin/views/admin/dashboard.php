@@ -9,7 +9,7 @@ $app['scripts']->add('devos-admin-dashboard', 'assets/js/admin-dashboard.js', ['
 			<ul class="uk-nav uk-nav-side">
 				<li class="uk-active"><a href="<?= JRoute::_('index.php?option=com_bix_devos')?>">Dashboard</a></li>
 				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/shipments')?>">Verzendingen GLS</a></li>
-				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/sendcloud')?>">Verzendingen Sendcloud</a></li>
+				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/sendcloud')?>">Verzendingen PostNL</a></li>
 				<li><a href="<?= JRoute::_('index.php?option=com_bix_devos&p=/gls-tracking')?>">GLS Tracking</a></li>
 			</ul>
 
