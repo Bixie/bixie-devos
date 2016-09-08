@@ -795,27 +795,27 @@
             'sender_name_1': {
                 type: 'text',
                 label: 'Afzender naam 1 *',
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
+                attrs: {'class': 'uk-form-width-medium', 'required': true, 'maxlength': 30}
             },
             'sender_name_2': {
                 type: 'text',
                 label: 'Afzender naam 2',
-                attrs: {'class': 'uk-form-width-medium'}
+                attrs: {'class': 'uk-form-width-medium', 'maxlength': 50}
             },
             'sender_street': {
                 type: 'text',
                 label: 'Afzender adres *',
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
+                attrs: {'class': 'uk-form-width-medium', 'required': true, 'maxlength': 50}
             },
             'sender_zip': {
                 type: 'text',
                 label: 'Afzender postcode *',
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
+                attrs: {'class': 'uk-form-width-medium', 'required': true, 'maxlength': 10}
             },
             'sender_city': {
                 type: 'text',
                 label: 'Afzender plaats *',
-                attrs: {'class': 'uk-form-width-medium', 'required': true}
+                attrs: {'class': 'uk-form-width-medium', 'required': true, 'maxlength': 30}
             },
             'sender_country': {
                 type: 'text',
@@ -825,17 +825,17 @@
             'sender_email': {
                 type: 'email',
                 label: 'Email',
-                attrs: {'name': 'sender_email', 'class': 'uk-width-1-1'}
+                attrs: {'name': 'sender_email', 'class': 'uk-width-1-1', 'maxlength': 70}
             },
             'data.sender_contact': {
                 type: 'text',
                 label: 'Contactpersoon',
-                attrs: {'name': 'sender_contact', 'class': 'uk-width-1-1'}
+                attrs: {'name': 'sender_contact', 'class': 'uk-width-1-1', 'maxlength': 30}
             },
             'data.sender_phone': {
                 type: 'text',
                 label: 'Telefoon',
-                attrs: {'name': 'sender_phone', 'class': 'uk-width-1-1'}
+                attrs: {'name': 'sender_phone', 'class': 'uk-width-1-1', 'maxlength': 15}
             }
         }
 
