@@ -42,10 +42,10 @@ $app->on('init', function ($event, $app) {
         $app->trigger('init.admin', array($app));
     }
 
-    if ($app['request']->get('option') != 'com_installer') {
+//    if ($app['request']->get('option') != 'com_installer') {
 
         $app['config']->add($app['config.fetch']);
-    }
+//    }
 });
 
 $app->on('init.admin', function ($event, $app) {
