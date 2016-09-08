@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <h1>Verzendingen Sendcloud</h1>
+        <h1>Verzendingen PostNL</h1>
 
         <sendcloud-shipment :config="config"></sendcloud-shipment>
     </div>

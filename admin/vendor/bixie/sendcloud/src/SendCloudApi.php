@@ -109,6 +109,7 @@ class SendCloudApi extends ApplicationAware
     /**
      * @param ShipmentSendCloud $shipment
      * @return Carriers\SendCloud\Parcel|bool
+     * @throws SendCloudApiException
      */
     public function createShipment (ShipmentSendCloud $shipment) {
 
@@ -122,7 +123,7 @@ class SendCloudApi extends ApplicationAware
             return $parcel;
 
         } catch (SendCloudApiException $e) {
-            $this->app['joomla']->enqueueMessage($e->getMessage(), 'error');
+            throw $e;
         }
         return false;
 

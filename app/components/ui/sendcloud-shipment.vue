@@ -69,6 +69,10 @@
                         <i class="uk-icon-barcode uk-icon-justify uk-margin-small-right" title="Sendcloud pakket nummer" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ shipment.sendcloud_id }}</span>
                     </dd>
+                    <dd v-if="shipment.tracking_number">
+                        <i class="uk-icon-ticket uk-icon-justify uk-margin-small-right" title="Track and Trace nummer" data-uk-tooltip="{delay: 200}"></i>
+                        <span>{{ shipment.tracking_number }}</span>
+                    </dd>
                     <dd>
                         <i class="uk-icon-circle uk-icon-justify uk-margin-small-right" title="Gewicht" data-uk-tooltip="{delay: 200}"></i>
                         <span>{{ shipment.weight }} kg</span>
@@ -219,7 +223,7 @@
     <v-modal v-ref:editshipmentmodal :large="true" :closed="cancelEdit">
         <div class="uk-modal-header">
             <div class="uk-flex">
-                <h3 class="uk-flex-item-1">Sendcloud verzending</h3>
+                <h3 class="uk-flex-item-1">PostNL verzending</h3>
                 <div class="uk-flex uk-flex-middle uk-h5">
                     <div v-if="shipment.sender_id" class="uk-margin-left">
                         <i class="uk-icon-user uk-margin-small-right" title="Afzender" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
