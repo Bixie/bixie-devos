@@ -11,6 +11,7 @@ use Bixie\Framework\Routing\ResponseListener;
 use Bixie\Framework\Routing\ResponseProvider;
 use Bixie\Framework\User\User;
 use Bixie\Devos\User\UserProvider;
+use Bixie\Framework\Utils\Mail;
 use Bixie\Gls\Gls;
 use Bixie\Gls\Status\Ftp\FtpGls;
 use Bixie\Gls\Status\Status;
@@ -111,7 +112,11 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		$this['gls.status'] = function ($app) {
 		    return new Status($app);
 		};
-
+        //mail
+        $this['mail'] = function ($app) {
+            $bcc = array_map('trim', explode(';', $app['config']['admin_mails']));
+            return new Mail($bcc, $app['path'] . '/views/mail/mailtemplate.html');
+        };
 		/** @var User $user */
 		$user = $this['users']->get();
 		$config = [

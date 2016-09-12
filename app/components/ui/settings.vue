@@ -113,6 +113,21 @@
         },
 
         fields1: {
+            'general_title': {
+                type: 'title',
+                title: 'ALgemeen',
+                attrs: {'class': 'uk-margin-remove'}
+            },
+            'parcel_mail': {
+                type: 'text',
+                label: 'Mail bij pakket',
+                attrs: {'class': 'uk-width-1-1', 'placeholder': 'Scheiden met ;'}
+            },
+            'admin_mails': {
+                type: 'text',
+                label: 'BCC emails',
+                attrs: {'class': 'uk-width-1-1', 'placeholder': 'Scheiden met ;'}
+            },
             'glsUnibox': {
                 type: 'title',
                 title: 'GLS Unibox',
@@ -123,11 +138,6 @@
                 label: 'GLS Klantnummers',
                 style: 'list',
                 attrs: {'class': 'uk-width-1-1'}
-            },
-            'gls_customer_number': {
-                type: 'text',
-                label: 'Standaard GLS Klantnummer *',
-                attrs: {'class': 'uk-width-1-1', 'required': true}
             },
             'sap_number': {
                 type: 'text',

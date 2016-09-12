@@ -281,6 +281,12 @@ class SendCloudApiController extends Controller {
 			}
 
 			$data['klantnummer'] = $user['klantnummer'];
+//            if (empty($data['id']) && $user['mail_admin_onparcel'] !== 0) {
+//                $maildata = $this['mail']->getMaildata($this['config']['parcel_mail']);
+//                $maildata['subject'] = sprintf('Pakket aangemeld door %s namens %s', $user['name'], $data['sender_name_1'] );
+//                $maildata['body'] = $this['view']->render('views/mail/parcel_sent.php', ['data' => $data, 'user' => $user]);
+//                $this['mail']->sendMail($maildata);
+//            }
 		}
 
 		if ($data = $this['shipmentsendcloud']->save($data)) {
