@@ -14,7 +14,7 @@
     <dt>Klantreferentie</dt>
     <dd><?= $data['customer_reference'] ?></dd>
     <dt>Tijdstip aanmelding</dt>
-    <dd><?= \JHtml::_('date', $data['date_of_shipping'], JText::_('DATE_FORMAT_LC3')) ?></dd>
+    <dd><?= \JHtml::_('date', $data['date_of_shipping'], JText::_('DATE_FORMAT_LC2')) ?></dd>
 </dl>
 
 <h3>Afzender</h3>
