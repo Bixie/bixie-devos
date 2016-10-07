@@ -286,7 +286,7 @@ class ShipmentApiController extends Controller {
 			$data['klantnummer'] = $user['klantnummer'];
 			$data['gls_customer_number'] = $user['gls_customer_number'] ?: $this['config']['gls_customer_number'];
 
-            if (empty($data['id']) && $user['mail_admin_onparcel'] != 0) {
+            if (empty($data['id']) && ($user['mail_admin_onparcel'] != 'ignore')) {
                 $maildata = $this['mail']->getMaildata($this['config']['parcel_mail']);
                 $maildata['subject'] = sprintf('Pakket aangemeld door %s namens %s', $user->getName(), $data['sender_name_1'] );
                 $maildata['body'] = $this['view']->render('views/mail/parcel_sent.php', ['data' => $data, 'user' => $user]);
