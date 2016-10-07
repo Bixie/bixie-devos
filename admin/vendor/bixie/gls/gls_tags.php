@@ -209,11 +209,20 @@ return [
 		70
 	),
 	'send_email' => new Tag(
-		'859',
+		'1393',
 		'send_email',
 		'Send Email',
 		'1',
 		'N',
+		false,
+		1
+	),
+	'send_email_type' => new Tag(
+		'859',
+		'send_email_type',
+		'Send Email type',
+		'P',
+		'C',
 		false,
 		1
 	),

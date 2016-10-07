@@ -532,6 +532,7 @@
                         label_template: 'gls_default',
                         express_service_flag: '',
                         send_email: true,
+                        send_email_type: 'P',
                         express_flag: false,
                         express_service_flag_sat: false,
                         inbound_country_code: 'NL'
@@ -763,9 +764,18 @@
         fields3: {
             'data.send_email': {
                 type: 'checkbox',
-                label: 'Send email',
-                optionLabel: 'Send email to user via GLS',
+                label: 'Stuur mail',
+                optionLabel: 'Stuur e-mail naar gebruiker via GLS',
                 attrs: {}
+            },
+            'data.send_email_type': {
+                type: 'select',
+                label: 'E-mail type',
+                options: {
+                    'Prive mail': 'P',
+                    'Zakelijke mail': 'B'
+                },
+                attrs: {'class': 'uk-form-width-medium'}
             },
             'data.message_subject': {
                 type: 'text',

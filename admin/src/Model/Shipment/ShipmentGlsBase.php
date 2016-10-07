@@ -13,7 +13,8 @@ class ShipmentGlsBase  {
 			'data' => [
 				'label_template' => 'gls_default',
 				'send_email' => true,
-				'express_service_flag' => '',
+                'send_email_type' => 'P',
+                'express_service_flag' => '',
 				'inbound_country_code' => 'NL'
 			]
 		], $data), 'Bixie\Devos\Model\Shipment\ShipmentGls');
