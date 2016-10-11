@@ -12,7 +12,7 @@ class ShipmentGlsBase  {
 		return self::hydrate(array_merge([
 			'data' => [
 				'label_template' => 'gls_default',
-				'send_email' => true,
+				'send_email' => false,
                 'send_email_type' => 'P',
                 'express_service_flag' => '',
 				'inbound_country_code' => 'NL'

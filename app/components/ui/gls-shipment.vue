@@ -531,7 +531,7 @@
                         track_trace: '',
                         label_template: 'gls_default',
                         express_service_flag: '',
-                        send_email: true,
+                        send_email: false,
                         send_email_type: 'P',
                         express_flag: false,
                         express_service_flag_sat: false,
