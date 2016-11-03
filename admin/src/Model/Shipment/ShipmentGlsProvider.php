@@ -109,7 +109,7 @@ class ShipmentGlsProvider extends ApplicationAware {
 		if (isset($store['events'])) {
 			$store['events'] = !empty($store['events']) ? json_encode($store['events'], true) : '[]';
 		}
-        foreach (['gls_stream', 'zpl_template', 'pdf_path', 'sender_email', 'receiver_email', 'domestic_parcel_number_nl'] as $key) {
+        foreach (['gls_stream', 'zpl_template', 'pdf_path', 'sender_email', 'company_name', 'receiver_email', 'domestic_parcel_number_nl'] as $key) {
             if (!isset($store[$key])) {
                 $store[$key] = '';
             }
