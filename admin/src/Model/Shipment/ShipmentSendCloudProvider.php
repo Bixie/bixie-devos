@@ -112,7 +112,7 @@ class ShipmentSendCloudProvider extends ApplicationAware {
 		if (isset($store['shipping_method'])) { //used in js to avoid scope conflict
 			$store['shipment'] = $store['shipping_method'];
 		}
-        foreach (['zpl_template', 'pdf_path', 'tracking_number'] as $key) {
+        foreach (['zpl_template', 'pdf_path', 'company_name', 'tracking_number'] as $key) {
             if (!isset($store[$key])) {
                 $store[$key] = '';
             }
