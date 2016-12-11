@@ -2,6 +2,7 @@
 
 namespace Bixie\Framework\View\Loader;
 
+use Bixie\Devos\Application as App;
 use Bixie\Framework\Resource\LocatorInterface;
 
 class ResourceLoader implements LoaderInterface
@@ -25,7 +26,7 @@ class ResourceLoader implements LoaderInterface
     {
         $name = (string) $name;
 
-        if (self::isAbsolutePath($name) && @is_file($name)) {
+        if (self::isAbsolutePath($name) && (App::get('develop') || @is_file($name))) {
             return $name;
         }
 

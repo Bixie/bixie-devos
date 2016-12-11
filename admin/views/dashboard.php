@@ -1,5 +1,5 @@
 <?php
-$app['scripts']->add('devos-dashboard', 'assets/js/dashboard.js', ['vue', 'uikit-pagination']);
+$app['scripts']->add('devos-dashboard', 'assets/js/dashboard.js?v=23', ['vue', 'uikit-pagination']);
 ?>
 
 <div id="devos-dashboard" class="uk-noconflict">
@@ -10,6 +10,7 @@ $app['scripts']->add('devos-dashboard', 'assets/js/dashboard.js', ['vue', 'uikit
 				<li :class="{'uk-active': currentView == 'dashboard'}"><a href="#" @click.prevent="setView('dashboard')">Dashboard</a></li>
 				<li :class="{'uk-active': currentView == 'verzendingen'}"><a href="#" @click.prevent="setView('verzendingen')">Verzendingen GLS</a></li>
 				<li :class="{'uk-active': currentView == 'verzendingen-sendcloud'}"><a href="#" @click.prevent="setView('verzendingen-sendcloud')">Verzendingen PostNL</a></li>
+				<li :class="{'uk-active': currentView == 'addressen'}"><a href="#" @click.prevent="setView('addressen')">Addressen</a></li>
 				<li :class="{'uk-active': currentView == 'afzenders'}"><a href="#" @click.prevent="setView('afzenders')">Afzenders</a></li>
 			</ul>
 

@@ -243,9 +243,11 @@
             <div class="uk-flex">
                 <h3 class="uk-flex-item-1">GLS verzending</h3>
                 <div class="uk-flex uk-flex-middle uk-h5">
-                    <div v-if="shipment.sender_id" class="uk-margin-left">
+                    <div v-if="senders" class="uk-margin-left uk-flex uk-flex-middle">
                         <i class="uk-icon-user uk-margin-small-right" title="Afzender" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
-                        <span>{{ senders[shipment.sender_id].sender_name_1 }}</span>
+                        <select v-model="shipment.sender_id" id="form-sender_id_top" class="uk-form-small uk-form-width-small uk-margin-remove">
+                            <option v-for="sender in senders" :value="sender.id">{{ sender.sender_name_1 }}</option>
+                        </select>
                     </div>
                     <div class="uk-margin-small-left" v-show="shipment.receiver_email && shipment.data.send_email">
                         <i class="uk-icon-envelope-o uk-text-success" title="Email wordt naar ontvanger verstuurd" data-uk-tooltip="delay: 200, pos: 'bottom'"></i>
@@ -315,6 +317,7 @@
 
         data: function () {
             return _.merge({
+                address_id: '',
                 zplPrinter: '',
                 pdfPrinter: '',
                 printEnabled: false,
@@ -551,16 +554,19 @@
                         if (def.id) {
                             this.$set('senders', res.data.senders);
                             if (!this.shipment.sender_id) this.$set('shipment.sender_id', def.id);
-                            this.$refs.editshipmentmodal.open();
                         } else {
                             this.$set('error', 'Geen afzender gevonden');
+                            this.editloading = {};
                         }
-                        this.editloading = {};
                     }, function (res) {
+                         this.$set('error', res.data.message || res.data);
+                         this.editloading = {};
+                    }).then(function () {
+                        this.$refs.editshipmentmodal.open();
                         this.editloading = {};
-                        this.$set('error', res.data.message || res.data);
+
                     });
-                } else {
+                 } else {
                     if (!this.shipment.sender_id) this.$set('shipment.sender_id', def.id);
                     this.$refs.editshipmentmodal.open();
                 }
@@ -651,6 +657,21 @@
 
 
             },
+            pickAddress: function (address) {
+                var xref = {
+                    zip: 'zip_code',
+                    city: 'place'
+                };
+                if (address) {
+                    address.phone = address.phone.replace(new RegExp('"', 'g'), '');
+                    ['name_1', 'name_2', 'street', 'zip', 'city', 'email', 'contact', 'phone'].forEach(function (key) {
+                        var fkey = xref[key] || key;
+                        this.$set('shipment.receiver_' + fkey, address[key] || '');
+                    }.bind(this));
+                    this.$set('shipment.additional_text', address.additional_text || '');
+                    this.$set('shipment.data.inbound_country_code', address.country || 'NL');
+                }
+            },
             getAdresType: function (adresType) {
                 return {
                             'DELADR' : 'Afleveradres',
@@ -708,6 +729,10 @@
 
         partials: {
             'gls-form': require('../../templates/gls-form.html')
+        },
+
+        components: {
+            'address-picker': require('./address-picker.vue')
         },
 
         fields1: {

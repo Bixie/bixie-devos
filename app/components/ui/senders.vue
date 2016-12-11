@@ -22,7 +22,7 @@
             <th></th>
             <th>Naam</th>
             <th>Adres</th>
-            <th>Email</th>
+            <th>Email/Telefoon</th>
             <th>Logo</th>
             <th></th>
         </tr>
@@ -180,7 +180,7 @@
                         }
                     });
                 } else {
-                    sender.sender_phone = sender.sender_phone.replace(new RegExp('"', 'g'), '');
+                    sender.sender_phone = String(sender.sender_phone).replace(new RegExp('"', 'g'), '');
                     this.$set('sender', sender);
                 }
                 this.$refs.editsendermodal.open();

@@ -12,6 +12,7 @@ $loader = require __DIR__ . '/vendor/autoload.php';
 $config = require __DIR__ . '/config.php';
 
 $app = new Application($config);
+$app['develop'] = isset($_SERVER['WINDIR']);
 $app['autoloader']  = $loader;
 $app['path.cache']  = rtrim(JPATH_SITE, '/').'/media/bix_devos/cache';
 $app['path.pdf']    = dirname(JPATH_ROOT) . '/pdf';

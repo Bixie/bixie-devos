@@ -2,10 +2,10 @@
 
 namespace Bixie\Devos\Controller;
 
+use Bixie\Devos\Model\Address\Address;
 use Bixie\Devos\Model\Sender\Sender;
 use Bixie\Devos\Model\Shipment\ShipmentGls;
 use Bixie\Framework\Routing\Controller;
-use Bixie\Framework\Routing\Exception\HttpException;
 
 class SiteController extends Controller {
 
@@ -23,6 +23,7 @@ class SiteController extends Controller {
 			],
             'sc_shipping_methods' => $this['sendcloud']->getShippingMethods(),
             'countries' => $this['countries'],
+			'address_states' => Address::getStates(),
 			'sender_states' => Sender::getStates()
 		];
 		$this['scripts']->add('devos-data', sprintf('var $data = %s;', json_encode($data)), '', 'string');

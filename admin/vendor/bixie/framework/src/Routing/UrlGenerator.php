@@ -2,6 +2,7 @@
 
 namespace Bixie\Framework\Routing;
 
+use Bixie\Devos\Application;
 use Bixie\Framework\Resource\LocatorInterface;
 
 class UrlGenerator
@@ -81,6 +82,12 @@ class UrlGenerator
 
         $path = strtr($path, '\\', '/');
 
+        if (Application::get('develop') && stripos($path, 'bixie-devos/admin') > 0) {
+            $path = str_replace('/bixie-devos/admin', '/html/administrator/components/com_bix_devos', $path);
+        }
+        if (Application::get('develop') && stripos($path, 'bixie-devos/admin') > 0) {
+            $path = str_replace('/bixie-mailing/admin', '/html/administrator/components/com_bix_mailing', $path);
+        }
         if ($basePath && strpos($path, $basePath) === 0) {
             $path = ltrim(substr($path, strlen($basePath)), '/');
         }

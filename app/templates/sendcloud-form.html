@@ -50,6 +50,9 @@
             <hr/>
             <div class="uk-grid uk-form-horizontal">
                 <div class="uk-width-medium-1-2">
+
+                    <address-picker :config="config" :on-pick="pickAddress"></address-picker>
+
                     <div class="uk-form-row">
                         <label class="uk-form-label" for="name">Ontvanger naam *</label>
                         <div class="uk-form-controls">

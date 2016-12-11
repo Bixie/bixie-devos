@@ -45,6 +45,7 @@ window.Dashboard = module.exports = {
         'dashboard': require('../components/pages/dashboard.vue'),
         'verzendingen': require('../components/pages/verzendingen.vue'),
         'verzendingen-sendcloud': require('../components/pages/verzendingen-sendcloud.vue'),
+        'addressen': require('../components/pages/addressen.vue'),
         'afzenders': require('../components/pages/afzenders.vue')
     }
 

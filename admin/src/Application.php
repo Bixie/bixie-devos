@@ -2,6 +2,7 @@
 
 namespace Bixie\Devos;
 
+use Bixie\Devos\Model\Address\AddressProvider;
 use Bixie\Devos\Model\GlsTracking\GlsTrackingProvider;
 use Bixie\Devos\Model\Sender\SenderProvider;
 use Bixie\Devos\Model\Shipment\ShipmentGlsProvider;
@@ -49,6 +50,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
 		//providers
 		$this['shipmentgls']   = new ShipmentGlsProvider($this);
 		$this['shipmentsendcloud']   = new ShipmentSendCloudProvider($this);
+		$this['address']   = new AddressProvider($this);
 		$this['sender']   = new SenderProvider($this);
 		$this['glstracking'] = new GlsTrackingProvider($this);
 
@@ -75,6 +77,7 @@ class Application extends BaseApplication implements EventSubscriberInterface
         $this['controllers']->add('Bixie\Devos\Controller\GlsTrackingController');
         $this['controllers']->add('Bixie\Devos\Controller\SiteController');
         $this['controllers']->add('Bixie\Devos\Controller\SenderApiController');
+        $this['controllers']->add('Bixie\Devos\Controller\AddressApiController');
         $this['controllers']->add('Bixie\Devos\Controller\ShipmentApiController');
         $this['controllers']->add('Bixie\Devos\Controller\SendCloudApiController');
         $this['controllers']->add('Bixie\Devos\Controller\GlsTrackingApiController');
