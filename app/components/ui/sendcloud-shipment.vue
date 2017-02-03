@@ -595,7 +595,7 @@
                 };
                 if (address) {
                     address.phone = address.phone.replace(new RegExp('"', 'g'), '');
-                    ['name_1', 'name_2', 'street', 'zip', 'city', 'country', 'email', 'contact', 'phone'].forEach(function (key) {
+                    ['name_1', 'name_2', 'street', 'zip', 'city', 'country', 'email', 'phone'].forEach(function (key) {
                         var fkey = xref[key] || key;
                         this.$set('shipment.' + fkey, address[key] || '');
                     }.bind(this));

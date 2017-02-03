@@ -668,7 +668,7 @@
                         var fkey = xref[key] || key;
                         this.$set('shipment.receiver_' + fkey, address[key] || '');
                     }.bind(this));
-                    this.$set('shipment.additional_text', address.additional_text || '');
+                    this.$set('shipment.additional_text_1', address.additional_text || '');
                     this.$set('shipment.data.inbound_country_code', address.country || 'NL');
                 }
             },
@@ -864,13 +864,13 @@
             },
             'data.sender_contact': {
                 type: 'text',
-                label: 'Contactpersoon',
-                attrs: {'name': 'sender_contact', 'class': 'uk-width-1-1', 'maxlength': 30}
+                label: 'Contactpersoon *',
+                attrs: {'name': 'sender_contact', 'class': 'uk-width-1-1', 'maxlength': 30, 'required': true}
             },
             'data.sender_phone': {
                 type: 'text',
-                label: 'Telefoon',
-                attrs: {'name': 'sender_phone', 'class': 'uk-width-1-1', 'maxlength': 15}
+                label: 'Telefoon *',
+                attrs: {'name': 'sender_phone', 'class': 'uk-width-1-1', 'maxlength': 15, 'required': true}
             }
         }
 

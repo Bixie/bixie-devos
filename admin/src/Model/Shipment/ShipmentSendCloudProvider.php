@@ -112,7 +112,7 @@ class ShipmentSendCloudProvider extends ApplicationAware {
 		if (isset($store['shipping_method'])) { //used in js to avoid scope conflict
 			$store['shipment'] = $store['shipping_method'];
 		}
-        foreach (['zpl_template', 'pdf_path', 'company_name', 'tracking_number'] as $key) {
+        foreach (['zpl_template', 'pdf_path', 'company_name', 'email', 'telephone', 'tracking_number'] as $key) {
             if (!isset($store[$key])) {
                 $store[$key] = '';
             }
@@ -120,6 +120,7 @@ class ShipmentSendCloudProvider extends ApplicationAware {
 		unset($store['shipping_method']);
 		unset($store['pdf_url']);
 		unset($store['png_url']);
+		unset($store['contact']);
 		unset($store['statusname']);
 		foreach (['created', 'modified'] as $dateField) {
 			if (isset($store[$dateField]) && $store[$dateField] instanceof \DateTime) {

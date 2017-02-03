@@ -377,8 +377,8 @@ class SendCloudApiController extends Controller {
 		}
 
 		if ($search) $query->where(sprintf('(%s LIKE :search)', implode(' LIKE :search OR ', [
-			'sendcloud_parcel_number', 'domestic_parcel_number_nl', 'sender_name_1', 'customer_reference',
-			'receiver_name_1', 'receiver_zip_code', 'receiver_street', 'receiver_place', 'receiver_email'
+			'sendcloud_id', 'klantnummer', 'name', 'company_name',
+			'order_number', 'address', 'postal_code', 'tracking_number', 'city', 'email'
 		])), ['search' => "%{$search}%"]);
 
 		if (!$this['admin']) {
