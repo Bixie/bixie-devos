@@ -197,7 +197,7 @@ class Broadcast implements \ArrayAccess {
 			if (stripos($item,'T') === 0) {
 
 				$tmp = explode(':',$item,2); $tmp[0] = ltrim($tmp[0], 'T');
-				if ($tmp[1] == '') continue;
+				if (!isset($tmp[1]) || $tmp[1] == '') continue;
 
 				if($this->isGlsCode($tmp[0])){
 					$tag = $this->tagByCode($tmp[0])->setValue($tmp[1]);
