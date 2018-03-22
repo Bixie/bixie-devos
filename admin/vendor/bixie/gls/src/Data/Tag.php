@@ -93,9 +93,9 @@ class Tag {
 			case 'express_service_flag_sat':
 				$value = $value ? 'SCB' : '';
 				break;
-			case 'express_service_flag':
-				$value = $value ? 'T' : '';
-				break;
+//			case 'express_service_flag':
+//				$value = $value ? 'T' : '';
+//				break;
 			case 'send_email':
 				$value = $value ? '1' : '0';
 				break;
