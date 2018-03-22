@@ -54,7 +54,10 @@ class SendCloudApi extends ApplicationAware
             } else {
                 try {
 
-                    $this->shippingMethods = $this->sendCloud->shippingMethods()->all();
+                    $this->shippingMethods = array_filter($this->sendCloud->shippingMethods()->all(), function ($method) {
+                        //fadello is failliet
+                        return $method->id !== 88;
+                    });
 
                 } catch (SendCloudApiException $e) {
                     $this->app['joomla']->enqueueMessage($e->getMessage(), 'error');
