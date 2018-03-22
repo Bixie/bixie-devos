@@ -25,13 +25,13 @@ window.Dashboard = module.exports = {
     },
 
     methods: {
-        checkView: function () {
+        checkView() {
             var hash = location.hash.replace('#', '');
             if (hash && hash !== this.currentView) {
                 this.setView(hash);
             }
         },
-        setView: function (view) {
+        setView(view) {
             if (this.$options.components[view]) {
                 this.currentView = view;
                 window.history.pushState({}, '', this.config.current + '#' + view)
@@ -45,6 +45,7 @@ window.Dashboard = module.exports = {
         'dashboard': require('../components/pages/dashboard.vue'),
         'verzendingen': require('../components/pages/verzendingen.vue'),
         'verzendingen-sendcloud': require('../components/pages/verzendingen-sendcloud.vue'),
+        'verzendingen-bbpakket': require('../components/pages/verzendingen-bbpakket.vue'),
         'addressen': require('../components/pages/addressen.vue'),
         'afzenders': require('../components/pages/afzenders.vue')
     }

@@ -36,8 +36,6 @@
                 <i v-spinner="editloading[-1]" icon="plus"></i>PostNL</button>
             <button class="uk-button" @click="newSignature">
                 <i v-spinner="editloading[-2]" icon="plus"></i>Aangetekend</button>
-            <button class="uk-button" @click="newExpress">
-                <i v-spinner="editloading[-3]" icon="bolt"></i>Express SameDay</button>
         </div>
     </div>
 
@@ -398,14 +396,6 @@
                 this.toev = '';
                 this.editShipment(-2, {
                     shipping_method: 2
-                });
-            },
-            newExpress: function () {
-                this.postcode = '';
-                this.huisnr = '';
-                this.toev = '';
-                this.editShipment(-3, {
-                    shipping_method: 88
                 });
             },
             load: function (page) {
