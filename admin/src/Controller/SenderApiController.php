@@ -47,7 +47,7 @@ class SenderApiController extends Controller {
 					}
 
 					if (!$ext = $file->guessExtension() or !in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
-						throw new \InvalidArgumentException('Bestnadsextensie niet toegestaan.');
+						throw new \InvalidArgumentException('Bestandsextensie niet toegestaan.');
 					}
 
 					if (!$size = $file->getClientSize() or $size > (3 * 1024 * 1024)) {
