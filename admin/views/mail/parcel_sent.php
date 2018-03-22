@@ -42,5 +42,5 @@
     <dd><?= $data['receiver_street'] ?></dd>
     <dd><?= $data['receiver_zip_code'] ?> <?= $data['receiver_place'] ?></dd>
     <dt>Email</dt>
-    <dd><?= $data['receiver_email'] ?: '-' ?></dd>
+    <dd><?= !empty($data['receiver_email']) ? $data['receiver_email'] : '-' ?></dd>
 </dl>

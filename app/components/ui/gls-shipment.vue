@@ -165,11 +165,11 @@
                     </dd>
                     <dd>
                         <i class="uk-icon-comment-o uk-icon-justify uk-margin-small-right" title="Afzender contact" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_contact }}</span>
+                        <span>{{ shipment.data.sender_contact }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-phone uk-icon-justify uk-margin-small-right" title="Afzender telefoon" data-uk-tooltip="{delay: 200}"></i>
-                        <span>{{ shipment.sender_phone | nrquotes }}</span>
+                        <span>{{ shipment.data.sender_phone | nrquotes }}</span>
                     </dd>
                     <dd>
                         <i class="uk-icon-envelope-o uk-icon-justify uk-margin-small-right" title="Afzender email" data-uk-tooltip="{delay: 200}"></i>
