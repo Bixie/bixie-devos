@@ -20,12 +20,6 @@
       "homepage": "http://bixie.nl"
     }
   ],
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:yootheme/framework.git"
-    }
-  ],
   "require": {
     "jublonet/codebird-php": "2.7.0",
     "clue/socket-raw": "^1.2",
@@ -41,6 +35,7 @@
     "psr-4": {
       "Bixie\\Devos\\": "src",
       "Bixie\\SendCloud\\": "vendor/bixie/sendcloud/src",
+      "Bixie\\Postnl\\": "vendor/bixie/postnl/src",
       "Bixie\\Gls\\": "vendor/bixie/gls/src",
       "Bixie\\Framework\\": "vendor/bixie/framework/src"
     }
