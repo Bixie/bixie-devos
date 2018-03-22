@@ -4,7 +4,7 @@ namespace Bixie\SendCloud\Carriers\SendCloud\Query;
 
 trait FindAllStatic {
 
-    public function all()
+    public function all($params = [])
     {
         $result = $this->connection()->get($this->url);
 
