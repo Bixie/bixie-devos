@@ -552,7 +552,7 @@
             },
             downloadCSV: function () {
                 var filter = {filter: _.merge({}, this.filter, this.exportFilter)};
-                window.location = 'index.php?p=%2Fapi%2Fshipment%2Fcsv&option=com_bix_devos&api=1&' + jQuery.param(filter);
+                window.location = 'index.php?p=%2Fapi%2Fsendcloud%2Fcsv&option=com_bix_devos&api=1&' + jQuery.param(filter);
             },
             setError: function (message) {
                 this.$set('progressmessage', '');
