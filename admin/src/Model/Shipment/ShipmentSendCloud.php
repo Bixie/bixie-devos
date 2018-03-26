@@ -506,14 +506,14 @@ class ShipmentSendCloud extends ShipmentSendCloudBase implements ShipmentInterfa
 
     /**
 	 * @param $basePath
-	 * @param $pngString
+	 * @param $imageString
 	 */
-	public function savePngString ($basePath, $pngString) {
-		if (empty($pngString) || empty($this->domestic_parcel_number_nl)) {
+	public function saveImageString ($basePath, $imageString) {
+		if (empty($imageString) || empty($this->domestic_parcel_number_nl)) {
 			throw new \InvalidArgumentException(sprintf('Geen parcel_number of png-string leeg'));
 		}
 		$png_path = $this->filePath($basePath) . '/' . $this->tracking_number . '.png';
-		if (!@file_put_contents($png_path, $pngString)) {
+		if (!@file_put_contents($png_path, $imageString)) {
 			throw new \RuntimeException(sprintf('Fout bij opslaan %s.pdf', $this->tracking_number));
 		}
 		$this->offsetSet('png_path', $png_path);
@@ -576,9 +576,9 @@ class ShipmentSendCloud extends ShipmentSendCloudBase implements ShipmentInterfa
             'statusname' => $this->getStatusName(),
             'tracking_number' => $this->tracking_number,
             'pdf_path' => $this->pdf_path,
-			'created' => $this->created,
-			'created_by' => $this->created_by,
-			'modified' => $this->modified,
+            'created' => $this->getCreated()->format(DATE_ATOM),
+            'created_by' => $this->created_by,
+            'modified' => $this->getModified() ? $this->getModified()->format(DATE_ATOM) : '',
 			'modified_by' => $this->modified_by
 		], $data);
 		return array_diff_key($data, array_flip($ignore));
