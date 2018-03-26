@@ -35,10 +35,10 @@ class SendCloudApiController extends Controller {
 
 		$query = $this->getQuery($filter);
 
-		$filename = sprintf('verzendingen_%s_%s', $filter['created_from'], $filter['created_to']);
+		$filename = sprintf('verzendingen_sc_%s_%s', $filter['created_from'], $filter['created_to']);
 
 		$shipments = $this['shipmentsendcloud']->query($query);
-		$ignore = ['data','parcel','events','sendcloud_stream','pdf_path','zpl_template'];
+		$ignore = ['data','parcel','events','pdf_path'];
 		$response = new StreamedResponse();
 		$response->setCallback(function() use ($shipments, $ignore, $filename) {
 
