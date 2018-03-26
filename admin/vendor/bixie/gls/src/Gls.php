@@ -87,7 +87,7 @@ class Gls extends ApplicationAware {
 
 		$shipment->setZplTemplate($label->createZplLabel());
 		$shipment->savePdfString($this->app['path.pdf'], $label->createPdfLabel());
-		$shipment->savePngString($this->app['path.image'], $label->createPngLabel());
+		$shipment->saveImageString($this->app['path.image'], $label->createPngLabel());
 
 	}
 
