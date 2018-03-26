@@ -60,7 +60,7 @@
                                    class="uk-width-1-1" v-validate:required/>
 
                             <p class="uk-form-help-block uk-text-danger"
-                               v-show="form.name.invalid">{{ 'Ontvanger naam 1 is verplicht.'}}</p>
+                               v-show="fieldInvalid('name')">{{ 'Ontvanger naam 1 is verplicht.'}}</p>
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@
                             </div>
 
                             <p class="uk-form-help-block uk-text-danger"
-                               v-show="form.adres.invalid">{{ 'Ontvanger adres is verplicht.'}}</p>
+                               v-show="fieldInvalid('adres')">{{ 'Ontvanger adres is verplicht.'}}</p>
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@
                             </div>
 
                             <p class="uk-form-help-block uk-text-danger"
-                               v-show="form.postcode.invalid">{{ 'Postcode ontvanger is verplicht.'}}</p>
+                               v-show="fieldInvalid('postcode')">{{ 'Postcode ontvanger is verplicht.'}}</p>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@
                             </div>
 
                             <p class="uk-form-help-block uk-text-danger"
-                               v-show="form.plaatsnaam.invalid">{{ 'Ontvanger plaats is verplicht.'}}</p>
+                               v-show="fieldInvalid('plaatsnaam')">{{ 'Ontvanger plaats is verplicht.'}}</p>
                         </div>
                     </div>
 
@@ -123,7 +123,7 @@
                             </select>
 
                             <p class="uk-form-help-block uk-text-danger"
-                               v-show="form.land.invalid">{{ 'Land verzending is verplicht.'}}</p>
+                               v-show="fieldInvalid('land')">{{ 'Land verzending is verplicht.'}}</p>
                         </div>
                     </div>
 
@@ -138,7 +138,7 @@
                         </div>
 
                         <p class="uk-form-help-block uk-text-danger"
-                           v-show="form.referentie.invalid">{{ 'Klantreferentie is verplicht.'}}</p>
+                           v-show="fieldInvalid('referentie')">{{ 'Klantreferentie is verplicht.'}}</p>
                     </div>
 
                     <fields :config="$options.fields1" :model.sync="shipment" template="formrow"></fields>

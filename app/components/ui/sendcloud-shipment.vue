@@ -618,6 +618,9 @@
                     UIkit.notify(res.data.message || res.data, 'danger');
                 });
 
+            },
+            fieldInvalid(key) {
+                return this.form && this.form[key] ? this.form[key].invalid : false;
             }
 
         },

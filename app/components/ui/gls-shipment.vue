@@ -677,7 +677,11 @@
                             'DELADR' : 'Afleveradres',
                             'REQADR' : 'Afzenderadres'
                         }[adresType] || adresType;
+            },
+            fieldInvalid(key) {
+                return this.form && this.form[key] ? this.form[key].invalid : false;
             }
+
 
         },
 
